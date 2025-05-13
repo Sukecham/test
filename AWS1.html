@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AWS 生成AI安全対策ガイド ─ わかりやすい解説</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #232F3E; /* AWSブランドカラー - 濃紺 */
+      --secondary-color: #FF9900; /* AWSブランドカラー - オレンジ */
+      --accent-color: #0073BB; /* AWSアクセントカラー - 青 */
+      --light-bg: #f8f9fa;
+      --dark-bg: #232F3E;
+      --text-color: #333;
+      --light-text: #f8f9fa;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Hiragino Kaku Gothic Pro', 'Meiryo', sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: var(--light-bg);
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary-color), #37475A);
+      color: var(--light-text);
+      padding: 60px 0 80px;
+      text-align: center;
+      clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+      margin-bottom: 40px;
+    }
+    
+    .header-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+    
+    .subtitle {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+    
+    .intro {
+      background-color: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+    }
+    
+    .intro p {
+      margin-bottom: 15px;
+    }
+    
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 15px 20px;
+      position: relative;
+    }
+    
+    .card-number {
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      font-size: 2.5rem;
+      font-weight: bold;
+      opacity: 0.5;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .icon-header {
+      display: flex;
+      align-items: center;
+    }
+    
+    .icon {
+      background: var(--secondary-color);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      font-size: 1.5rem;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+      color: white;
+    }
+    
+    .card-title {
+      font-size: 1.3rem;
+      margin-bottom: 0;
+      color: white;
+      font-weight: bold;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    
+    .card-content {
+      padding: 20px;
+    }
+    
+    .card-content ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+    
+    .card-content li {
+      margin-bottom: 10px;
+      position: relative;
+      padding-left: 25px;
+    }
+    
+    .card-content li:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 10px;
+      height: 10px;
+      background-color: var(--secondary-color);
+      border-radius: 50%;
+    }
+    
+    .cycle-section {
+      background-color: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+    }
+    
+    .cycle-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 30px;
+    }
+    
+    .cycle-item {
+      text-align: center;
+      width: 200px;
+      margin: 0 20px 30px;
+      position: relative;
+    }
+    
+    .cycle-item:not(:last-child):after {
+      content: "\f054";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      position: absolute;
+      right: -25px;
+      top: 40px;
+      font-size: 1.5rem;
+      color: var(--secondary-color);
+    }
+    
+    @media (max-width: 768px) {
+      .cycle-item:not(:last-child):after {
+        content: "\f078";
+        right: 90px;
+        top: auto;
+        bottom: -25px;
+      }
+    }
+    
+    .cycle-icon {
+      background-color: var(--secondary-color);
+      color: white;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      font-size: 2rem;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .cycle-title {
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+    
+    .conclusion {
+      background-color: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+    }
+    
+    footer {
+      background-color: var(--dark-bg);
+      color: var(--light-text);
+      padding: 30px 0;
+      text-align: center;
+    }
+    
+    .source-info {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+    
+    .highlight {
+      background: linear-gradient(transparent 60%, rgba(255, 153, 0, 0.3) 40%);
+      font-weight: bold;
+    }
+    
+    .mb-3 {
+      margin-bottom: 15px;
+    }
+    
+    h2 {
+      color: var(--primary-color);
+      margin: 20px 0;
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 10px;
+    }
+    
+    h3 {
+      color: var(--primary-color);
+      margin: 15px 0;
+    }
+
+    .security-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 30px 0;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .security-table thead th {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 15px;
+      text-align: left;
+    }
+
+    .security-table tbody tr:nth-child(even) {
+      background-color: rgba(35, 47, 62, 0.05);
+    }
+
+    .security-table tbody td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .security-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .roadmap-section {
+      background-color: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+    }
+
+    .roadmap-item {
+      display: flex;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .roadmap-number {
+      background-color: var(--primary-color);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 20px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .roadmap-content {
+      flex-grow: 1;
+    }
+
+    .roadmap-content h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+    
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .grid-container {
+        grid-template-columns: 1fr;
+      }
+      
+      header {
+        padding: 40px 0 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <h1>AWS 生成AI安全対策ガイド</h1>
+        <div class="subtitle">初心者のためのわかりやすい解説</div>
+      </div>
+    </div>
+  </header>
+  
+  <div class="container">
+    <section class="intro">
+      <h2>このガイドについて</h2>
+      <p><span class="highlight">AIツールの使い方を「誰が何をどこまで管理するのか」という観点で5段階に分け</span>、それぞれの段階で気をつけるべきことをわかりやすく解説します。</p>
+      <p>最近では「AIに不適切な指示を出す」「AIの学習データを改ざんする」といった新しい問題が増えています。このガイドでは、そのような問題からどう身を守るかをご説明します。</p>
+    </section>
+    
+    <section class="cycle-section">
+      <h2>AIツールの5つの利用形態</h2>
+      <p class="mb-3">AIツールの使い方は大きく分けて以下の5段階があります。段階が上がるほど自由度が増しますが、同時にお金や専門知識、責任も増えていきます。</p>
+      
+      <div class="cycle-container">
+        <div class="cycle-item">
+          <div class="cycle-icon">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="cycle-title">一般向けAIサービス</div>
+        </div>
+        
+        <div class="cycle-item">
+          <div class="cycle-icon">
+            <i class="fas fa-building"></i>
+          </div>
+          <div class="cycle-title">企業向けAIサービス</div>
+        </div>
+        
+        <div class="cycle-item">
+          <div class="cycle-icon">
+            <i class="fas fa-code"></i>
+          </div>
+          <div class="cycle-title">既存AIモデルの利用</div>
+        </div>
+        
+        <div class="cycle-item">
+          <div class="cycle-icon">
+            <i class="fas fa-sliders"></i>
+          </div>
+          <div class="cycle-title">AIの調整・カスタマイズ</div>
+        </div>
+        
+        <div class="cycle-item">
+          <div class="cycle-icon">
+            <i class="fas fa-brain"></i>
+          </div>
+          <div class="cycle-title">AIの独自開発</div>
+        </div>
+      </div>
+    </section>
+    
+    <div class="grid-container">
+      <div class="card">
+        <div class="card-header">
+          <div class="icon-header">
+            <div class="icon">
+              <i class="fas fa-user"></i>
+            </div>
+            <h3 class="card-title">一般向けAIサービス</h3>
+          </div>
+          <div class="card-number">1</div>
+        </div>
+        <div class="card-content">
+          <ul>
+            <li><span class="highlight">無料や一般公開されているAIを使う</span>形態</li>
+            <li>手軽で費用がかからないという良い点がある</li>
+            <li>社内情報の漏えいや無断でのAI利用が心配</li>
+            <li>会社は<span class="highlight">使い方のルール作りと教育</span>が主な役割</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <div class="icon-header">
+            <div class="icon">
+              <i class="fas fa-building"></i>
+            </div>
+            <h3 class="card-title">企業向けAIサービス</h3>
+          </div>
+          <div class="card-number">2</div>
+        </div>
+        <div class="card-content">
+          <ul>
+            <li><span class="highlight">業務用ソフトに組み込まれたAI機能</span>の形態</li>
+            <li>サービス保証や契約による保護がある</li>
+            <li>特定会社の製品に依存したり、他社との情報混同が心配</li>
+            <li>会社は<span class="highlight">提供会社の評価と契約内容の確認</span>が主な役割</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <div class="icon-header">
+            <div class="icon">
+              <i class="fas fa-code"></i>
+            </div>
+            <h3 class="card-title">既存AIモデルの利用</h3>
+          </div>
+          <div class="card-number">3</div>
+        </div>
+        <div class="card-content">
+          <ul>
+            <li><span class="highlight">AWSなどが提供するAI接続サービスで自社システムを作る</span>形態</li>
+            <li>自社の資料をAIに追加して使える良さがある</li>
+            <li>AIへの指示内容やアクセス鍵の漏えいが心配</li>
+            <li>会社は<span class="highlight">アクセス管理と安全な指示の確認</span>が主な役割</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <div class="icon-header">
+            <div class="icon">
+              <i class="fas fa-sliders"></i>
+            </div>
+            <h3 class="card-title">AIの調整・カスタマイズ</h3>
+          </div>
+          <div class="card-number">4</div>
+        </div>
+        <div class="card-content">
+          <ul>
+            <li><span class="highlight">自社の資料でAIの動きを調整</span>する形態</li>
+            <li>自社分野での精度が上がる良さがある</li>
+            <li>社内情報がAIに取り込まれたり、偏ったAIになる心配</li>
+            <li>会社は<span class="highlight">教える資料の選別とAIの保護</span>が主な役割</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <div class="icon-header">
+            <div class="icon">
+              <i class="fas fa-brain"></i>
+            </div>
+            <h3 class="card-title">AIの独自開発</h3>
+          </div>
+          <div class="card-number">5</div>
+        </div>
+        <div class="card-content">
+          <ul>
+            <li><span class="highlight">ゼロから自社AIを開発・運用</span>する形態</li>
+            <li>完全に自社でコントロールできる良さがある</li>
+            <li>すべての面で自社の責任となる</li>
+            <li>会社は<span class="highlight">AIの開発と運用の全管理</span>が主な役割</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <section class="cycle-section">
+      <h2>各段階で気をつけるべきこと</h2>
+      <p>AIの使い方の段階ごとに、特に気をつけるべきポイントは以下のとおりです。段階が上がるにつれて、必要な対策も増えていきます。</p>
+      
+      <table class="security-table">
+        <thead>
+          <tr>
+            <th>変化のポイント</th>
+            <th>主な注意点</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>すべての段階で共通</strong></td>
+            <td>必要最小限のアクセス権限・データの暗号化・操作記録の保存はどの段階でも必要</td>
+          </tr>
+          <tr>
+            <td><strong>段階1→2への変化</strong></td>
+            <td>"<span class="highlight">AIに入力する情報の管理</span>"から"<span class="highlight">AIサービス提供会社の管理</span>"へ重点が移る。契約内容の確認が重要</td>
+          </tr>
+          <tr>
+            <td><strong>段階2→3への変化</strong></td>
+            <td>AIとの接続箇所が増えるため、<span class="highlight">アクセス権限の設定とAIへの指示内容の確認</span>が重要</td>
+          </tr>
+          <tr>
+            <td><strong>段階3→4への変化</strong></td>
+            <td><span class="highlight">社内データの管理が極めて重要に</span>。個人情報の匿名化・データ品質の確認・AIの更新管理</td>
+          </tr>
+          <tr>
+            <td><strong>段階4→5への変化</strong></td>
+            <td>システム開発の安全対策をAIにも拡張。AIの<span class="highlight">学習環境全体の安全確保</span>が必要</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    
+    <section class="cycle-section">
+      <h2>AWSの安全対策ツールとの連携</h2>
+      <p>AWSが提供している安全対策ツールとAIの安全性確保の関係は以下のとおりです。</p>
+      
+      <table class="security-table">
+        <thead>
+          <tr>
+            <th>AWSの仕組み</th>
+            <th>具体的な使い方</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>AWSの設計ガイドライン<br>(生成AIレンズ)</strong></td>
+            <td>GENSEC01~06という項目で <span class="highlight">アクセス管理、安全な接続、安全柵</span> などを段階的に適用する方法を紹介</td>
+          </tr>
+          <tr>
+            <td><strong>クラウド導入<br>フレームワーク (CAF)</strong></td>
+            <td>統治の観点＝<span class="highlight">社内ルール整備</span>／安全性の観点＝<span class="highlight">リスク対策の実施</span></td>
+          </tr>
+          <tr>
+            <td><strong>MITRE ATLAS<br>(AI脅威対策集)</strong></td>
+            <td>AML.M0015（<span class="highlight">悪意ある入力の検出</span>）を段階3-5の保護機能で実現</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    
+    <section class="roadmap-section">
+      <h2>実施のための段階的なステップ（推奨）</h2>
+      
+      <div class="roadmap-item">
+        <div class="roadmap-number">1</div>
+        <div class="roadmap-content">
+          <h3>AIの使い道と必要な保護レベルの決定</h3>
+          <p>AIで何をしたいか、扱うデータの重要度、自社開発が必要かを検討します。</p>
+        </div>
+      </div>
+      
+      <div class="roadmap-item">
+        <div class="roadmap-number">2</div>
+        <div class="roadmap-content">
+          <h3>小さく始めてみる</h3>
+          <p>まずは小規模に（多くは<span class="highlight">段階2または3</span>から）試してみて、リスクと効果を確認します。</p>
+        </div>
+      </div>
+      
+      <div class="roadmap-item">
+        <div class="roadmap-number">3</div>
+        <div class="roadmap-content">
+          <h3>ルール作りと教育</h3>
+          <p>社内でのAI利用ルールを作り、教育を行い、<span class="highlight">無断でのAI利用を防止</span>します。</p>
+        </div>
+      </div>
+      
+      <div class="roadmap-item">
+        <div class="roadmap-number">4</div>
+        <div class="roadmap-content">
+          <h3>段階的な拡張</h3>
+          <p>成熟度と必要性に応じて段階4→5へ進み、<span class="highlight">AIの開発・運用の管理体制</span>を段階的に整えます。</p>
+        </div>
+      </div>
+      
+      <div class="roadmap-item">
+        <div class="roadmap-number">5</div>
+        <div class="roadmap-content">
+          <h3>継続的モニタリング</h3>
+          <p>継続的モニタリングで<span class="highlight">新たな脅威・規制・モデル更新</span>に追随します。</p>
+        </div>
+      </div>
+    </section>
+    
+    <section class="conclusion">
+      <h2>まとめ</h2>
+      <p>スコーピングマトリックスは<span class="highlight">「何を守るか」を整理するレンズ</span>です。AWS Well-Architectedや生成AIレンズは「どう守るか」の実装ガイドを提供します。</p>
+      <p>スコープは固定ではなく、<span class="highlight">ユースケース・リスク許容度に合わせて可変</span>です。最終的な差別化要因は「信頼」であり、明確な責任区分と堅牢なデータガバナンスが、安全かつ持続的な生成AI活用を後押しします。</p>
+    </section>
+  </div>
+  
+  <footer>
+    <div class="container">
+      <div class="source-info">
+        AWS 生成AIセキュリティ-スコーピングマトリックス ─ 速習ダイジェスト
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
