@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>改訂スターリング方程式と輸液療法のパラダイム転換（後半）</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #1a5276;
+      --secondary-color: #3498db;
+      --accent-color: #e74c3c;
+      --light-bg: #f8f9fa;
+      --dark-bg: #343a40;
+      --text-color: #333;
+      --light-text: #f8f9fa;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Hiragino Kaku Gothic Pro', 'Meiryo', sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: var(--light-bg);
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: var(--light-text);
+      padding: 60px 0 80px;
+      text-align: center;
+      clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+      margin-bottom: 40px;
+    }
+    
+    .header-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+    
+    .subtitle {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+    
+    section {
+      background-color: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+    }
+    
+    h2 {
+      color: var(--primary-color);
+      margin: 20px 0;
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 10px;
+    }
+    
+    h3 {
+      color: var(--primary-color);
+      margin: 15px 0;
+    }
+    
+    p {
+      margin-bottom: 15px;
+    }
+    
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 15px 20px;
+      position: relative;
+    }
+    
+    .card-title {
+      font-size: 1.3rem;
+      margin-bottom: 0;
+      color: white;
+      font-weight: bold;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    
+    .card-number {
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      font-size: 2.5rem;
+      font-weight: bold;
+      opacity: 0.5;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .card-content {
+      padding: 20px;
+    }
+    
+    .icon {
+      background: #2980b9;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      font-size: 1.5rem;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+      color: white;
+    }
+    
+    .icon-header {
+      display: flex;
+      align-items: center;
+    }
+    
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+    
+    li {
+      margin-bottom: 10px;
+      position: relative;
+      padding-left: 25px;
+    }
+    
+    li:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 10px;
+      height: 10px;
+      background-color: var(--secondary-color);
+      border-radius: 50%;
+    }
+    
+    .highlight {
+      background: linear-gradient(transparent 60%, rgba(52, 152, 219, 0.3) 40%);
+      font-weight: bold;
+    }
+    
+    .cycle-section {
+      background-color: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+    }
+    
+    .cycle-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 30px;
+    }
+    
+    .cycle-item {
+      text-align: center;
+      width: 200px;
+      margin: 0 20px 30px;
+      position: relative;
+    }
+    
+    .cycle-item:not(:last-child):after {
+      content: "\f054";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      position: absolute;
+      right: -25px;
+      top: 40px;
+      font-size: 1.5rem;
+      color: var(--secondary-color);
+    }
+    
+    @media (max-width: 768px) {
+      .cycle-item:not(:last-child):after {
+        content: "\f078";
+        right: 90px;
+        top: auto;
+        bottom: -25px;
+      }
+    }
+    
+    .cycle-icon {
+      background-color: #2980b9;
+      color: white;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      font-size: 2rem;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .cycle-title {
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+    
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 30px 0;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .comparison-table th {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 15px;
+      text-align: left;
+    }
+
+    .comparison-table tr:nth-child(even) {
+      background-color: rgba(52, 152, 219, 0.1);
+    }
+
+    .comparison-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .comparison-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .mb-3 {
+      margin-bottom: 15px;
+    }
+    
+    .image-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+    
+    .image-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .figure {
+      display: block;
+      margin: 30px auto;
+      text-align: center;
+    }
+    
+    .figure-caption {
+      font-style: italic;
+      color: #666;
+      margin-top: 10px;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+    
+    footer {
+      background-color: var(--dark-bg);
+      color: var(--light-text);
+      padding: 30px 0;
+      text-align: center;
+    }
+    
+    .source-info {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+    
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .grid-container {
+        grid-template-columns: 1fr;
+      }
+      
+      header {
+        padding: 40px 0 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <h1>改訂スターリング方程式と血管内皮グリコカリックス層</h1>
+        <div class="subtitle">血管透過性と輸液療法を理解するための新たなパラダイム（後半）</div>
+      </div>
+    </div>
+  </header>
+  
+  <div class="container">
+    <section class="cycle-section">
+      <h2>改訂スターリング方程式の核心原理</h2>
+      <p class="mb-3">血管透過性と輸液療法の新しいパラダイムは以下の原理に基づいています：</p>
+      
+      <div class="cycle-container">
+        <div class="cycle-item">
+          <div class="cycle-icon">
+            <i class="fas fa-ban"></i>
+          </div>
+          <div class="cycle-title">吸収なしのルール</div>
+        </div>
+        
+        <div class="cycle-item">
+          <div class="cycle-icon">
+            <i class="fas fa-filter"></i>
+          </div>
+          <div class="cycle-title">グリコカリックスフィルター</div>
+        </div>
+        
+        <div class="cycle-item">
+          <div class="cycle-icon">
+            <i class="fas fa-exchange-alt"></i>
+          </div>
+          <div class="cycle-title">リンパ還流</div>
+        </div>
+        
+        <div class="cycle-item">
+          <div class="cycle-icon">
+            <i class="fas fa-tint"></i>
+          </div>
+          <div class="cycle-title">血管内容積の再定義</div>
+        </div>
+      </div>
+      
+      <h3>「吸収なし」のルール</h3>
+      <p>従来のスターリング原理では、毛細血管の静脈側で流体が間質から血漿へ吸収されると考えられていました。しかし改訂モデルでは、<span class="highlight">健常な非有窓性毛細血管では、その全長にわたって常に濾過のみが生じ、吸収は起こらない</span>ことが示されています。</p>
+      
+      <div class="image-container">
+        <div class="figure">
+          <svg viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+            <!-- 座標軸 -->
+            <line x1="50" y1="250" x2="550" y2="250" stroke="#333" stroke-width="2" />
+            <line x1="50" y1="50" x2="50" y2="250" stroke="#333" stroke-width="2" />
+            
+            <!-- X軸ラベル -->
+            <text x="300" y="280" text-anchor="middle" font-size="14" fill="#333">毛細血管圧 (mmHg)</text>
+            <text x="100" y="270" text-anchor="middle" font-size="12" fill="#666">10</text>
+            <text x="200" y="270" text-anchor="middle" font-size="12" fill="#666">20</text>
+            <text x="300" y="270" text-anchor="middle" font-size="12" fill="#666">30</text>
+            <text x="400" y="270" text-anchor="middle" font-size="12" fill="#666">40</text>
+            <text x="500" y="270" text-anchor="middle" font-size="12" fill="#666">50</text>
+            
+            <!-- Y軸ラベル -->
+            <text x="30" y="150" transform="rotate(-90, 30, 150)" text-anchor="middle" font-size="14" fill="#333">濾過速度 (Jv)</text>
+            <text x="40" y="250" text-anchor="end" font-size="12" fill="#666">0</text>
+            <text x="40" y="200" text-anchor="end" font-size="12" fill="#666">25</text>
+            <text x="40" y="150" text-anchor="end" font-size="12" fill="#666">50</text>
+            <text x="40" y="100" text-anchor="end" font-size="12" fill="#666">75</text>
+            <text x="40" y="50" text-anchor="end" font-size="12" fill="#666">100</text>
+            
+            <!-- グラフライン -->
+            <path d="M 50 245 Q 75 240 100 220 C 125 200 150 180 200 150 C 250 120 300 100 400 70 C 450 55 500 45 550 40" stroke="#3498db" fill="none" stroke-width="3" />
+            <path d="M 50 240 Q 75 235 100 205 C 125 175 150 155 200 125 C 250 95 300 75 400 45 C 450 30 500 20 550 15" stroke="#e74c3c" fill="none" stroke-width="3" />
+            <path d="M 50 248 Q 75 247 100 235 C 125 225 150 210 200 175 C 250 145 300 125 400 95 C 450 80 500 70 550 65" stroke="#2ecc71" fill="none" stroke-width="3" />
+            
+            <!-- J点 -->
+            <circle cx="200" cy="150" r="5" fill="#3498db" />
+            <line x1="200" y1="150" x2="200" y2="250" stroke="#333" stroke-width="1" stroke-dasharray="5,5" />
+            <text x="210" y="140" font-size="14" fill="#333">J点</text>
+            
+            <!-- 凡例 -->
+            <rect x="400" y="140" width="140" height="80" fill="white" stroke="#ccc" stroke-width="1" />
+            <line x1="410" y1="160" x2="440" y2="160" stroke="#3498db" stroke-width="3" />
+            <line x1="410" y1="180" x2="440" y2="180" stroke="#e74c3c" stroke-width="3" />
+            <line x1="410" y1="200" x2="440" y2="200" stroke="#2ecc71" stroke-width="3" />
+            <text x="450" y="165" font-size="12" fill="#333">正常膠質浸透圧</text>
+            <text x="450" y="185" font-size="12" fill="#333">低膠質浸透圧</text>
+            <text x="450" y="205" font-size="12" fill="#333">高膠質浸透圧</text>
+          </svg>
+        </div>
+        <div class="figure-caption">図1: 「吸収なし」のルールを示すJ字型曲線。毛細血管圧と濾過速度（Jv）の関係を表す。J点以下では濾過はほぼゼロになるが吸収は生じない。</div>
+      </div>
+      
+      <p>膠質浸透圧の差は濾過に対抗しますが、濾過を逆転させることはありません。グリコカリックスモデルでは、間質液から拡散してきたタンパク質がグリコカリックス下層空間に入ると、膠質浸透圧の差が減少し、仮に一時的な吸収があったとしても数分でまた濾過に戻ります。</p>
+      
+      <h3>血管内容積の再定義</h3>
+      <p>従来のモデルでは、血管内容積は血漿と血球成分から成ると考えられていました。新しいモデルでは、血管内容積は3つの区画に分けられます：</p>
+      <ol>
+        <li>グリコカリックス内の非循環性液体（約700ml）</li>
+        <li>循環血漿</li>
+        <li>赤血球分布容積</li>
+      </ol>
+      
+      <p><span class="highlight">グリコカリックスの圧縮や損傷は、赤血球希釈による血管内容積測定に大きな影響を与えます。</span>炎症や高張コロイド輸液によるグリコカリックス容積の圧縮は、赤血球希釈データの解釈に注意が必要です。</p>
+      
+      <h3>毛細血管圧のJ点</h3>
+      <p>Jvがゼロに近づく圧力は毛細血管の透過性に依存し、これは様々な毛細血管の水力学的伝導度、流体交換面積、巨大分子の反射係数などの総合的な効果です。毛細血管圧（Pc）とJvの関係を表すJ字型曲線では、その変曲点がJ点です。</p>
+      
+      <p>J点より下では、輸液（コロイドもクリスタロイドも）は静脈圧差が濾過を再開するレベルに達するまで血管内に留まります。<span class="highlight">グリコカリックスモデルと「吸収なし」のルールは、毛細血管圧がJ点以下の場合、アルブミンや人工膠質液の膠質浸透圧特性が血漿量の回復にほとんど寄与しない理由を説明します。</span></p>
+    </section>
+    
+    <section>
+      <h2>臨床的意義と輸液療法への影響</h2>
+      
+      <h3>アルブミン療法の再考</h3>
+      <p>改訂スターリング方程式とグリコカリックスモデルは、アルブミン療法に関する以下の臨床観察と一致します：</p>
+      <ul>
+        <li>低アルブミン血症は疾患の重症度マーカーであり、外科患者の合併症予測因子だが、低アルブミン血症の治療は臨床的利益がない</li>
+        <li>急性呼吸窮迫症候群（ARDS）患者では、高張アルブミン溶液は利尿薬との併用でも肺水腫を改善しない</li>
+        <li>ARDSでは膠質浸透圧差よりも負の水分バランスが肺胞気動脈酸素分圧比を改善する</li>
+        <li>敗血症性・非敗血症性患者では、アルブミン輸液は等張食塩水よりも心拍出量の増加が大きいが、肺水腫やLIS（肺障害スコア）の改善はない</li>
+      </ul>
+      
+      <h3>人工膠質液</h3>
+      <p>人工膠質液はアルブミンを血管外に移動させ、肝臓のアルブミン合成を抑制します。EGLへの影響は不明ですが、アルブミンのようにEGLのフィルター機能をサポートするとは考えられていません。</p>
+      
+      <p>正常血液量の被験者に投与された場合、修正ゼラチンやヒドロキシエチルスターチは等張食塩水よりも遅く間質液に分布しますが、動脈圧、尿量、腎臓ホルモン濃度に差はありません。</p>
+      
+      <h3>コンテキスト感受性</h3>
+      <p>量動態実験では、等張食塩水の中心（血管内）区画からのクリアランスは非麻酔患者よりも麻酔下の患者で大幅に遅くなることが示されています。これは「コンテキスト感受性」と呼ばれる現象です。</p>
+      
+      <p><span class="highlight">低毛細血管圧や血管拡張状態では、クリスタロイドの血管外への移行速度が遅くなる</span>ため、輸液反応性が高まります。これは脊椎麻酔中の「co-loading」（麻酔後に輸液する）がプレロード（麻酔前に輸液する）よりも効果的である理由を説明します。</p>
+      
+      <h3>改良された輸液療法のパラダイム</h3>
+      <p>改訂スターリング方程式とグリコカリックスモデルに基づく新しい輸液療法のパラダイムは、以下のようになります：</p>
+      
+      <table class="comparison-table">
+        <tr>
+          <th>従来のスターリング原理</th>
+          <th>改訂スターリング方程式とグリコカリックスモデル</th>
+        </tr>
+        <tr>
+          <td>血管内容積は血漿と細胞成分から構成される</td>
+          <td>血管内容積はグリコカリックス容積、血漿容積、赤血球分布容積から構成される</td>
+        </tr>
+        <tr>
+          <td>毛細血管は高タンパク濃度の血漿と低タンパク濃度の間質液を分離する</td>
+          <td>EGLは陰イオン性タンパクに対して半透性であり、グリコカリックス下の細胞間隙のタンパク濃度は非常に低い</td>
+        </tr>
+        <tr>
+          <td>重要なスターリング力は静脈圧差と血漿-間質膠質浸透圧差</td>
+          <td>重要なスターリング力は静脈圧差と血漿-グリコカリックス下膠質浸透圧差。間質液膠質浸透圧はJvの直接的決定因子ではない</td>
+        </tr>
+        <tr>
+          <td>液体は毛細血管の動脈側で濾過され、静脈側で吸収される。少量がリンパとして循環に戻る</td>
+          <td>Jvはスターリング原理で予測されるより少なく、循環への主要な還流経路はリンパ</td>
+        </tr>
+        <tr>
+          <td>血漿膠質浸透圧の上昇は吸収を促進し、間質液から血漿への流体移動を引き起こす</td>
+          <td>血漿膠質浸透圧の上昇はJvを減少させるが、吸収は引き起こさない</td>
+        </tr>
+        <tr>
+          <td>正常以下の毛細血管圧では、正味の吸収が血漿量を増加させる</td>
+          <td>正常以下の毛細血管圧では、Jvはゼロに近づく。自己輸血は急性、一時的で約500mlに制限される</td>
+        </tr>
+        <tr>
+          <td>正常以上の毛細血管圧では、正味の濾過が間質液量を増加させる</td>
+          <td>正常以上の毛細血管圧で膠質浸透圧差が最大の場合、Jvは静脈圧差に比例する</td>
+        </tr>
+      </table>
+    </section>
+    
+    <section class="conclusion">
+      <h2>結論と臨床への応用</h2>
+      <p><span class="highlight">改訂スターリング方程式とグリコカリックスモデルは、輸液療法の理解と最適化のための新たなパラダイムを提供します。</span>このモデルは以下の臨床的知見に基づいています：</p>
+      
+      <ul>
+        <li>健常な非有窓性毛細血管では、静脈側での吸収は生じない（「吸収なし」のルール）</li>
+        <li>間質液から循環への主要な還流経路はリンパ管</li>
+        <li>膠質浸透圧は濾過に対抗するが、吸収を引き起こさない</li>
+        <li>毛細血管圧がJ点以下では、コロイドとクリスタロイドは同様に血管内に留まる</li>
+        <li>J点以上では、コロイドはクリスタロイドより効果的に血漿量を維持する</li>
+        <li>グリコカリックス層は血管透過性の調節に重要な役割を果たし、その保護と修復が治療目標となりうる</li>
+      </ul>
+      
+      <p>このパラダイムは、低血圧の患者への蘇生にクリスタロイドを使用する合理性を説明し、正常血圧または高血圧状態での持続的な血漿量拡大や組織浮腫の軽減にアルブミンや人工膠質液を使用する非合理性を示しています。</p>
+      
+      <p>今後、生理学的研究や臨床試験の証拠に基づいて、このパラダイムはさらに修正・洗練されていくでしょう。現在の形では、低毛細血管圧での蘇生にはクリスタロイドを選択し、正常血液量や高血液量の血液希釈にはコロイドを合理的に使用する考え方を支持しています。</p>
+    </section>
+  </div>
+  
+  <footer>
+    <div class="container">
+      <div class="source-info">
+        元論文: Woodcock TE, Woodcock TM. Revised Starling equation and the glycocalyx model of transvascular fluid exchange: an improved paradigm for prescribing intravenous fluid therapy. British Journal of Anaesthesia 108 (3): 384-94 (2012)
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
