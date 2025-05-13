@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>脊椎麻酔後頭痛（PDPH）：手術室看護師のためのエビデンスベースガイド</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #005893; /* 医療系の青 */
+      --secondary-color: #3498db; /* 明るい青 */
+      --accent-color: #e74c3c; /* アクセントカラー - 赤 */
+      --light-bg: #f8f9fa; /* 明るい背景色 */
+      --dark-bg: #2c3e50; /* 暗い背景色 */
+      --text-color: #333; /* 基本テキスト色 */
+      --light-text: #f8f9fa; /* 明るいテキスト色 */
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Hiragino Kaku Gothic Pro', 'Meiryo', sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: var(--light-bg);
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: var(--light-text);
+      padding: 60px 0 80px;
+      text-align: center;
+      clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+      margin-bottom: 40px;
+    }
+    
+    .header-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+    
+    .subtitle {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+    
+    section {
+      background-color: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+    }
+    
+    h2 {
+      color: var(--primary-color);
+      margin: 20px 0;
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 10px;
+    }
+    
+    h3 {
+      color: var(--primary-color);
+      margin: 15px 0;
+    }
+    
+    p {
+      margin-bottom: 15px;
+    }
+    
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 15px 20px;
+      position: relative;
+    }
+    
+    .card-title {
+      font-size: 1.3rem;
+      margin-bottom: 0;
+      color: white;
+      font-weight: bold;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    
+    .card-number {
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      font-size: 2.5rem;
+      font-weight: bold;
+      opacity: 0.5;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .icon-header {
+      display: flex;
+      align-items: center;
+    }
+    
+    .icon {
+      background: #2980b9;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      font-size: 1.5rem;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+      color: white;
+    }
+    
+    .card-content {
+      padding: 20px;
+    }
+    
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+    
+    li {
+      margin-bottom: 10px;
+      position: relative;
+      padding-left: 25px;
+    }
+    
+    li:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 10px;
+      height: 10px;
+      background-color: var(--secondary-color);
+      border-radius: 50%;
+    }
+    
+    .highlight {
+      background: linear-gradient(transparent 60%, rgba(52, 152, 219, 0.3) 40%);
+      font-weight: bold;
+    }
+    
+    footer {
+      background-color: var(--dark-bg);
+      color: var(--light-text);
+      padding: 30px 0;
+      text-align: center;
+    }
+    
+    .source-info {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+    
+    .evidence-level {
+      display: inline-block;
+      padding: 3px 8px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      border-radius: 4px;
+      margin-left: 10px;
+    }
+    
+    .level-a {
+      background-color: #2ecc71;
+      color: white;
+    }
+    
+    .level-b {
+      background-color: #f39c12;
+      color: white;
+    }
+    
+    .level-c {
+      background-color: #e74c3c;
+      color: white;
+    }
+    
+    .reference {
+      font-size: 0.9rem;
+      color: #666;
+      margin-top: 5px;
+    }
+    
+    .reference-list {
+      font-size: 0.9rem;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #ddd;
+    }
+    
+    .reference-list ol {
+      padding-left: 20px;
+    }
+    
+    .reference-list li {
+      padding-left: 0;
+      margin-bottom: 8px;
+    }
+    
+    .reference-list li:before {
+      display: none;
+    }
+    
+    .cycle-section {
+      background-color: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+    }
+    
+    .cycle-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 30px;
+      margin-bottom: 30px;
+    }
+    
+    .cycle-item {
+      text-align: center;
+      width: 200px;
+      margin: 0 20px 30px;
+      position: relative;
+    }
+    
+    .cycle-item:not(:last-child):after {
+      content: "\f054";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      position: absolute;
+      right: -25px;
+      top: 40px;
+      font-size: 1.5rem;
+      color: var(--secondary-color);
+    }
+    
+    @media (max-width: 768px) {
+      .cycle-item:not(:last-child):after {
+        content: "\f078";
+        right: 90px;
+        top: auto;
+        bottom: -25px;
+      }
+    }
+    
+    .cycle-icon {
+      background-color: var(--secondary-color);
+      color: white;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      font-size: 2rem;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .cycle-title {
+      font-weight: bold;
+      color: var(--primary-color);
+      margin-bottom: 5px;
+    }
+    
+    .cycle-desc {
+      font-size: 0.9rem;
+      color: #666;
+    }
+    
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 30px 0;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    
+    .comparison-table th {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 15px;
+      text-align: left;
+    }
+    
+    .comparison-table tr:nth-child(even) {
+      background-color: rgba(52, 152, 219, 0.1);
+    }
+    
+    .comparison-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .comparison-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .check-icon {
+      color: #27ae60;
+      font-size: 1.2rem;
+    }
+    
+    .times-icon {
+      color: #e74c3c;
+      font-size: 1.2rem;
+    }
+    
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .grid-container {
+        grid-template-columns: 1fr;
+      }
+      
+      header {
+        padding: 40px 0 60px;
+      }
+      
+      .comparison-table {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <h1>脊椎麻酔後頭痛（PDPH）</h1>
+        <div class="subtitle">手術室看護師のためのエビデンスベースガイド</div>
+      </div>
+    </div>
+  </header>
+  
+  <div class="container">
+    <section class="intro">
+      <h2>脊椎麻酔後頭痛とは</h2>
+      <p>脊椎麻酔後頭痛（Postdural Puncture Headache: PDPH）は、脊椎麻酔や硬膜外麻酔後に発生する合併症の一つです。通常は<span class="highlight">穿刺部位からの脳脊髄液（CSF）の漏出</span>が原因で起こります。この漏出により脳が下方に牽引され、痛覚に敏感な硬膜や脳血管が刺激されることで頭痛が発生します<sup>1,2</sup>。</p>
+      
+      <p>手術室看護師として、この合併症の理解と適切な対応方法を知ることは、患者ケアの質を高める上で重要です。本資料は最新のエビデンスに基づいた情報を提供し、予防策から治療法まで、臨床現場で役立つ知識を網羅しています。</p>
+    </section>
+    
+    <section>
+      <h2>疫学と危険因子</h2>
+      <p>脊椎麻酔後頭痛の発生率は、使用する針のタイプやサイズ、患者の特性によって大きく異なります。</p>
+      
+      <h3>発生率 <span class="evidence-level level-a">エビデンスレベルA</span></h3>
+      <ul>
+        <li>一般的な発生率：<span class="highlight">0.3%～10%</span>（針のタイプとサイズにより異なる）<sup>3</sup></li>
+        <li>非カッティング針（鉛筆型針）使用時：約1%未満<sup>4</sup></li>
+        <li>カッティング針使用時：最大36%<sup>4,5</sup></li>
+      </ul>
+      
+      <h3>危険因子 <span class="evidence-level level-a">エビデンスレベルA</span></h3>
+      <div class="grid-container">
+        <div class="card">
+          <div class="card-header">
+            <div class="icon-header">
+              <div class="icon">
+                <i class="fas fa-user"></i>
+              </div>
+              <h3 class="card-title">患者関連因子</h3>
+            </div>
+          </div>
+          <div class="card-content">
+            <ul>
+              <li><span class="highlight">年齢：若年成人（18〜30歳）</span>はリスクが高い<sup>6</sup></li>
+              <li><span class="highlight">性別：女性</span>は男性よりリスクが高い<sup>6,7</sup></li>
+              <li>低BMI（痩せ型体型）<sup>7</sup></li>
+              <li>頭痛の既往歴<sup>8</sup></li>
+              <li>妊娠中の女性（特に分娩時）<sup>9</sup></li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <div class="icon-header">
+              <div class="icon">
+                <i class="fas fa-syringe"></i>
+              </div>
+              <h3 class="card-title">手技関連因子</h3>
+            </div>
+          </div>
+          <div class="card-content">
+            <ul>
+              <li><span class="highlight">針のタイプ：カッティング針</span>（Quincke針など）の使用<sup>10</sup></li>
+              <li><span class="highlight">針のサイズ：大口径針</span>（22G以上）の使用<sup>11</sup></li>
+              <li>複数回の穿刺試行<sup>12</sup></li>
+              <li>硬膜穿刺時の針先の方向（特に横方向）<sup>11</sup></li>
+              <li>内針抜去時のスタイレット回転方向<sup>12</sup></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section>
+      <h2>臨床症状と診断</h2>
+      
+      <h3>典型的な臨床像 <span class="evidence-level level-a">エビデンスレベルA</span></h3>
+      <ul>
+        <li><span class="highlight">体位依存性頭痛</span>：座位や立位で悪化し、仰臥位で改善する特徴的な頭痛<sup>13</sup></li>
+        <li>頭痛の部位：通常は両側性で、前頭部-後頭部に発生<sup>14</sup></li>
+        <li>発症時期：穿刺後24〜48時間以内に発症することが多い<sup>15</sup></li>
+        <li>持続期間：無治療の場合、通常1〜7日間持続するが、まれに数週間続くことも<sup>16</sup></li>
+      </ul>
+      
+      <h3>随伴症状 <span class="evidence-level level-b">エビデンスレベルB</span></h3>
+      <ul>
+        <li>悪心・嘔吐（約60%の症例で発生）<sup>17</sup></li>
+        <li>頸部硬直感・首の痛み<sup>17</sup></li>
+        <li>聴覚症状：耳鳴り、難聴<sup>18</sup></li>
+        <li>視覚症状：複視、視野障害<sup>18</sup></li>
+        <li>めまい、光過敏<sup>19</sup></li>
+      </ul>
+      
+      <h3>診断基準 <span class="evidence-level level-a">エビデンスレベルA</span></h3>
+      <p>国際頭痛学会の診断基準（ICHD-3）によると<sup>20</sup>：</p>
+      <ul>
+        <li>硬膜穿刺の既往がある</li>
+        <li>穿刺後5日以内に発症した頭痛</li>
+        <li>以下のいずれかまたは両方の特徴を持つ：
+          <ul>
+            <li>座位や立位で悪化する</li>
+            <li>仰臥位で改善または消失する</li>
+          </ul>
+        </li>
+        <li>他の疾患による症状ではない</li>
+      </ul>
+    </section>
+    
+    <section class="cycle-section">
+      <h2>予防戦略</h2>
+      <p>脊椎麻酔後頭痛は、適切な予防戦略により発生率を大幅に低減できます。以下の予防策は、エビデンスに基づいた効果的なアプローチです。</p>
+      
+      <div class="cycle-container">
+        <div class="cycle-item">
+          <div class="cycle-icon">
+            <i class="fas fa-syringe"></i>
+          </div>
+          <div class="cycle-title">非カッティング針の使用</div>
+          <div class="cycle-desc">ペンシルポイント型針の使用 (エビデンスレベルA)</div>
+        </div>
+        
+        <div class="cycle-item">
+          <div class="cycle-icon">
+            <i class="fas fa-compress-arrows-alt"></i>
+          </div>
+          <div class="cycle-title">細径針の選択</div>
+          <div class="cycle-desc">可能な限り25G以上の細い針を使用 (エビデンスレベルA)</div>
+        </div>
+        
+        <div class="cycle-item">
+          <div class="cycle-icon">
+            <i class="fas fa-arrows-alt-h"></i>
+          </div>
+          <div class="cycle-title">針の向き</div>
+          <div class="cycle-desc">硬膜線維に平行に刺入 (エビデンスレベルB)</div>
+        </div>
+        
+        <div class="cycle-item">
+          <div class="cycle-icon">
+            <i class="fas fa-hand-holding-water"></i>
+          </div>
+          <div class="cycle-title">適切な水分摂取</div>
+          <div class="cycle-desc">十分な水分補給を維持 (エビデンスレベルC)</div>
+        </div>
+      </div>
+      
+      <h3>非カッティング針の優位性 <span class="evidence-level level-a">エビデンスレベルA</span></h3>
+      <p>ペンシルポイント型針（Sprotte針、Whitacre針など）は、硬膜の線維を切断するのではなく分離するため、CSF漏出のリスクを著しく低減します。複数のメタ分析により、これらの針の使用によりPDPHの発生率が<span class="highlight">最大70%減少</span>することが示されています<sup>21,22</sup>。</p>
+      
+      <h3>細径針の使用 <span class="evidence-level level-a">エビデンスレベルA</span></h3>
+      <p>針のサイズと硬膜の欠損サイズには直接的な相関関係があります。25G以上の細い針を使用することで、PDPH発生率を<span class="highlight">有意に低下</span>させることが可能です<sup>23</sup>。ただし、非常に細い針（29G以下）は技術的難易度が上がり、CSF流出の確認が困難になる場合があります<sup>24</sup>。</p>
+    </section>
+    
+    <section>
+      <h2>管理と治療アプローチ</h2>
+      
+      <h3>治療アルゴリズム</h3>
+      <p>PDPHの治療は、症状の重症度に応じて段階的に行われます<sup>25</sup>：</p>
+      
+      <table class="comparison-table">
+        <tr>
+          <th>治療段階</th>
+          <th>介入方法</th>
+          <th>エビデンスレベル</th>
+        </tr>
+        <tr>
+          <td>第一段階（保存的）</td>
+          <td>
+            <ul>
+              <li>安静臥床</li>
+              <li>水分補給</li>
+              <li>カフェイン投与</li>
+              <li>非ステロイド性抗炎症薬（NSAIDs）</li>
+            </ul>
+          </td>
+          <td>B-C</td>
+        </tr>
+        <tr>
+          <td>第二段階（中等度治療）</td>
+          <td>
+            <ul>
+              <li>テオフィリン</li>
+              <li>ガバペンチン</li>
+              <li>ACTH/コルチコステロイド</li>
+            </ul>
+          </td>
+          <td>B</td>
+        </tr>
+        <tr>
+          <td>第三段階（侵襲的）</td>
+          <td>
+            <ul>
+              <li><span class="highlight">硬膜外自己血パッチ（EBP）</span></li>
+              <li>硬膜外生理食塩水注入</li>
+              <li>大後頭神経ブロック</li>
+            </ul>
+          </td>
+          <td>A（自己血パッチ）</td>
+        </tr>
+      </table>
+      
+      <h3>保存的治療の詳細 <span class="evidence-level level-b">エビデンスレベルB</span></h3>
+      <div class="grid-container">
+        <div class="card">
+          <div class="card-header">
+            <div class="icon-header">
+              <div class="icon">
+                <i class="fas fa-coffee"></i>
+              </div>
+              <h3 class="card-title">カフェイン療法</h3>
+            </div>
+          </div>
+          <div class="card-content">
+            <ul>
+              <li>メカニズム：脳血管を収縮させCSF産生を減少<sup>26</sup></li>
+              <li>投与量：300-500 mg（経口または静注）を6-8時間ごと<sup>27</sup></li>
+              <li>効果：約60%の患者で症状改善<sup>28</sup></li>
+              <li>副作用：心悸亢進、不安、不眠、反跳性頭痛<sup>28</sup></li>
+              <li>看護上の注意：尿量増加、睡眠障害のモニタリング</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <div class="icon-header">
+              <div class="icon">
+                <i class="fas fa-pills"></i>
+              </div>
+              <h3 class="card-title">薬物療法</h3>
+            </div>
+          </div>
+          <div class="card-content">
+            <ul>
+              <li>NSAIDs：パラセタモール、イブプロフェン<sup>29</sup></li>
+              <li>ヒドロコルチゾン：100mg IV 8時間ごと（3回）<sup>30</sup></li>
+              <li>ACTH：1.5 IU/kg IV単回投与<sup>31</sup></li>
+              <li>ガバペンチン：300-400mg 経口 1日3回<sup>32</sup></li>
+              <li>看護上の注意：薬物相互作用と副作用のモニタリング</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <h3>硬膜外自己血パッチ（EBP） <span class="evidence-level level-a">エビデンスレベルA</span></h3>
+      <p>保存的治療に反応しない中等度から重度のPDPHに対する<span class="highlight">最も効果的な治療法</span>です。患者から採取した15-20mlの自己血を硬膜穿刺部位の硬膜外腔に注入します<sup>33</sup>。</p>
+      
+      <ul>
+        <li>成功率：初回施行で70-90%の成功率<sup>34</sup></li>
+        <li>反復EBP：初回EBP後24時間以内に症状が再発した場合、2回目のEBPで成功率が上昇<sup>35</sup></li>
+        <li>タイミング：穿刺後24時間以内の早期EBPは効果が低いため、通常は24-48時間後に実施<sup>36</sup></li>
+      </ul>
+      
+      <h3>EBP実施後の看護ケア</h3>
+      <ul>
+        <li>処置後1-2時間は臥床安静の維持<sup>37</sup></li>
+        <li>バイタルサインの定期的モニタリング<sup>37</sup></li>
+        <li>背部痛、発熱、神経学的症状の観察<sup>38</sup></li>
+        <li>十分な水分摂取の奨励<sup>39</sup></li>
+        <li>禁忌：処置後24時間はストレインや重量物挙上の回避<sup>39</sup></li>
+      </ul>
+    </section>
+    
+    <section>
+      <h2>看護師の役割と評価ポイント</h2>
+      
+      <div class="grid-container">
+        <div class="card">
+          <div class="card-header">
+            <div class="icon-header">
+              <div class="icon">
+                <i class="fas fa-clipboard-check"></i>
+              </div>
+              <h3 class="card-title">術前評価</h3>
+            </div>
+          </div>
+          <div class="card-content">
+            <ul>
+              <li>PDPH危険因子のスクリーニング<sup>40</sup></li>
+              <li>患者への適切な情報提供とインフォームドコンセント<sup>41</sup></li>
+              <li>不安軽減のための心理的サポート<sup>41</sup></li>
+              <li>適切な水分状態の評価と維持<sup>42</sup></li>
+              <li>麻酔科医との効果的なコミュニケーション<sup>42</sup></li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <div class="icon-header">
+              <div class="icon">
+                <i class="fas fa-procedures"></i>
+              </div>
+              <h3 class="card-title">術中サポート</h3>
+            </div
