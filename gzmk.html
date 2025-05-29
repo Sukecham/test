@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GZMK発現CD8+ T細胞が炎症性気道疾患の再発を促進する</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #2c5282;
+      --secondary-color: #3182ce;
+      --accent-color: #ed8936;
+      --light-bg: #f7fafc;
+      --dark-bg: #2d3748;
+      --text-color: #2d3748;
+      --light-text: #f7fafc;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Hiragino Kaku Gothic Pro', 'Meiryo', sans-serif;
+      line-height: 1.8;
+      color: var(--text-color);
+      background-color: var(--light-bg);
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: var(--light-text);
+      padding: 80px 0 100px;
+      text-align: center;
+      clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+      margin-bottom: 40px;
+    }
+    
+    .header-content {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+      line-height: 1.3;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .subtitle {
+      font-size: 1.3rem;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+    
+    .publication-info {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 30px;
+    }
+    
+    .abstract {
+      background-color: white;
+      border-radius: 10px;
+      padding: 40px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+    }
+    
+    .abstract h2 {
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      border-bottom: 3px solid var(--primary-color);
+      padding-bottom: 10px;
+    }
+    
+    section {
+      background-color: white;
+      border-radius: 10px;
+      padding: 40px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+    }
+    
+    h2 {
+      color: var(--primary-color);
+      margin: 30px 0 20px;
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 10px;
+    }
+    
+    h3 {
+      color: var(--primary-color);
+      margin: 20px 0 15px;
+      font-size: 1.4rem;
+    }
+    
+    p {
+      margin-bottom: 15px;
+    }
+    
+    .key-findings {
+      background-color: #e6f3ff;
+      border-left: 5px solid var(--secondary-color);
+      padding: 20px;
+      margin: 30px 0;
+      border-radius: 5px;
+    }
+    
+    .key-findings h3 {
+      color: var(--secondary-color);
+      margin-top: 0;
+    }
+    
+    .key-findings ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+    
+    .key-findings li {
+      margin-bottom: 15px;
+      position: relative;
+      padding-left: 30px;
+    }
+    
+    .key-findings li:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 12px;
+      height: 12px;
+      background-color: var(--accent-color);
+      border-radius: 50%;
+    }
+    
+    .highlight {
+      background: linear-gradient(transparent 60%, rgba(52, 152, 219, 0.3) 40%);
+      font-weight: bold;
+    }
+    
+    .authors {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    .author-tag {
+      background-color: rgba(255, 255, 255, 0.2);
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+    
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 30px;
+      margin: 30px 0;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 20px;
+      position: relative;
+    }
+    
+    .icon-header {
+      display: flex;
+      align-items: center;
+    }
+    
+    .icon {
+      background: rgba(255, 255, 255, 0.2);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      font-size: 1.5rem;
+    }
+    
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+    
+    .card-content {
+      padding: 25px;
+    }
+    
+    .card-number {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 2.5rem;
+      font-weight: bold;
+      opacity: 0.3;
+    }
+    
+    .methodology {
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      padding: 30px;
+      margin: 30px 0;
+    }
+    
+    .methodology h3 {
+      color: var(--secondary-color);
+    }
+    
+    footer {
+      background-color: var(--dark-bg);
+      color: var(--light-text);
+      padding: 40px 0;
+      text-align: center;
+      margin-top: 80px;
+    }
+    
+    .source-info {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-bottom: 20px;
+    }
+    
+    .citation {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .grid-container {
+        grid-template-columns: 1fr;
+      }
+      
+      header {
+        padding: 60px 0 80px;
+      }
+      
+      section, .abstract {
+        padding: 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <h1>GZMK発現CD8+ T細胞が再発性気道炎症性疾患を促進する</h1>
+        <div class="subtitle">慢性鼻副鼻腔炎および喘息における病原性T細胞サブセットの同定</div>
+        
+        <div class="publication-info">
+          <div class="authors">
+            <span class="author-tag">Feng Lan</span>
+            <span class="author-tag">Jizhou Li</span>
+            <span class="author-tag">Wenxuan Miao</span>
+            <span class="author-tag">Fei Sun</span>
+            <span class="author-tag">他 共著者多数</span>
+          </div>
+          <p><i class="fas fa-journal-whills"></i> Nature | 2025年1月15日オンライン掲載</p>
+          <p><i class="fas fa-link"></i> DOI: 10.1038/s41586-024-08395-9</p>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  <div class="container">
+    <section class="abstract">
+      <h2><i class="fas fa-file-alt"></i> 要旨</h2>
+      <p>
+        炎症性疾患は慢性的かつ再発性であることが多く、現在の治療法では根本的な疾患原因を除去できないことが一般的です。T細胞は、乾癬、クローン病、食道炎、多発性硬化症など、<span class="highlight">幅広い炎症性疾患に関与</span>しています。クローン性に拡大した抗原特異的T細胞は、部分的には持続的な病原性記憶を形成することにより、疾患の慢性化と再発に寄与する可能性があります。
+      </p>
+      <p>
+        慢性鼻副鼻腔炎と喘息は、しばしば併存疾患として現れる炎症性気道疾患です。慢性鼻副鼻腔炎は一般人口の10％以上に影響を与えています。これらの患者のうち、20～25％は鼻ポリープを発症し、<span class="highlight">再発率が高いため、しばしば繰り返し外科的切除が必要</span>となります。
+      </p>
+      
+      <div class="key-findings">
+        <h3><i class="fas fa-microscope"></i> 主要な発見</h3>
+        <ul>
+          <li>連続手術から得られた鼻ポリープ組織のT細胞レパートリーを比較することで、<span class="highlight">エフェクター記憶様の特徴を持つ持続性CD8+ T細胞クローン</span>が疾患再発時に粘膜組織に定着することを発見</li>
+          <li>これらの細胞は特徴的に<span class="highlight">トリプターゼGranzyme K（GZMK）を発現</span></li>
+          <li>GZMKは<span class="highlight">C2、C3、C4、C5を含む多くの補体成分を切断</span>し、補体カスケードの活性化に寄与</li>
+          <li>組織GZMKレベルは、好酸球増多症や組織インターロイキン-5などの確立されたバイオマーカーよりも、<span class="highlight">疾患の重症度と合併症をより良く予測</span></li>
+        </ul>
+      </div>
+    </section>
+    
+    <section>
+      <h2><i class="fas fa-dna"></i> 研究背景と目的</h2>
+      <p>
+        鼻ポリープ（NP）の再発にT細胞記憶が関与しているかどうかを判断するため、研究チームは繰り返し手術から得られたサンプル中の共有T細胞クローンを探索しました。6人の患者（NP1-6）から得られた凍結サンプルのペアを使用してT細胞レパートリー分析を実施し、2回の手術間の間隔は0.2〜3.1年でした。
+      </p>
+    </section>
+    
+    <section>
+      <h2><i class="fas fa-vials"></i> 実験方法</h2>
+      
+      <div class="methodology">
+        <h3><i class="fas fa-flask"></i> 単一細胞RNA配列決定（scRNA-seq）</h3>
+        <p>7つのNP（NP7-13）および4つのHC外科サンプル（HC6、8、9、10）から総CD45+細胞の単一細胞mRNA配列決定を実施しました。</p>
+      </div>
+      
+      <div class="methodology">
+        <h3><i class="fas fa-chart-line"></i> フローサイトメトリー</h3>
+        <p>ヒトTruStainブロッキング試薬でブロックし、様々な表面抗体でFACSバッファー中で氷上30分間染色しました。</p>
+      </div>
+      
+      <div class="methodology">
+        <h3><i class="fas fa-mouse"></i> マウス喘息モデル</h3>
+        <p>C57BL/6マウスにオボアルブミン（OVA）を抗原として使用し、50％アルミニウムとリポ多糖（LPS）で乳化したOVAで初回免疫しました。</p>
+      </div>
+    </section>
+    
+    <section>
+      <h2><i class="fas fa-chart-bar"></i> 主要な結果</h2>
+      
+      <div class="grid-container">
+        <div class="card">
+          <div class="card-header">
+            <div class="icon-header">
+              <div class="icon">
+                <i class="fas fa-search"></i>
+              </div>
+              <h3 class="card-title">持続性T細胞クローンの同定</h3>
+            </div>
+            <div class="card-number">1</div>
+          </div>
+          <div class="card-content">
+            <p>同一患者の2回の手術から得られたNP組織で、<span class="highlight">共通のTCRαおよびTCRβ鎖を一貫して同定</span>しました。これは、同じクローン系統の細胞が疾患再発時にNP組織に再定着したことを示唆しています。</p>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <div class="icon-header">
+              <div class="icon">
+                <i class="fas fa-microscope"></i>
+              </div>
+              <h3 class="card-title">GZMK発現の特徴</h3>
+            </div>
+            <div class="card-number">2</div>
+          </div>
+          <div class="card-content">
+            <p>NP組織のすべてのCD8+ T細胞の中で、T1細胞は<span class="highlight">Granzyme K（GZMK）転写物を高レベルで独自に発現</span>していました。GZMK発現T細胞は、老化関連炎症および様々な炎症性疾患で発見されています。</p>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <div class="icon-header">
+              <div class="icon">
+                <i class="fas fa-cut"></i>
+              </div>
+              <h3 class="card-title">補体成分の切断</h3>
+            </div>
+            <div class="card-number">3</div>
+          </div>
+          <div class="card-content">
+            <p>GZMKは<span class="highlight">C3をC3aとC3bに切断</span>できることを発見しました。さらに、GZMKはC2をC2aとC2bに、C4をC4aとC4bに切断でき、古典的C3コンバターゼC4b2aの形成を促進します。</p>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <div class="icon-header">
+              <div class="icon">
+                <i class="fas fa-pills"></i>
+              </div>
+              <h3 class="card-title">治療標的としての可能性</h3>
+            </div>
+            <div class="card-number">4</div>
+          </div>
+          <div class="card-content">
+            <p>GZMKの遺伝的除去または薬理学的阻害により、<span class="highlight">組織病理が著しく軽減し、肺機能が回復</span>しました。これは、GZMKが潜在的な治療標的となる可能性を示唆しています。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section>
+      <h2><i class="fas fa-lightbulb"></i> 考察と臨床的意義</h2>
+      <p>
+        本研究は、組織に定着したTEM様CD8+ T細胞のサブセットが、その特徴的なエフェクター分子GZMKを介して気道炎症を促進することを同定しました。GZMK発現CD8+ T細胞は、腫瘍や関節リウマチ、ループス腎炎などの多くの自己免疫疾患の疾患組織で発見されています。
+      </p>
+      
+      <div class="key-findings">
+        <h3><i class="fas fa-stethoscope"></i> 臨床への応用可能性</h3>
+        <ul>
+          <li><span class="highlight">GZMKレベルの測定</span>は、疾患の重症度と再発リスクの予測に有用</li>
+          <li><span class="highlight">GZMK阻害薬の開発</span>は、慢性気道炎症性疾患の新たな治療戦略となる可能性</li>
+          <li>持続性CD8+ T細胞クローンを標的とすることで、<span class="highlight">疾患再発の予防</span>が可能かもしれない</li>
+        </ul>
+      </div>
+    </section>
+    
+    <section>
+      <h2><i class="fas fa-forward"></i> 今後の展望</h2>
+      <p>
+        GZMK発現CD8+ T細胞が循環できることは、なぜNP切除が根治的でない可能性があるかを説明し、これらの細胞の標的除去が疾患再発を減少させる可能性を示唆しています。動物モデルでの遺伝的除去および薬理学的阻害研究の結果は、疾患進行におけるGZMK依存性経路の継続的な作用を強調し、炎症性疾患の制御におけるGZMK標的療法の開発の根拠を提供しています。
+      </p>
+    </section>
+  </div>
+  
+  <footer>
+    <div class="container">
+      <div class="source-info">
+        <p><i class="fas fa-file-pdf"></i> 論文出典：Nature | www.nature.com | 2025年1月15日オンライン掲載</p>
+        <p>Article DOI: https://doi.org/10.1038/s41586-024-08395-9</p>
+      </div>
+      
+      <div class="citation">
+        <h3>引用方法</h3>
+        <p>Lan, F., Li, J., Miao, W. et al. GZMK-expressing CD8+ T cells promote recurrent airway inflammatory diseases. Nature (2025).</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
