@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP (Model Context Protocol) とは</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .audio-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .audio-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #4a5568;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .play-button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .play-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .play-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-container {
+            flex: 1;
+            max-width: 400px;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        .time-display {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+            min-width: 80px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .main-title {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: white;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .infographic {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .definition-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        .definition-text {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .feature-description {
+            font-size: 14px;
+            color: #718096;
+            line-height: 1.5;
+        }
+
+        .workflow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .workflow-step {
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+            position: relative;
+        }
+
+        .workflow-step:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .workflow-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin: 0 auto 15px;
+        }
+
+        .workflow-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .workflow-description {
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .benefits-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .benefit-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(45deg, #48bb78, #38a169);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .benefit-text {
+            font-size: 15px;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .main-title {
+                font-size: 36px;
+            }
+
+            .infographic {
+                padding: 25px;
+            }
+
+            .workflow-step:not(:last-child)::after {
+                display: none;
+            }
+
+            .workflow {
+                flex-direction: column;
+            }
+
+            .audio-controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .progress-container {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 音声再生セクション -->
+        <div class="audio-section">
+            <h2 class="audio-title">
+                🎵 MCP解説音声
+            </h2>
+            <p style="color: #718096; margin-bottom: 20px;">MCPについて詳しく解説した音声をお聞きいただけます</p>
+            
+            <audio id="mcpAudio" preload="metadata">
+                <source src="MCP.mp3" type="audio/mpeg">
+                お使いのブラウザは音声再生に対応していません。
+            </audio>
+
+            <div class="audio-controls">
+                <button id="playButton" class="play-button">
+                    <span id="playIcon">▶️</span>
+                    <span id="playText">再生</span>
+                </button>
+                
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                
+                <div class="time-display">
+                    <span id="currentTime">0:00</span> / <span id="duration">-:--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ヘッダー -->
+        <div class="header">
+            <h1 class="main-title">MCP とは？</h1>
+            <p class="subtitle">Model Context Protocol の完全ガイド</p>
+        </div>
+
+        <!-- インフォグラフィック -->
+        <div class="infographic">
+            <!-- 定義セクション -->
+            <div class="section">
+                <h2 class="section-title">
+                    <div class="icon">📋</div>
+                    定義
+                </h2>
+                <div class="definition-box">
+                    <p class="definition-text">
+                        <strong>MCP (Model Context Protocol)</strong> は、AIモデルが外部システムやデータソースと安全かつ効率的に連携するための標準プロトコルです。AIアプリケーションの機能拡張と相互運用性を実現します。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 主要機能セクション -->
+            <div class="section">
+                <h2 class="section-title">
+                    <div class="icon">⚡</div>
+                    主要機能
+                </h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔗</div>
+                        <h3 class="feature-title">システム連携</h3>
+                        <p class="feature-description">データベース、API、ファイルシステムなど様々な外部システムとの安全な接続を提供</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🛡️</div>
+                        <h3 class="feature-title">セキュリティ</h3>
+                        <p class="feature-description">認証、認可、データ暗号化により安全なデータ交換を保証</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔧</div>
+                        <h3 class="feature-title">標準化</h3>
+                        <p class="feature-description">統一されたプロトコルにより異なるシステム間での互換性を実現</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3 class="feature-title">リアルタイム処理</h3>
+                        <p class="feature-description">低遅延でのデータ処理とリアルタイム通信をサポート</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 動作フローセクション -->
+            <div class="section">
+                <h2 class="section-title">
+                    <div class="icon">🔄</div>
+                    動作フロー
+                </h2>
+                <div class="workflow">
+                    <div class="workflow-step">
+                        <div class="workflow-icon">1</div>
+                        <h3 class="workflow-title">接続確立</h3>
+                        <p class="workflow-description">AIモデルが外部システムとMCP接続を確立</p>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-icon">2</div>
+                        <h3 class="workflow-title">認証・認可</h3>
+                        <p class="workflow-description">セキュリティ検証とアクセス権限の確認</p>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-icon">3</div>
+                        <h3 class="workflow-title">データ交換</h3>
+                        <p class="workflow-description">標準化されたフォーマットでデータを送受信</p>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-icon">4</div>
+                        <h3 class="workflow-title">処理実行</h3>
+                        <p class="workflow-description">取得したデータを基にAIが処理を実行</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- メリットセクション -->
+            <div class="section">
+                <h2 class="section-title">
+                    <div class="icon">✨</div>
+                    主なメリット
+                </h2>
+                <div class="benefits-list">
+                    <div class="benefit-item">
+                        <div class="benefit-icon">✅</div>
+                        <p class="benefit-text">開発効率の大幅向上とコスト削減</p>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">✅</div>
+                        <p class="benefit-text">システム間の相互運用性確保</p>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">✅</div>
+                        <p class="benefit-text">セキュリティリスクの最小化</p>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">✅</div>
+                        <p class="benefit-text">スケーラブルなアーキテクチャの実現</p>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">✅</div>
+                        <p class="benefit-text">メンテナンス性の向上</p>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">✅</div>
+                        <p class="benefit-text">リアルタイムデータ処理の効率化</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 音声プレーヤーの制御
+        const audio = document.getElementById('mcpAudio');
+        const playButton = document.getElementById('playButton');
+        const playIcon = document.getElementById('playIcon');
+        const playText = document.getElementById('playText');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const currentTimeSpan = document.getElementById('currentTime');
+        const durationSpan = document.getElementById('duration');
+
+        let isPlaying = false;
+
+        // 時間を分:秒形式にフォーマット
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = Math.floor(seconds % 60);
+            return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        // 音声メタデータが読み込まれた時
+        audio.addEventListener('loadedmetadata', () => {
+            durationSpan.textContent = formatTime(audio.duration);
+        });
+
+        // 音声時間が更新された時
+        audio.addEventListener('timeupdate', () => {
+            const progress = (audio.currentTime / audio.duration) * 100;
+            progressBar.style.width = `${progress}%`;
+            currentTimeSpan.textContent = formatTime(audio.currentTime);
+        });
+
+        // 音声再生が終了した時
+        audio.addEventListener('ended', () => {
+            isPlaying = false;
+            playIcon.textContent = '▶️';
+            playText.textContent = '再生';
+            progressBar.style.width = '0%';
+            currentTimeSpan.textContent = '0:00';
+        });
+
+        // 音声読み込みエラー時
+        audio.addEventListener('error', (e) => {
+            console.error('音声ファイルの読み込みエラー:', e);
+            playButton.disabled = true;
+            playText.textContent = '音声ファイルが見つかりません';
+        });
+
+        // 再生/一時停止ボタン
+        playButton.addEventListener('click', () => {
+            if (isPlaying) {
+                audio.pause();
+                isPlaying = false;
+                playIcon.textContent = '▶️';
+                playText.textContent = '再生';
+            } else {
+                audio.play().then(() => {
+                    isPlaying = true;
+                    playIcon.textContent = '⏸️';
+                    playText.textContent = '一時停止';
+                }).catch((error) => {
+                    console.error('音声再生エラー:', error);
+                    alert('音声ファイルを再生できませんでした。ファイルが存在することを確認してください。');
+                });
+            }
+        });
+
+        // プログレスバークリックでシーク
+        progressContainer.addEventListener('click', (e) => {
+            const rect = progressContainer.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickRatio = clickX / rect.width;
+            audio.currentTime = clickRatio * audio.duration;
+        });
+
+        // カードホバーアニメーション
+        const cards = document.querySelectorAll('.feature-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-5px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // スクロールアニメーション
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // アニメーション対象要素を設定
+        const animatedElements = document.querySelectorAll('.section, .feature-card, .workflow-step');
+        animatedElements.forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
