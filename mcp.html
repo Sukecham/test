@@ -371,6 +371,10 @@
             .progress-container {
                 max-width: 100%;
             }
+
+            .speed-control {
+                order: -1;
+            }
         }
     </style>
 </head>
@@ -540,6 +544,7 @@
         const progressBar = document.getElementById('progressBar');
         const currentTimeSpan = document.getElementById('currentTime');
         const durationSpan = document.getElementById('duration');
+        const speedSelect = document.getElementById('speedSelect');
 
         let isPlaying = false;
 
@@ -553,6 +558,8 @@
         // 音声メタデータが読み込まれた時
         audio.addEventListener('loadedmetadata', () => {
             durationSpan.textContent = formatTime(audio.duration);
+            // 初期速度を設定
+            audio.playbackRate = parseFloat(speedSelect.value);
         });
 
         // 音声時間が更新された時
@@ -571,6 +578,12 @@
             currentTimeSpan.textContent = '0:00';
         });
 
+        // 音声読み込み完了時にも速度を設定
+        audio.addEventListener('canplay', () => {
+            audio.playbackRate = parseFloat(speedSelect.value);
+            console.log(`音声読み込み完了 - 現在の速度: ${audio.playbackRate}x`);
+        });
+
         // 音声読み込みエラー時
         audio.addEventListener('error', (e) => {
             console.error('音声ファイルの読み込みエラー:', e);
@@ -586,6 +599,9 @@
                 playIcon.textContent = '▶️';
                 playText.textContent = '再生';
             } else {
+                // 再生前に現在選択されている速度を設定
+                audio.playbackRate = parseFloat(speedSelect.value);
+                
                 audio.play().then(() => {
                     isPlaying = true;
                     playIcon.textContent = '⏸️';
@@ -595,6 +611,24 @@
                     alert('音声ファイルを再生できませんでした。ファイルが存在することを確認してください。');
                 });
             }
+        });
+
+        // 再生速度変更
+        speedSelect.addEventListener('change', (e) => {
+            const speed = parseFloat(e.target.value);
+            audio.playbackRate = speed;
+            
+            // デバッグ用ログ
+            console.log(`再生速度を ${speed}x に変更しました`);
+            
+            // 速度変更時の視覚的フィードバック
+            speedSelect.style.borderColor = '#667eea';
+            speedSelect.style.backgroundColor = '#f7fafc';
+            
+            setTimeout(() => {
+                speedSelect.style.borderColor = '#e2e8f0';
+                speedSelect.style.backgroundColor = 'white';
+            }, 300);
         });
 
         // プログレスバークリックでシーク
