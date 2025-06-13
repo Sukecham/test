@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COPDの新しい診断アプローチ</title>
+    <style>
+        :root {
+            --primary: #3066BE;
+            --secondary: #119DA4;
+            --accent: #FF6B6B;
+            --light: #F4F9FF;
+            --dark: #19323C;
+            --gray: #8C93A8;
+            --light-gray: #E9EDF4;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.05)" d="M0,0 L100,0 C50,50 50,50 0,100 Z" /></svg>');
+            background-size: cover;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .audio-player {
+            margin: 20px auto;
+            max-width: 500px;
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .play-button {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(17, 157, 164, 0.3);
+        }
+        
+        .play-button:hover {
+            background-color: var(--primary);
+            transform: scale(1.05);
+        }
+        
+        .play-button i {
+            font-size: 24px;
+        }
+        
+        .player-text {
+            flex: 1;
+        }
+        
+        .player-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .player-description {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background-color: var(--light-gray);
+            border-radius: 3px;
+            margin-top: 10px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--secondary);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+        
+        section {
+            padding: 40px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--primary);
+            position: relative;
+            font-size: 2rem;
+        }
+        
+        .section-title::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-title {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            border-bottom: 2px solid var(--light-gray);
+            padding-bottom: 10px;
+        }
+        
+        .card-content {
+            color: var(--dark);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .highlight {
+            color: var(--accent);
+            font-weight: bold;
+        }
+        
+        .diagram {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05);
+            margin: 40px 0;
+            position: relative;
+        }
+        
+        .diagram-title {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+        }
+        
+        .diagnosis-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .criteria-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .criteria-box {
+            flex: 1;
+            min-width: 200px;
+            border: 2px solid var(--primary);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            background: var(--light);
+            position: relative;
+        }
+        
+        .criteria-box.major {
+            border-color: var(--primary);
+        }
+        
+        .criteria-box.imaging {
+            border-color: var(--secondary);
+        }
+        
+        .criteria-box.symptoms {
+            border-color: var(--accent);
+        }
+        
+        .criteria-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .criteria-box.major .criteria-title {
+            color: var(--primary);
+        }
+        
+        .criteria-box.imaging .criteria-title {
+            color: var(--secondary);
+        }
+        
+        .criteria-box.symptoms .criteria-title {
+            color: var(--accent);
+        }
+        
+        .criteria-list {
+            text-align: left;
+            list-style-type: none;
+        }
+        
+        .criteria-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .criteria-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        .criteria-box.major .criteria-list li::before {
+            color: var(--primary);
+        }
+        
+        .criteria-box.imaging .criteria-list li::before {
+            color: var(--secondary);
+        }
+        
+        .criteria-box.symptoms .criteria-list li::before {
+            color: var(--accent);
+        }
+        
+        .arrow-down {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .arrow-down svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .diagnosis-box {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .diagnostic-categories {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .category-box {
+            flex: 1;
+            min-width: 200px;
+            max-width: 400px;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 15px;
+            border: 2px solid var(--primary);
+        }
+        
+        .category-title {
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .category-desc {
+            font-size: 0.9rem;
+        }
+        
+        .results {
+            margin-top: 60px;
+        }
+        
+        .results-title {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+        }
+        
+        .stats-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        .stat-box {
+            flex: 1;
+            min-width: 220px;
+            max-width: 300px;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-box::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+        }
+        
+        .stat-title {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .stat-desc {
+            font-size: 0.85rem;
+            color: var(--dark);
+        }
+        
+        .conclusion {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 60px 0 20px;
+            text-align: center;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .conclusion-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .conclusion-text {
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 40px 0 20px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .citation {
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .criteria-group {
+                flex-direction: column;
+            }
+            
+            .criteria-box {
+                min-width: 100%;
+            }
+            
+            .diagnostic-categories {
+                flex-direction: column;
+            }
+            
+            .category-box {
+                min-width: 100%;
+            }
+            
+            .conclusion {
+                padding: 30px 20px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card, .diagram, .conclusion, .stats-container {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .criteria-box, .category-box, .stat-box {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .criteria-box:nth-child(1) { animation-delay: 0.1s; }
+        .criteria-box:nth-child(2) { animation-delay: 0.2s; }
+        .criteria-box:nth-child(3) { animation-delay: 0.3s; }
+        
+        .category-box:nth-child(1) { animation-delay: 0.4s; }
+        .category-box:nth-child(2) { animation-delay: 0.5s; }
+        
+        .stat-box:nth-child(1) { animation-delay: 0.1s; }
+        .stat-box:nth-child(2) { animation-delay: 0.2s; }
+        .stat-box:nth-child(3) { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>慢性閉塞性肺疾患（COPD）の新しい診断アプローチ</h1>
+            <div class="subtitle">多次元的診断方法による新たな診断基準とその臨床的意義</div>
+            
+            <div class="audio-player">
+                <button class="play-button" id="playButton">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 5V19L19 12L8 5Z" fill="white"/>
+                    </svg>
+                </button>
+                <div class="player-text">
+                    <div class="player-title">COPD新診断基準の解説</div>
+                    <div class="player-description">この研究の概要と重要なポイントを音声で解説します</div>
+                    <div class="progress-container" id="progressContainer">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <section>
+            <h2 class="section-title">研究の背景と目的</h2>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3 class="card-title">現状の課題</h3>
+                    <div class="card-content">
+                        <p>現在のCOPDの診断基準は主に気流制限（FEV<sub>1</sub>/FVC &lt; 0.70）に依存していますが、これは早期のCOPDの構造的変化を検出できないことが多く、診断の遅れにつながっています。</p>
+                        <p>タバコを吸う人の約<span class="highlight">半数</span>が、気流制限がなくても胸部CTで肺気腫や気道壁肥厚の証拠を示します。</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3 class="card-title">研究目的</h3>
+                    <div class="card-content">
+                        <p>この研究は、呼吸器症状とCT画像異常を含む多次元的なCOPD診断スキーマが、従来の方法では見逃されていた患者を特定できるかどうかを評価することを目的としています。</p>
+                        <p>また、この新しい診断方法が臨床転帰（死亡率、増悪、肺機能低下など）と関連しているかを検証します。</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title">研究方法</h3>
+                <div class="card-content">
+                    <p>この研究では、以下の2つの大規模な縦断的コホートを調査しました：</p>
+                    <ul>
+                        <li><strong>COPDGene研究</strong>：9,416人の成人（現在または以前の喫煙者）、平均追跡期間10.5年</li>
+                        <li><strong>CanCOLD研究</strong>：1,341人の成人（非喫煙者を含む）、平均追跡期間10.0年</li>
+                    </ul>
+                    <p>主な評価項目は、全死因死亡率、呼吸器関連死亡率、増悪、そしてFEV<sub>1</sub>の年間変化率でした。</p>
+                </div>
+            </div>
+        </section>
+        
+        <section>
+            <h2 class="section-title">新しいCOPD診断基準</h2>
+            
+            <div class="diagram">
+                <h3 class="diagram-title">多次元的COPD診断スキーマ</h3>
+                
+                <div class="diagnosis-flow">
+                    <div class="criteria-group">
+                        <div class="criteria-box major">
+                            <div class="criteria-title">主要基準</div>
+                            <ul class="criteria-list">
+                                <li>気流制限（FEV<sub>1</sub>/FVC &lt; 0.70）</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="criteria-box imaging">
+                            <div class="criteria-title">副次基準：画像</div>
+                            <ul class="criteria-list">
+                                <li>肺気腫（軽度以上）</li>
+                                <li>気道壁肥厚</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="criteria-box symptoms">
+                            <div class="criteria-title">副次基準：症状</div>
+                            <ul class="criteria-list">
+                                <li>呼吸困難（mMRCスコア ≥ 2）</li>
+                                <li>生活の質低下（SGRQスコア ≥ 25 または CATスコア ≥ 10）</li>
+                                <li>慢性気管支炎</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="arrow-down">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 4V20M12 20L5 13M12 20L19 13" stroke="#3066BE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    
+                    <div class="diagnosis-box">慢性閉塞性肺疾患（COPD）</div>
+                    
+                    <div class="diagnostic-categories">
+                        <div class="category-box">
+                            <div class="category-title">主要診断カテゴリー</div>
+                            <div class="category-desc">
+                                <p><strong>主要基準 + 副次基準を1つ以上</strong></p>
+                                <p>気流制限があり、何らかの症状または画像所見がある場合</p>
+                            </div>
+                        </div>
+                        
+                        <div class="category-box">
+                            <div class="category-title">副次診断カテゴリー</div>
+                            <div class="category-desc">
+                                <p><strong>副次基準を3つ以上</strong></p>
+                                <p>気流制限はないが、複数の症状と画像所見がある場合</p>
+                                <p>※症状が他の疾患に起因する可能性がある場合は、両方の画像基準を満たす必要あり</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="results">
+            <h2 class="results-title">研究結果：新基準による再分類</h2>
+            
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-title">気流制限なしでCOPDと診断された割合</div>
+                    <div class="stat-value">15.4%</div>
+                    <div class="stat-desc">副次診断カテゴリーにより、気流制限のない5,250人中811人が新たにCOPDと診断されました</div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-title">気流制限ありでCOPDではないと再分類された割合</div>
+                    <div class="stat-value">6.8%</div>
+                    <div class="stat-desc">気流制限があるが症状や画像所見がない4,166人中282人が、COPDではないと再分類されました</div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-title">全死因死亡リスク増加</div>
+                    <div class="stat-value">1.98倍</div>
+                    <div class="stat-desc">副次診断カテゴリーで新たにCOPDと診断された患者の死亡リスクは、COPDなしの患者と比較して1.98倍高くなりました</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title">新基準によるCOPD診断の臨床的意義</h3>
+                <div class="card-content">
+                    <p>新たにCOPDと診断された患者（副次診断カテゴリー）は、COPDでない患者と比較して：</p>
+                    <ul>
+                        <li><strong>全死因死亡率が1.98倍増加</strong>（調整ハザード比: 1.98; 95% CI, 1.67-2.35）</li>
+                        <li><strong>呼吸器関連死亡率が3.58倍増加</strong>（調整ハザード比: 3.58; 95% CI, 1.56-8.20）</li>
+                        <li><strong>増悪頻度が2.09倍増加</strong>（調整発生率比: 2.09; 95% CI, 1.79-2.44）</li>
+                        <li><strong>FEV<sub>1</sub>低下速度が7.7 mL/年速い</strong>（調整β = −7.7 mL/年; 95% CI, −13.2 to −2.3）</li>
+                    </ul>
+                    <p>一方、気流制限があるがCOPDではないと再分類された患者は、気流制限のない患者と同様の転帰を示しました。</p>
+                </div>
+            </div>
+        </section>
+        
+        <div class="conclusion">
+            <h3 class="conclusion-title">結論</h3>
+            <div class="conclusion-text">
+                <p>呼吸器症状、呼吸器関連生活の質、スピロメトリー、そしてCT画像の構造的肺異常を統合した新しいCOPD診断スキーマは、これまで見逃されていた患者を特定し、臨床的に重要な転帰と関連していることが示されました。</p>
+                <p>この新しい診断アプローチにより、従来の方法では診断されなかった高リスク患者の早期発見と介入が可能になり、COPD管理の改善につながる可能性があります。</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>このインフォグラフィックは、2025年5月18日にJAMAで発表された研究に基づいています。</p>
+            <p class="citation">出典: Bhatt SP, et al. A Multidimensional Diagnostic Approach for Chronic Obstructive Pulmonary Disease. JAMA. 2025. doi:10.1001/jama.2025.7358</p>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const playButton = document.getElementById('playButton');
+            const progressBar = document.getElementById('progressBar');
+            const progressContainer = document.getElementById('progressContainer');
+            const audio = new Audio('voice.mp3');
+            let isPlaying = false;
+            
+            playButton.addEventListener('click', function() {
+                if (isPlaying) {
+                    audio.pause();
+                    playButton.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5V19L19 12L8 5Z" fill="white"/></svg>';
+                    isPlaying = false;
+                } else {
+                    audio.play();
+                    playButton.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 4H6V20H10V4Z" fill="white"/><path d="M18 4H14V20H18V4Z" fill="white"/></svg>';
+                    isPlaying = true;
+                }
+            });
+            
+            audio.addEventListener('timeupdate', function() {
+                const percentage = (audio.currentTime / audio.duration) * 100;
+                progressBar.style.width = percentage + '%';
+            });
+            
+            audio.addEventListener('ended', function() {
+                playButton.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5V19L19 12L8 5Z" fill="white"/></svg>';
+                isPlaying = false;
+                progressBar.style.width = '0%';
+            });
+            
+            progressContainer.addEventListener('click', function(e) {
+                const rect = progressContainer.getBoundingClientRect();
+                const pos = (e.clientX - rect.left) / rect.width;
+                audio.currentTime = pos * audio.duration;
+            });
+        });
+    </script>
+</body>
+</html>
