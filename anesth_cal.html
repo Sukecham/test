@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>麻酔点数計算システム</title>
+<style>
+  * { box-sizing: border-box; }
+  body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    margin: 0; 
+    padding: 10px; 
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-size: 12px;
+  }
+
+.container {
+max-width: 210mm;
+margin: 0 auto;
+background: white;
+border-radius: 6px;
+box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+padding: 15px;
+}
+
+h2 {
+text-align: center;
+color: #2c3e50;
+margin: 0 0 15px 0;
+font-size: 20px;
+font-weight: 600;
+border-bottom: 2px solid #3498db;
+padding-bottom: 8px;
+}
+
+.top-section {
+display: grid;
+grid-template-columns: 2fr 1fr;
+gap: 15px;
+margin-bottom: 15px;
+}
+
+.patient-info {
+background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+border-radius: 4px;
+padding: 10px;
+border-left: 3px solid #3498db;
+}
+
+.patient-info h3 {
+margin: 0 0 8px 0;
+color: #2c3e50;
+font-size: 14px;
+}
+
+.info-grid {
+display: grid;
+grid-template-columns: auto 1fr;
+gap: 5px 10px;
+align-items: center;
+font-size: 11px;
+}
+
+.info-grid label {
+font-weight: 500;
+color: #34495e;
+}
+
+.info-grid input {
+padding: 4px 6px;
+border: 1px solid #bdc3c7;
+border-radius: 3px;
+font-size: 11px;
+}
+
+.control-panel {
+display: flex;
+flex-direction: column;
+gap: 8px;
+}
+
+.category-info {
+background: #ecf0f1;
+padding: 6px 8px;
+border-radius: 3px;
+font-size: 11px;
+color: #2c3e50;
+}
+
+.difficulty-select {
+display: flex;
+align-items: center;
+gap: 8px;
+font-size: 11px;
+}
+
+.difficulty-select label {
+font-weight: 500;
+color: #2c3e50;
+}
+
+select, input[type=“text”] {
+padding: 4px 6px;
+border: 1px solid #bdc3c7;
+border-radius: 3px;
+font-size: 11px;
+transition: border-color 0.3s;
+}
+
+select:focus, input[type=“text”]:focus {
+outline: none;
+border-color: #3498db;
+box-shadow: 0 0 0 1px rgba(52, 152, 219, 0.3);
+}
+
+.time-section {
+margin-bottom: 12px;
+}
+
+.time-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 15px;
+}
+
+.time-table {
+border: 1px solid #bdc3c7;
+border-radius: 4px;
+overflow: hidden;
+}
+
+.time-table th {
+background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+color: white;
+padding: 5px 3px;
+font-size: 10px;
+font-weight: 500;
+}
+
+.time-table td {
+padding: 3px 2px;
+text-align: center;
+border-bottom: 1px solid #ecf0f1;
+font-size: 10px;
+}
+
+.time-table input {
+width: 40px;
+padding: 2px;
+text-align: center;
+font-size: 10px;
+border: none;
+background: transparent;
+}
+
+.time-table input:focus {
+background: #f8f9fa;
+border: 1px solid #3498db;
+}
+
+.additional-sections {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 10px;
+margin-bottom: 12px;
+}
+
+.additional-section {
+background: #f8f9fa;
+border-radius: 4px;
+padding: 8px;
+border: 1px solid #e9ecef;
+}
+
+.additional-section h4 {
+margin: 0 0 5px 0;
+color: #2c3e50;
+font-size: 12px;
+}
+
+.checkbox-group label {
+display: flex;
+align-items: center;
+gap: 4px;
+font-size: 11px;
+margin-bottom: 4px;
+}
+
+.inline-inputs {
+display: flex;
+gap: 8px;
+flex-wrap: wrap;
+margin-top: 4px;
+}
+
+.inline-inputs label {
+display: flex;
+align-items: center;
+gap: 3px;
+font-size: 10px;
+}
+
+.inline-inputs input {
+width: 35px;
+}
+
+.small-text {
+font-size: 9px;
+color: #666;
+margin-top: 3px;
+}
+
+.bottom-section {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 15px;
+}
+
+.calc-button {
+background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+color: white;
+border: none;
+padding: 8px 20px;
+border-radius: 4px;
+font-size: 14px;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.3s;
+box-shadow: 0 2px 4px rgba(0,0,0,0.16);
+}
+
+.calc-button:hover {
+transform: translateY(-1px);
+box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+.result-section {
+background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+border-radius: 4px;
+padding: 8px;
+border-left: 3px solid #28a745;
+display: none;
+}
+
+.result-item {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 3px 0;
+font-size: 11px;
+}
+
+.result-item:last-child {
+font-weight: 600;
+font-size: 12px;
+border-top: 1px solid rgba(40, 167, 69, 0.3);
+padding-top: 5px;
+margin-top: 3px;
+}
+
+.result-label {
+color: #2c3e50;
+}
+
+.result-value {
+font-weight: 600;
+color: #27ae60;
+}
+
+.error-popup {
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+background: white;
+border: 2px solid #e74c3c;
+border-radius: 6px;
+padding: 15px;
+box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+z-index: 1000;
+max-width: 350px;
+min-width: 250px;
+}
+
+.error-popup h3 {
+color: #e74c3c;
+margin: 0 0 8px 0;
+font-size: 16px;
+}
+
+.error-popup p {
+margin: 0 0 12px 0;
+color: #2c3e50;
+font-size: 12px;
+}
+
+.error-popup button {
+background: #e74c3c;
+color: white;
+border: none;
+padding: 6px 15px;
+border-radius: 3px;
+cursor: pointer;
+font-size: 12px;
+}
+
+.overlay {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0,0,0,0.5);
+z-index: 999;
+}
+
+@media print {
+body {
+background: white;
+padding: 5px;
+font-size: 11px;
+}
+.container {
+box-shadow: none;
+border-radius: 0;
+padding: 10px;
+}
+h2 {
+font-size: 18px;
+margin-bottom: 10px;
+}
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+  <h2>麻酔点数計算システム <span style="font-size: 10px; color: #7f8c8d; font-weight: 300;">made by myGEMS</span></h2>
+
+  <!-- 上部セクション -->
+
+  <div class="top-section">
+    <!-- 患者情報 -->
+    <div class="patient-info">
+      <h3>患者情報</h3>
+      <div class="info-grid">
+        <label>日付:</label>
+        <input type="date" id="surgeryDate">
+        <label>患者ID:</label>
+        <input type="text" id="patientId" placeholder="12345">
+        <label>氏名:</label>
+        <input type="text" id="patientName" placeholder="ヤマダ タロウ">
+        <label>術式:</label>
+        <input type="text" id="surgeryType" placeholder="腹腔鏡下胆嚢摘出術">
+      </div>
+    </div>
+
+```
+<!-- コントロールパネル -->
+<div class="control-panel">
+  <div class="category-info">
+    <strong>区分3:</strong>腹臥位 <strong>区分4:</strong>腹腔鏡・側臥位 <strong>区分5:</strong>通常体位
+  </div>
+  <div class="difficulty-select">
+    <label>麻酔困難:</label>
+    <select id="iOrRoSelect">
+      <option value="">選択</option>
+      <option value="イ">イ（困難）</option>
+      <option value="ロ">ロ（通常）</option>
+    </select>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- 時間入力 -->
+
+  <div class="time-section">
+    <div class="time-grid">
+      <table class="time-table">
+        <thead>
+          <tr><th>行</th><th>開始</th><th>終了</th><th>区分</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td><input type="text" id="start1" oninput="updateNextStart(1)" placeholder="0900"></td><td><input type="text" id="end1" oninput="updateNextStart(1)" placeholder="1200"></td><td><input type="text" id="cat1" placeholder="5"></td></tr>
+          <tr><td>2</td><td><input type="text" id="start2" oninput="updateNextStart(2)"></td><td><input type="text" id="end2" oninput="updateNextStart(2)"></td><td><input type="text" id="cat2"></td></tr>
+          <tr><td>3</td><td><input type="text" id="start3" oninput="updateNextStart(3)"></td><td><input type="text" id="end3" oninput="updateNextStart(3)"></td><td><input type="text" id="cat3"></td></tr>
+          <tr><td>4</td><td><input type="text" id="start4" oninput="updateNextStart(4)"></td><td><input type="text" id="end4" oninput="updateNextStart(4)"></td><td><input type="text" id="cat4"></td></tr>
+          <tr><td>5</td><td><input type="text" id="start5" oninput="updateNextStart(5)"></td><td><input type="text" id="end5" oninput="updateNextStart(5)"></td><td><input type="text" id="cat5"></td></tr>
+        </tbody>
+      </table>
+
+```
+  <table class="time-table">
+    <thead>
+      <tr><th>行</th><th>開始</th><th>終了</th><th>区分</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>6</td><td><input type="text" id="start6" oninput="updateNextStart(6)"></td><td><input type="text" id="end6" oninput="updateNextStart(6)"></td><td><input type="text" id="cat6"></td></tr>
+      <tr><td>7</td><td><input type="text" id="start7" oninput="updateNextStart(7)"></td><td><input type="text" id="end7" oninput="updateNextStart(7)"></td><td><input type="text" id="cat7"></td></tr>
+      <tr><td>8</td><td><input type="text" id="start8" oninput="updateNextStart(8)"></td><td><input type="text" id="end8" oninput="updateNextStart(8)"></td><td><input type="text" id="cat8"></td></tr>
+      <tr><td>9</td><td><input type="text" id="start9" oninput="updateNextStart(9)"></td><td><input type="text" id="end9" oninput="updateNextStart(9)"></td><td><input type="text" id="cat9"></td></tr>
+      <tr><td>10</td><td><input type="text" id="start10" oninput="updateNextStart(10)"></td><td><input type="text" id="end10" oninput="updateNextStart(10)"></td><td><input type="text" id="cat10"></td></tr>
+    </tbody>
+  </table>
+</div>
+```
+
+  </div>
+
+  <!-- 追加処置 -->
+
+  <div class="additional-sections">
+    <div class="additional-section">
+      <h4>硬膜外麻酔</h4>
+      <div class="checkbox-group">
+        <label><input type="checkbox" id="chkEA">実施あり</label>
+      </div>
+      <div class="inline-inputs">
+        <label>部位: <input type="text" id="eaType" placeholder="1"></label>
+        <label>開始: <input type="text" id="eaStart" placeholder="0900"></label>
+        <label>終了: <input type="text" id="eaEnd" placeholder="1200"></label>
+      </div>
+      <div class="small-text">1=頸胸, 2=腰, 3=仙骨</div>
+    </div>
+
+```
+<div class="additional-section">
+  <h4>神経ブロック</h4>
+  <div class="checkbox-group">
+    <label><input type="checkbox" id="chkNB">実施あり</label>
+  </div>
+  <select id="nbType">
+    <option value="">選択</option>
+    <option value="イ">イ（450点）</option>
+    <option value="ロ">ロ（45点）</option>
+  </select>
+  <div class="small-text">硬膜外代替=イ、その他=ロ</div>
+</div>
+```
+
+  </div>
+
+  <!-- 計算と結果 -->
+
+  <div class="bottom-section">
+    <button class="calc-button" onclick="calcFee()">計算実行</button>
+
+```
+<div class="result-section" id="resultSection">
+  <div class="result-item">
+    <span class="result-label">麻酔管理料:</span>
+    <span class="result-value" id="resultArea">0 点</span>
+  </div>
+  <div class="result-item">
+    <span class="result-label">対価報酬額:</span>
+    <span class="result-value" id="feeAmount">0 円</span>
+  </div>
+</div>
+```
+
+  </div>
+</div>
+
+<script>
+// エラーポップアップ表示
+function showError(title, message) {
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay';
+  
+  const popup = document.createElement('div');
+  popup.className = 'error-popup';
+  popup.innerHTML = `
+    <h3>${title}</h3>
+    <p>${message}</p>
+    <button onclick="closeError()">OK</button>
+  `;
+  
+  document.body.appendChild(overlay);
+  document.body.appendChild(popup);
+  
+  window.currentErrorElements = { overlay, popup };
+}
+
+function closeError() {
+  if (window.currentErrorElements) {
+    document.body.removeChild(window.currentErrorElements.overlay);
+    document.body.removeChild(window.currentErrorElements.popup);
+    window.currentErrorElements = null;
+  }
+}
+
+// 時刻バリデーション
+function validateTime(timeStr) {
+  if (!timeStr || timeStr.trim() === '') return null;
+  
+  const cleaned = timeStr.replace(/\D/g, '');
+  if (cleaned.length !== 4) {
+    return { error: '時刻は4桁で入力してください（例: 0900）' };
+  }
+  
+  const hours = parseInt(cleaned.substring(0, 2));
+  const minutes = parseInt(cleaned.substring(2, 4));
+  
+  if (hours < 0 || hours > 23) {
+    return { error: '時間は00-23の範囲で入力してください' };
+  }
+  
+  if (minutes < 0 || minutes > 59) {
+    return { error: '分は00-59の範囲で入力してください' };
+  }
+  
+  return { hours, minutes, totalMinutes: hours * 60 + minutes };
+}
+
+// 終了時刻を入力したら次の行の開始時刻に自動入力
+function updateNextStart(currentRow) {
+  const endTime = document.getElementById("end" + currentRow).value;
+  if (endTime && endTime.length === 4) {
+    const nextRow = currentRow + 1;
+    if (nextRow <= 10) {
+      const nextStartField = document.getElementById("start" + nextRow);
+      if (nextStartField && !nextStartField.value) {
+        nextStartField.value = endTime;
+      }
+    }
+  }
+}
+
+/**
+ * メイン計算処理
+ */
+function calcFee() {
+  // 1) イ/ロ選択チェック
+  const iOrRo = document.getElementById("iOrRoSelect").value;
+  if (iOrRo !== "イ" && iOrRo !== "ロ") {
+    showError("入力エラー", "麻酔困難患者の区分（イ/ロ）を選択してください。");
+    return;
+  }
+
+  // 2) 時間入力の検証と集計
+  let dic = {};
+  let totalGAMin = 0;
+  let hasValidEntry = false;
+
+  for (let i = 1; i <= 10; i++) {
+    const startVal = document.getElementById("start" + i).value.trim();
+    const endVal = document.getElementById("end" + i).value.trim();
+    const catVal = document.getElementById("cat" + i).value.trim();
+
+    // 空欄の場合はスキップ
+    if (!startVal && !endVal && !catVal) continue;
+
+    // 部分的な入力チェック
+    if ((startVal || endVal || catVal) && (!startVal || !endVal || !catVal)) {
+      showError("入力エラー", `${i}行目: 開始時刻、終了時刻、区分をすべて入力してください。`);
+      return;
+    }
+
+    // 時刻バリデーション
+    const startTime = validateTime(startVal);
+    const endTime = validateTime(endVal);
+
+    if (startTime && startTime.error) {
+      showError("時刻入力エラー", `${i}行目の開始時刻: ${startTime.error}`);
+      return;
+    }
+
+    if (endTime && endTime.error) {
+      showError("時刻入力エラー", `${i}行目の終了時刻: ${endTime.error}`);
+      return;
+    }
+
+    // 区分チェック
+    const catNum = parseInt(catVal, 10);
+    if (isNaN(catNum) || (catNum !== 3 && catNum !== 4 && catNum !== 5)) {
+      showError("区分入力エラー", `${i}行目: 区分は3、4、5のいずれかを入力してください。`);
+      return;
+    }
+
+    // 時間の論理チェック
+    if (startTime.totalMinutes >= endTime.totalMinutes) {
+      showError("時間エラー", `${i}行目: 終了時刻は開始時刻より後の時刻を入力してください。`);
+      return;
+    }
+
+    const duration = endTime.totalMinutes - startTime.totalMinutes;
+    totalGAMin += duration;
+    hasValidEntry = true;
+
+    if (!dic[catNum]) dic[catNum] = 0;
+    dic[catNum] += duration;
+  }
+
+  // 有効な入力がない場合
+  if (!hasValidEntry) {
+    showError("入力エラー", "麻酔時間を最低1行は入力してください。");
+    return;
+  }
+
+  // 20分未満チェック
+  if (totalGAMin < 20) {
+    showError("時間エラー", "全身麻酔時間が20分未満です。算定できません。");
+    return;
+  }
+
+  // 3) 点数計算
+  let arr = [];
+  for (const catNumStr in dic) {
+    let catNo = parseInt(catNumStr, 10);
+    let timeMin = dic[catNumStr];
+    let basePt = getBasePoints(catNo, iOrRo);
+    arr.push({ catNo, timeMin, basePt });
+  }
+
+  arr.sort((a, b) => b.basePt - a.basePt);
+
+  let remain120 = 120;
+  let basePoints = 0;
+  let overArray = [];
+
+  for (let i = 0; i < arr.length; i++) {
+    let item = arr[i];
+    if (remain120 > 0) {
+      if (item.timeMin >= remain120) {
+        if (basePoints === 0) basePoints = item.basePt;
+        let overPart = item.timeMin - remain120;
+        remain120 = 0;
+        if (overPart > 0) {
+          overArray.push({ catNo: item.catNo, timeMin: overPart });
+        }
+      } else {
+        if (basePoints === 0) basePoints = item.basePt;
+        remain120 -= item.timeMin;
+      }
+    } else {
+      overArray.push({ catNo: item.catNo, timeMin: item.timeMin });
+    }
+  }
+
+  // 4) 2時間超過部分
+  let manageTimeAdd = 0;
+  overArray.forEach(oitem => {
+    let unitAdd = getManageTimeAddUnit(oitem.catNo);
+    let blocks = Math.floor(oitem.timeMin / 30);
+    if (oitem.timeMin % 30 > 0) blocks++;
+    manageTimeAdd += (blocks * unitAdd);
+  });
+
+  let anesthesiaPoints = basePoints + manageTimeAdd;
+
+  // 5) 硬膜外麻酔
+  let epBase = 0, epTimeAdd = 0;
+  if (document.getElementById("chkEA").checked) {
+    const eaTypeVal = parseInt(document.getElementById("eaType").value.trim(), 10);
+    if (isNaN(eaTypeVal) || eaTypeVal < 1 || eaTypeVal > 3) {
+      showError("硬膜外麻酔エラー", "部位は1（頸胸）、2（腰）、3（仙骨）のいずれかを入力してください。");
+      return;
+    }
+
+    const eaStartTime = validateTime(document.getElementById("eaStart").value.trim());
+    const eaEndTime = validateTime(document.getElementById("eaEnd").value.trim());
+
+    if (eaStartTime && eaStartTime.error) {
+      showError("硬膜外麻酔時刻エラー", `開始時刻: ${eaStartTime.error}`);
+      return;
+    }
+
+    if (eaEndTime && eaEndTime.error) {
+      showError("硬膜外麻酔時刻エラー", `終了時刻: ${eaEndTime.error}`);
+      return;
+    }
+
+    if (eaStartTime && eaEndTime) {
+      if (eaStartTime.totalMinutes >= eaEndTime.totalMinutes) {
+        showError("硬膜外麻酔時間エラー", "終了時刻は開始時刻より後の時刻を入力してください。");
+        return;
+      }
+
+      epBase = getEpiduralBaseAdd(eaTypeVal);
+      const eaDuration = eaEndTime.totalMinutes - eaStartTime.totalMinutes;
+      if (eaDuration > 120) {
+        const overEA = eaDuration - 120;
+        epTimeAdd = getEpiduralTimeAdd(eaTypeVal, overEA);
+      }
+    }
+  }
+
+  // 6) 神経ブロック
+  let nbAdd = 0;
+  if (document.getElementById("chkNB").checked) {
+    const nbType = document.getElementById("nbType").value.trim();
+    if (!nbType) {
+      showError("神経ブロックエラー", "神経ブロックの区分（イ/ロ）を選択してください。");
+      return;
+    }
+    nbAdd = getNerveBlockAdd(nbType);
+  }
+
+  // 7) 結果表示
+  const totalPoints = anesthesiaPoints + epBase + epTimeAdd + nbAdd;
+  const feeAmount = totalPoints * 8;
+
+  document.getElementById("resultArea").innerText = totalPoints.toLocaleString() + " 点";
+  document.getElementById("feeAmount").innerText = feeAmount.toLocaleString() + " 円";
+  document.getElementById("resultSection").style.display = "block";
+}
+
+// 基本点数計算関数群（変更なし）
+function getBasePoints(catNo, iOrRo) {
+  if (catNo === 3) return (iOrRo === "イ") ? 12610 : 9170;
+  if (catNo === 4) return (iOrRo === "イ") ? 9130 : 6610;
+  if (catNo === 5) return (iOrRo === "イ") ? 8300 : 6000;
+  return 0;
+}
+
+function getManageTimeAddUnit(catNo) {
+  switch (catNo) {
+    case 3: return 900;
+    case 4: return 660;
+    case 5: return 600;
+    default: return 0;
+  }
+}
+
+function getEpiduralBaseAdd(eaType) {
+  switch (eaType) {
+    case 1: return 750;
+    case 2: return 400;
+    case 3: return 170;
+    default: return 0;
+  }
+}
+
+function getEpiduralTimeAdd(eaType, overMin) {
+  let unit = 0;
+  if (eaType === 1) unit = 375;
+  else if (eaType === 2) unit = 200;
+  else if (eaType === 3) unit = 85;
+
+  let blocks = Math.floor(overMin / 30);
+  if (overMin % 30 > 0) blocks++;
+  return blocks * unit;
+}
+
+function getNerveBlockAdd(nbType) {
+  if (nbType === "イ") return 450;
+  if (nbType === "ロ") return 45;
+  return 0;
+}
+
+function parseTimeToMin(str) {
+  let s = str.replace(/\D/g, "");
+  if (s.length < 3) return NaN;
+  let hh = parseInt(s.slice(0, -2), 10);
+  let mm = parseInt(s.slice(-2), 10);
+  if (isNaN(hh) || isNaN(mm)) return NaN;
+  return hh * 60 + mm;
+}
+</script>
+
+</body>
+</html>
