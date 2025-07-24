@@ -709,11 +709,57 @@ function calcFee() {
   document.getElementById("resultSection").style.display = "block";
 }
 
-// 基本点数計算関数群（変更なし）
+// 基本点数計算関数群
 function getBasePoints(catNo, iOrRo) {
   if (catNo === 3) return (iOrRo === "イ") ? 12610 : 9170;
   if (catNo === 4) return (iOrRo === "イ") ? 9130 : 6610;
   if (catNo === 5) return (iOrRo === "イ") ? 8300 : 6000;
+  return 0;
+}
+
+function getManageTimeAddUnit(catNo) {
+  switch (catNo) {
+    case 3: return 900;
+    case 4: return 660;
+    case 5: return 600;
+    default: return 0;
+  }
+}
+
+function getEpiduralBaseAdd(eaType) {
+  switch (eaType) {
+    case 1: return 750;
+    case 2: return 400;
+    case 3: return 170;
+    default: return 0;
+  }
+}
+
+function getEpiduralTimeAdd(eaType, overMin) {
+  let unit = 0;
+  if (eaType === 1) unit = 375;
+  else if (eaType === 2) unit = 200;
+  else if (eaType === 3) unit = 85;
+
+  let blocks = Math.floor(overMin / 30);
+  if (overMin % 30 > 0) blocks++;
+  return blocks * unit;
+}
+
+function getNerveBlockAdd(nbType) {
+  if (nbType === "イ") return 450;
+  if (nbType === "ロ") return 45;
+  return 0;
+}
+
+function parseTimeToMin(str) {
+  let s = str.replace(/\D/g, "");
+  if (s.length < 3) return NaN;
+  let hh = parseInt(s.slice(0, -2), 10);
+  let mm = parseInt(s.slice(-2), 10);
+  if (isNaN(hh) || isNaN(mm)) return NaN;
+  return hh * 60 + mm;
+} (catNo === 5) return (iOrRo === "イ") ? 8300 : 6000;
   return 0;
 }
 
