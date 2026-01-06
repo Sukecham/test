@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地震パターン分析：AパターンとBパターンの論理的区分</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent-a: #27ae60; /* Pattern A (Safe-ish) */
+            --accent-b: #c0392b; /* Pattern B (Danger) */
+            --bg-color: #f5f7fa;
+            --text-color: #333;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Titles */
+        h1 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            color: var(--secondary);
+            margin-top: 40px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 24px;
+            background-color: var(--secondary);
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #444;
+        }
+
+        /* Cards & Layout */
+        .section-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .highlight-box {
+            background-color: #eef2f5;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid var(--secondary);
+        }
+
+        /* A vs B Comparison */
+        .comparison-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .pattern-box {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            border-radius: 8px;
+            color: #fff;
+        }
+
+        .pattern-a {
+            background-color: var(--accent-a);
+        }
+
+        .pattern-b {
+            background-color: var(--accent-b);
+        }
+
+        .pattern-title {
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding-bottom: 5px;
+        }
+
+        /* Lists */
+        ul {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+
+        /* Conclusion Section */
+        .conclusion-wrapper {
+            background-color: #fff;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 40px;
+        }
+
+        .conclusion-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 5px 15px;
+            display: inline-block;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .action-point {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary);
+            text-align: center;
+            padding: 15px;
+            background-color: #e8f4f8;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .point-marker {
+            color: #c0392b;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .section-card { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>今回の地震と「前震・本震」パターンの分析</h1>
+
+    <section>
+        <h2>1. 本質：なぜ「A」と「B」の違いが生まれるのか</h2>
+        <div class="section-card">
+            <p>地震は「一気に壊れる」か「途中で止まる」かの違いでパターンが分かれます。</p>
+            
+            <div class="comparison-container">
+                <div class="pattern-box pattern-a">
+                    <span class="pattern-title">Aパターン（本震→余震）</span>
+                    <p>断層が一気に、想定していた範囲まで破壊され、エネルギーの大半を放出。残りは「後始末（余震）」となる。</p>
+                    <div style="margin-top:10px; font-weight:bold;">👉 破壊が完遂した世界</div>
+                </div>
+                
+                <div class="pattern-box pattern-b">
+                    <span class="pattern-title">Bパターン（前震→本震）</span>
+                    <p>最初の破壊が途中で止まるが、応力（ひずみ）は残っている。数時間〜数日後に隣の区間などが連鎖的に壊れる。</p>
+                    <div style="margin-top:10px; font-weight:bold;">👉 破壊が未完了の世界</div>
+                </div>
+            </div>
+
+            <h3>なぜ「途中で止まる（Bパターンになる）」ことがあるのか？</h3>
+            <ul>
+                <li><strong>断層がモザイク構造：</strong>強い部分・弱い部分が混在し、最初は「割れやすい所だけ」壊れるため。</li>
+                <li><strong>摩擦特性の違い：</strong>「すべりにくい」場所では一度止まりやすい。</li>
+                <li><strong>応力の再配分：</strong>最初の地震が隣の断層を「引き金」状態にすることがある。</li>
+                <li><strong>巨大地震の特性：</strong>破壊範囲が広すぎて1回で終わらないことがある。</li>
+            </ul>
+        </div>
+    </section>
+
+    <section>
+        <h2>2. 背景：なぜBパターンを警戒するのか（代表例）</h2>
+        <div class="section-card">
+            <p>記憶に残りやすい「Bパターン」の有名事例です。これらは印象的ですが、統計的には少数派（生存者バイアスが強い）であることを理解する必要があります。</p>
+
+            <div style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+                <strong>1. 2016年 熊本地震（教科書的Bパターン）</strong>
+                <ul>
+                    <li>4月14日 M6.5（震度7）→ 当時は「本震」と報道</li>
+                    <li>4月16日 M7.3（震度7）→ 実際にはこちらが本震</li>
+                    <li><span class="point-marker">👉</span> 最初の地震が十分大きく「これが本震だ」と思ったが、断層破壊が途中で止まり、より大きな破壊が続いた例。</li>
+                </ul>
+            </div>
+
+            <div style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+                <strong>2. 2011年 東北地方太平洋沖地震（規模差が極端な例）</strong>
+                <ul>
+                    <li>3月9日 M7.2 → 3月11日 M9.0</li>
+                    <li><span class="point-marker">👉</span> M7クラスでも「前震」になり得ることを示したが、これは超巨大プレート境界地震という特殊ケース。</li>
+                </ul>
+            </div>
+
+            <div>
+                <strong>3. 2004年 スマトラ沖地震</strong>
+                <ul>
+                    <li>本震（M9.1）の数日前〜数時間前にM7前後が複数発生。</li>
+                    <li><span class="point-marker">👉</span> 「前震かどうかは事後にしか分からない」典型例。</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>3. 分析：今回（島根県東部 M5.3）との関係</h2>
+        <div class="section-card">
+            <p>論理的な切り分け（トリアージ）を行います。</p>
+            
+            <div class="highlight-box">
+                <strong>統計的な傾向</strong>
+                <ul>
+                    <li><strong>Bパターンが多いのは：</strong> M7以上、断層長が長い、プレート境界型。</li>
+                    <li><strong>M5前後の地震では：</strong> 断層規模が小さく、「途中で止まって巨大破壊に移行する」余地が小さい。</li>
+                </ul>
+                <p>👉 <strong>Aパターンが圧倒的に多い</strong></p>
+            </div>
+
+            <p>Bが起きた有名例は確かにありますが、今回クラスでそれを主シナリオに置くのは統計的に無理があります。</p>
+            <p><strong>今回の揺れ方との整合性：</strong><br>
+            「本震っぽい揺れ → 5〜10分後に2〜3回 → その後は落ち着いている」<br>
+            これは教科書的なAパターンの挙動です。Bならば、エネルギーが溜まったままなので余震が減らず、むしろ強まる傾向があります。</p>
+        </div>
+    </section>
+
+    <section>
+        <div class="conclusion-wrapper">
+            <div class="conclusion-header">結論（超要約）</div>
+            
+            <h3>島根県東部の内陸地震における評価</h3>
+            <p><strong>Aパターン（本震→余震）が圧倒的に多く、Bパターン（前震→さらに大きな本震）は理論上あり得ても、現実的にはかなり低い確率です。</strong></p>
+
+            <h4>内陸だとBが起きにくい理由</h4>
+            <ol>
+                <li><strong>サイズの違い：</strong>内陸活断層は数km〜数十km。今回クラスでは「途中で止まって後から巨大破壊」の物理的余地が小さい。</li>
+                <li><strong>一発勝負：</strong>構造がシンプルで、割れるときは一気に割れて終わる（A）傾向が強い。</li>
+                <li><strong>履歴：</strong>島根県東部は「揺れは強いが局地的」な履歴が多く、連鎖破壊の履歴はほぼない。</li>
+            </ol>
+
+            <div style="background-color:#f9f9f9; padding:15px; margin-top:15px; border-radius:5px;">
+                <strong>専門家の体感分布（目安）：</strong><br>
+                Aパターン：9割以上<br>
+                Bパターン：数％レベル
+            </div>
+
+            <div class="action-point">
+                行動指針：<br>
+                「山は越えた可能性が高い。<br>ただし、2〜3日は余震でケガをしない設計にする」
+            </div>
+            <p style="text-align: center; font-size: 0.9rem; margin-top: 10px;">これが科学的・精神的・現実的に最もバランスの良い判断です。</p>
+        </div>
+    </section>
+</div>
+
+</body>
+</html>
