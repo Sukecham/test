@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>病院DX勉強会 - 電子カルテ未導入病院のためのDX戦略</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #0a192f;
+            --primary-blue: #1e3a5f;
+            --accent-cyan: #00d4ff;
+            --accent-teal: #00b894;
+            --accent-coral: #ff6b6b;
+            --accent-amber: #ffc93c;
+            --text-light: #e6f1ff;
+            --text-muted: #8892b0;
+            --surface-dark: #112240;
+            --surface-card: rgba(17, 34, 64, 0.8);
+            --gradient-primary: linear-gradient(135deg, #00d4ff 0%, #00b894 100%);
+            --gradient-warm: linear-gradient(135deg, #ff6b6b 0%, #ffc93c 100%);
+            --gradient-bg: linear-gradient(180deg, #0a192f 0%, #112240 50%, #1e3a5f 100%);
+        }
+
+```
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: 'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif;
+        background: var(--primary-dark);
+        color: var(--text-light);
+        line-height: 1.8;
+        overflow-x: hidden;
+    }
+
+    /* Animated Background */
+    .bg-pattern {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            radial-gradient(ellipse at 20% 20%, rgba(0, 212, 255, 0.08) 0%, transparent 50%),
+            radial-gradient(ellipse at 80% 80%, rgba(0, 184, 148, 0.08) 0%, transparent 50%),
+            radial-gradient(ellipse at 50% 50%, rgba(255, 107, 107, 0.03) 0%, transparent 60%);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .grid-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+        background-size: 60px 60px;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* Navigation */
+    .nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        padding: 1rem 2rem;
+        background: rgba(10, 25, 47, 0.95);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+    }
+
+    .nav-inner {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .nav-logo {
+        font-size: 1.2rem;
+        font-weight: 700;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+    }
+
+    .nav-links a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: color 0.3s ease;
+        position: relative;
+    }
+
+    .nav-links a:hover {
+        color: var(--accent-cyan);
+    }
+
+    .nav-links a::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--gradient-primary);
+        transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after {
+        width: 100%;
+    }
+
+    /* Hero Section */
+    .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        padding: 6rem 2rem;
+        overflow: hidden;
+    }
+
+    .hero-content {
+        text-align: center;
+        max-width: 1000px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-badge {
+        display: inline-block;
+        padding: 0.5rem 1.5rem;
+        background: rgba(0, 212, 255, 0.1);
+        border: 1px solid rgba(0, 212, 255, 0.3);
+        border-radius: 50px;
+        font-size: 0.85rem;
+        color: var(--accent-cyan);
+        margin-bottom: 2rem;
+        animation: fadeInUp 0.8s ease forwards;
+    }
+
+    .hero-title {
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        font-weight: 900;
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
+        animation: fadeInUp 0.8s ease 0.2s forwards;
+        opacity: 0;
+    }
+
+    .hero-title .highlight {
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hero-subtitle {
+        font-size: 1.3rem;
+        color: var(--text-muted);
+        max-width: 700px;
+        margin: 0 auto 3rem;
+        animation: fadeInUp 0.8s ease 0.4s forwards;
+        opacity: 0;
+    }
+
+    .hero-cta {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        animation: fadeInUp 0.8s ease 0.6s forwards;
+        opacity: 0;
+    }
+
+    .btn {
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: var(--gradient-primary);
+        color: var(--primary-dark);
+        border: none;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3);
+    }
+
+    .btn-outline {
+        background: transparent;
+        color: var(--accent-cyan);
+        border: 2px solid var(--accent-cyan);
+    }
+
+    .btn-outline:hover {
+        background: rgba(0, 212, 255, 0.1);
+        transform: translateY(-3px);
+    }
+
+    /* Floating Elements */
+    .float-element {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(60px);
+        animation: float 8s ease-in-out infinite;
+    }
+
+    .float-1 {
+        width: 400px;
+        height: 400px;
+        background: rgba(0, 212, 255, 0.15);
+        top: 10%;
+        left: -10%;
+        animation-delay: 0s;
+    }
+
+    .float-2 {
+        width: 300px;
+        height: 300px;
+        background: rgba(0, 184, 148, 0.15);
+        bottom: 10%;
+        right: -5%;
+        animation-delay: -4s;
+    }
+
+    /* Main Content */
+    .main {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Section Styles */
+    .section {
+        padding: 6rem 2rem;
+        position: relative;
+    }
+
+    .section-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+
+    .section-number {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--accent-cyan);
+        letter-spacing: 3px;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .section-title {
+        font-size: clamp(1.8rem, 4vw, 2.8rem);
+        font-weight: 700;
+        margin-bottom: 1rem;
+        line-height: 1.3;
+    }
+
+    .section-subtitle {
+        font-size: 1.1rem;
+        color: var(--text-muted);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* Cards */
+    .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .card {
+        background: var(--surface-card);
+        border: 1px solid rgba(0, 212, 255, 0.1);
+        border-radius: 16px;
+        padding: 2rem;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--gradient-primary);
+        transform: scaleX(0);
+        transition: transform 0.4s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(0, 212, 255, 0.3);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .card-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .card-icon.cyan { background: rgba(0, 212, 255, 0.15); }
+    .card-icon.teal { background: rgba(0, 184, 148, 0.15); }
+    .card-icon.coral { background: rgba(255, 107, 107, 0.15); }
+    .card-icon.amber { background: rgba(255, 201, 60, 0.15); }
+
+    .card-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .card-text {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+    }
+
+    /* Alert Box */
+    .alert {
+        padding: 1.5rem 2rem;
+        border-radius: 12px;
+        margin: 2rem 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .alert-warning {
+        background: rgba(255, 107, 107, 0.1);
+        border: 1px solid rgba(255, 107, 107, 0.3);
+    }
+
+    .alert-success {
+        background: rgba(0, 184, 148, 0.1);
+        border: 1px solid rgba(0, 184, 148, 0.3);
+    }
+
+    .alert-info {
+        background: rgba(0, 212, 255, 0.1);
+        border: 1px solid rgba(0, 212, 255, 0.3);
+    }
+
+    .alert-icon {
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .alert-content h4 {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .alert-content p {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+    }
+
+    /* Key Message Box */
+    .key-message {
+        background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(0, 184, 148, 0.1) 100%);
+        border: 2px solid rgba(0, 212, 255, 0.3);
+        border-radius: 16px;
+        padding: 2.5rem;
+        text-align: center;
+        margin: 3rem 0;
+        position: relative;
+    }
+
+    .key-message::before {
+        content: '💡';
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 2rem;
+        background: var(--primary-dark);
+        padding: 0 1rem;
+    }
+
+    .key-message-text {
+        font-size: 1.4rem;
+        font-weight: 700;
+        line-height: 1.6;
+    }
+
+    .key-message-text .highlight {
+        color: var(--accent-cyan);
+    }
+
+    /* Comparison Table */
+    .comparison-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 2rem 0;
+    }
+
+    .comparison-table th {
+        background: rgba(0, 212, 255, 0.1);
+        padding: 1.2rem 1.5rem;
+        text-align: left;
+        font-weight: 700;
+        font-size: 0.95rem;
+        border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+    }
+
+    .comparison-table th:first-child {
+        border-radius: 12px 0 0 0;
+    }
+
+    .comparison-table th:last-child {
+        border-radius: 0 12px 0 0;
+    }
+
+    .comparison-table td {
+        padding: 1.2rem 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        font-size: 0.95rem;
+    }
+
+    .comparison-table tr:hover td {
+        background: rgba(0, 212, 255, 0.03);
+    }
+
+    .comparison-table tr:last-child td:first-child {
+        border-radius: 0 0 0 12px;
+    }
+
+    .comparison-table tr:last-child td:last-child {
+        border-radius: 0 0 12px 0;
+    }
+
+    /* Misconception List */
+    .misconception-list {
+        display: grid;
+        gap: 1rem;
+        margin: 2rem 0;
+    }
+
+    .misconception-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+        background: rgba(255, 107, 107, 0.08);
+        border-left: 4px solid var(--accent-coral);
+        border-radius: 0 8px 8px 0;
+        transition: all 0.3s ease;
+    }
+
+    .misconception-item:hover {
+        background: rgba(255, 107, 107, 0.12);
+        transform: translateX(5px);
+    }
+
+    .misconception-icon {
+        font-size: 1.2rem;
+    }
+
+    .misconception-text {
+        font-size: 1rem;
+    }
+
+    /* Definition Box */
+    .definition-box {
+        background: linear-gradient(135deg, var(--surface-dark) 0%, rgba(0, 212, 255, 0.05) 100%);
+        border: 1px solid rgba(0, 212, 255, 0.2);
+        border-radius: 16px;
+        padding: 3rem;
+        margin: 2rem 0;
+        position: relative;
+    }
+
+    .definition-label {
+        position: absolute;
+        top: -12px;
+        left: 30px;
+        background: var(--accent-cyan);
+        color: var(--primary-dark);
+        padding: 0.3rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+
+    .definition-text {
+        font-size: 1.2rem;
+        line-height: 2;
+    }
+
+    .definition-text strong {
+        color: var(--accent-cyan);
+    }
+
+    /* Flow Diagram */
+    .flow-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 2rem;
+        margin: 2rem 0;
+    }
+
+    .flow-item {
+        background: var(--surface-card);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 0.8rem 1.2rem;
+        font-size: 0.9rem;
+        text-align: center;
+    }
+
+    .flow-arrow {
+        color: var(--accent-cyan);
+        font-size: 1.5rem;
+    }
+
+    /* Phase Timeline */
+    .timeline {
+        position: relative;
+        padding-left: 3rem;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: linear-gradient(180deg, var(--accent-cyan), var(--accent-teal), var(--accent-amber), var(--accent-coral));
+        border-radius: 3px;
+    }
+
+    .timeline-item {
+        position: relative;
+        padding: 2rem;
+        background: var(--surface-card);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        transition: all 0.3s ease;
+    }
+
+    .timeline-item:hover {
+        border-color: rgba(0, 212, 255, 0.3);
+        transform: translateX(10px);
+    }
+
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -3rem;
+        top: 2.5rem;
+        width: 16px;
+        height: 16px;
+        background: var(--primary-dark);
+        border: 3px solid var(--accent-cyan);
+        border-radius: 50%;
+        transform: translateX(-50%);
+    }
+
+    .timeline-item.phase-0::before { border-color: var(--accent-cyan); }
+    .timeline-item.phase-1::before { border-color: var(--accent-teal); }
+    .timeline-item.phase-2::before { border-color: var(--accent-amber); }
+    .timeline-item.phase-3::before { border-color: var(--accent-coral); }
+
+    .phase-badge {
+        display: inline-block;
+        padding: 0.3rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .phase-badge.cyan { background: rgba(0, 212, 255, 0.2); color: var(--accent-cyan); }
+    .phase-badge.teal { background: rgba(0, 184, 148, 0.2); color: var(--accent-teal); }
+    .phase-badge.amber { background: rgba(255, 201, 60, 0.2); color: var(--accent-amber); }
+    .phase-badge.coral { background: rgba(255, 107, 107, 0.2); color: var(--accent-coral); }
+
+    .timeline-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .timeline-subtitle {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .task-list {
+        list-style: none;
+    }
+
+    .task-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.8rem;
+        padding: 0.5rem 0;
+        font-size: 0.95rem;
+    }
+
+    .task-list li::before {
+        content: '✓';
+        color: var(--accent-teal);
+        font-weight: bold;
+    }
+
+    /* Security Grid */
+    .security-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+
+    .security-item {
+        background: var(--surface-card);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .security-item:hover {
+        border-color: rgba(255, 107, 107, 0.3);
+        transform: translateY(-5px);
+    }
+
+    .security-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .security-label {
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    /* Goal Box */
+    .goal-section {
+        background: linear-gradient(135deg, rgba(0, 184, 148, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+        border: 2px solid rgba(0, 184, 148, 0.3);
+        border-radius: 20px;
+        padding: 3rem;
+        margin: 3rem 0;
+    }
+
+    .goal-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .goal-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .goal-subtitle {
+        color: var(--text-muted);
+    }
+
+    .goal-list {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .goal-item {
+        display: flex;
+        gap: 1.5rem;
+        align-items: flex-start;
+        padding: 1.5rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 12px;
+    }
+
+    .goal-number {
+        width: 50px;
+        height: 50px;
+        background: var(--gradient-primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 1.3rem;
+        color: var(--primary-dark);
+        flex-shrink: 0;
+    }
+
+    .goal-content h4 {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .goal-content p {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+    }
+
+    /* Footer */
+    .footer {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: rgba(0, 0, 0, 0.3);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .footer-text {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes float {
+        0%, 100% {
+            transform: translate(0, 0);
+        }
+        50% {
+            transform: translate(20px, -20px);
+        }
+    }
+
+    /* Scroll Animations */
+    .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: all 0.8s ease;
+    }
+
+    .animate-on-scroll.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Good/Bad Comparison */
+    .comparison-box {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin: 2rem 0;
+    }
+
+    .compare-card {
+        border-radius: 12px;
+        padding: 2rem;
+    }
+
+    .compare-card.bad {
+        background: rgba(255, 107, 107, 0.08);
+        border: 1px solid rgba(255, 107, 107, 0.3);
+    }
+
+    .compare-card.good {
+        background: rgba(0, 184, 148, 0.08);
+        border: 1px solid rgba(0, 184, 148, 0.3);
+    }
+
+    .compare-header {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        margin-bottom: 1.5rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+    .compare-list {
+        list-style: none;
+    }
+
+    .compare-list li {
+        padding: 0.6rem 0;
+        font-size: 0.95rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .compare-list li:last-child {
+        border-bottom: none;
+    }
+
+    /* Three Column Layout */
+    .three-col {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin: 2rem 0;
+    }
+
+    .flow-card {
+        background: var(--surface-card);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .flow-card-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .flow-card-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .flow-card-desc {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .nav-links {
+            display: none;
+        }
+
+        .section {
+            padding: 4rem 1.5rem;
+        }
+
+        .timeline {
+            padding-left: 2rem;
+        }
+
+        .timeline-item::before {
+            left: -2rem;
+        }
+
+        .definition-box {
+            padding: 2rem 1.5rem;
+        }
+    }
+
+    /* Print Styles */
+    @media print {
+        .nav, .bg-pattern, .grid-overlay, .float-element {
+            display: none;
+        }
+
+        body {
+            background: white;
+            color: black;
+        }
+
+        .section {
+            break-inside: avoid;
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+    <div class="bg-pattern"></div>
+    <div class="grid-overlay"></div>
+
+```
+<!-- Navigation -->
+<nav class="nav">
+    <div class="nav-inner">
+        <div class="nav-logo">病院DX勉強会</div>
+        <ul class="nav-links">
+            <li><a href="#section1">背景</a></li>
+            <li><a href="#section2">再定義</a></li>
+            <li><a href="#section3">構造理解</a></li>
+            <li><a href="#section4">見える化</a></li>
+            <li><a href="#section5">ロードマップ</a></li>
+            <li><a href="#section6">セキュリティ</a></li>
+            <li><a href="#section7">ゴール</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<header class="hero">
+    <div class="float-element float-1"></div>
+    <div class="float-element float-2"></div>
+    <div class="hero-content">
+        <span class="hero-badge">📚 Hospital DX Training</span>
+        <h1 class="hero-title">
+            電子カルテ未導入病院のための<br>
+            <span class="highlight">DX戦略</span>入門
+        </h1>
+        <p class="hero-subtitle">
+            「うちはまだそこまでじゃない」で終わらせない。<br>
+            構造的な視点から病院DXを理解する勉強会
+        </p>
+        <div class="hero-cta">
+            <a href="#section1" class="btn btn-primary">学習を始める →</a>
+            <a href="#section7" class="btn btn-outline">ゴールを確認</a>
+        </div>
+    </div>
+</header>
+
+<main class="main">
+    <!-- Section 1 -->
+    <section class="section" id="section1">
+        <div class="section-inner">
+            <div class="section-header animate-on-scroll">
+                <span class="section-number">SECTION Ⅰ</span>
+                <h2 class="section-title">なぜ「電子カルテ未導入病院」で<br>DXを語る必要があるのか</h2>
+                <p class="section-subtitle">前提の言語化 — ここを曖昧にすると思考停止が起こります</p>
+            </div>
+
+            <div class="alert alert-warning animate-on-scroll">
+                <span class="alert-icon">⚠️</span>
+                <div class="alert-content">
+                    <h4>よくある思考停止パターン</h4>
+                    <p>「うちはまだそこまでじゃない」「カルテ入ってからでいい」— この考え方が最大の障壁です</p>
+                </div>
+            </div>
+
+            <h3 style="font-size: 1.5rem; margin: 3rem 0 2rem; color: var(--accent-cyan);">外部環境はすでに "DX前提" に変わっている</h3>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">電子カルテの有無に関係なく、病院を取り巻く制約条件は変わりました。</p>
+
+            <div class="card-grid animate-on-scroll">
+                <div class="card">
+                    <div class="card-icon cyan">👥</div>
+                    <h4 class="card-title">人材の絶対数</h4>
+                    <p class="card-text">医師・看護師・事務の絶対数が増えない現実。どれだけ採用活動をしても、根本的な人手不足は解消されません。</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon teal">🔀</div>
+                    <h4 class="card-title">業務の複雑化</h4>
+                    <p class="card-text">業務は複雑化・分断化している。一人が担当する業務範囲は広がり、専門性と汎用性の両立が求められています。</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon coral">⏰</div>
+                    <h4 class="card-title">働き方改革</h4>
+                    <p class="card-text">働き方改革・タスクシフトで、属人的運用が許容されなくなっている。個人の頑張りに依存する体制は限界です。</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon amber">🔗</div>
+                    <h4 class="card-title">院外との接続</h4>
+                    <p class="card-text">地域連携・紹介・逆紹介・在宅連携など、院外との接続点が増えている。孤立した運用では対応できません。</p>
+                </div>
+            </div>
+
+            <div class="key-message animate-on-scroll">
+                <p class="key-message-text">
+                    「<span class="highlight">人が頑張る前提</span>」「<span class="highlight">紙で回す前提</span>」自体が、<br>
+                    構造的に破綻し始めている
+                </p>
+            </div>
+
+            <div class="alert alert-info animate-on-scroll">
+                <span class="alert-icon">💬</span>
+                <div class="alert-content">
+                    <h4>重要なメッセージ</h4>
+                    <p>DXは「進んだ病院がやる話」ではなく、<strong>「立ち行かなくなる前にやらないと詰む話」</strong></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2 -->
+    <section class="section" id="section2" style="background: rgba(0,0,0,0.2);">
+        <div class="section-inner">
+            <div class="section-header animate-on-scroll">
+                <span class="section-number">SECTION Ⅱ</span>
+                <h2 class="section-title">DXの再定義</h2>
+                <p class="section-subtitle">病院文脈での正確な定義を理解する</p>
+            </div>
+
+            <h3 style="font-size: 1.3rem; margin-bottom: 1.5rem; color: var(--accent-coral);">❌ よくある誤解の整理</h3>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">これらはすべて「DXを失敗させる理解」です</p>
+
+            <div class="misconception-list animate-on-scroll">
+                <div class="misconception-item">
+                    <span class="misconception-icon">✖️</span>
+                    <span class="misconception-text">DX ＝ 電子カルテ導入</span>
+                </div>
+                <div class="misconception-item">
+                    <span class="misconception-icon">✖️</span>
+                    <span class="misconception-text">DX ＝ IT化</span>
+                </div>
+                <div class="misconception-item">
+                    <span class="misconception-icon">✖️</span>
+                    <span class="misconception-text">DX ＝ 若い人や情報担当の仕事</span>
+                </div>
+                <div class="misconception-item">
+                    <span class="misconception-icon">✖️</span>
+                    <span class="misconception-text">DX ＝ 現場が忙しくなるやつ</span>
+                </div>
+                <div class="misconception-item">
+                    <span class="misconception-icon">✖️</span>
+                    <span class="misconception-text">DX ＝ ベンダーがやってくれるもの</span>
+                </div>
+            </div>
+
+            <h3 style="font-size: 1.3rem; margin: 3rem 0 1.5rem; color: var(--accent-teal);">✓ 病院DXの実用的定義</h3>
+
+            <div class="definition-box animate-on-scroll">
+                <span class="definition-label">DEFINITION</span>
+                <p class="definition-text">
+                    <strong>病院DX</strong>とは、<br>
+                    医療の<strong>安全・質・生産性・持続可能性</strong>を高めるために、<br>
+                    <strong>業務プロセス・情報の流れ・意思決定の仕組み</strong>を、<br>
+                    <strong>データ前提</strong>で再設計すること
+                </p>
+            </div>
+
+            <div class="three-col animate-on-scroll">
+                <div class="flow-card">
+                    <div class="flow-card-icon">🏥</div>
+                    <div class="flow-card-title">主語は「病院」</div>
+                    <div class="flow-card-desc">個人や部署ではなく、病院全体として取り組む</div>
+                </div>
+                <div class="flow-card">
+                    <div class="flow-card-icon">⚙️</div>
+                    <div class="flow-card-title">対象は「仕組み」</div>
+                    <div class="flow-card-desc">ツールや機器ではなく、業務の構造そのもの</div>
+                </div>
+                <div class="flow-card">
+                    <div class="flow-card-icon">🔧</div>
+                    <div class="flow-card-title">ITは「手段」</div>
+                    <div class="flow-card-desc">目的ではなく、あくまで実現のためのツール</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3 -->
+    <section class="section" id="section3">
+        <div class="section-inner">
+            <div class="section-header animate-on-scroll">
+                <span class="section-number">SECTION Ⅲ</span>
+                <h2 class="section-title">「デジタル化」「自動化」「DX」の違い</h2>
+                <p class="section-subtitle">構造で理解する — RPAがある病院では最大の理解ポイント</p>
+            </div>
+
+            <h3 style="font-size: 1.3rem; margin-bottom: 2rem;">レイヤーで整理する</h3>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">同じ業務でも、どこを変えているかで意味が全く違います</p>
+
+            <div class="comparison-table-wrapper animate-on-scroll" style="overflow-x: auto;">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">レベル</th>
+                            <th style="width: 35%;">やっていること</th>
+                            <th style="width: 40%;">本質</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="color: var(--accent-cyan); font-weight: 600;">デジタル化</td>
+                            <td>紙 → Excel / Word<br>電話 → メール</td>
+                            <td>→ 形が変わっただけ</td>
+                        </tr>
+                        <tr>
+                            <td style="color: var(--accent-amber); font-weight: 600;">自動化（RPA）</td>
+                            <td>人がやっていた操作をロボットがやる</td>
+                            <td>→ 速くなるが、構造はそのまま</td>
+                        </tr>
+                        <tr>
+                            <td style="color: var(--accent-teal); font-weight: 600;">DX</td>
+                            <td>
+                                • なぜその入力が必要か<br>
+                                • どこで情報が生まれ、使われるべきか<br>
+                                • 誰が判断すべきか<br>
+                                を作り直す
+                            </td>
+                            <td>→ 仕組み自体を再設計</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="key-message animate-on-scroll">
+                <p class="key-message-text">
+                    RPAは「<span class="highlight">DXの材料</span>」にはなるが、<br>
+                    DXそのものではない
+                </p>
+            </div>
+
+            <h3 style="font-size: 1.3rem; margin: 3rem 0 1.5rem;">RPAをDXに昇華できるかの分岐点</h3>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">同じRPA導入でも結果が分かれる理由</p>
+
+            <div class="comparison-box animate-on-scroll">
+                <div class="compare-card bad">
+                    <div class="compare-header">
+                        <span>❌</span>
+                        <span>悪い例</span>
+                    </div>
+                    <ul class="compare-list">
+                        <li>紙帳票 → Excel → RPAで基幹入力</li>
+                        <li>例外処理が多く、止まると人がパニック</li>
+                        <li>担当者しか触れないブラックボックス</li>
+                    </ul>
+                </div>
+                <div class="compare-card good">
+                    <div class="compare-header">
+                        <span>✓</span>
+                        <span>良い例</span>
+                    </div>
+                    <ul class="compare-list">
+                        <li>入力源を減らす／統一する</li>
+                        <li>マスタを整える</li>
+                        <li>RPAは「暫定措置」と認識</li>
+                        <li>いずれ無くす前提で使う</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="alert alert-success animate-on-scroll">
+                <span class="alert-icon">🎯</span>
+                <div class="alert-content">
+                    <h4>核心メッセージ</h4>
+                    <p>RPAは "今の仕組みを延命する薬" にも、"次の構造に移るための松葉杖" にもなる</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4 -->
+    <section class="section" id="section4" style="background: rgba(0,0,0,0.2);">
+        <div class="section-inner">
+            <div class="section-header animate-on-scroll">
+                <span class="section-number">SECTION Ⅳ</span>
+                <h2 class="section-title">DXを始める前に必ずやるべき<br>「現状の見える化」</h2>
+                <p class="section-subtitle">電子カルテがない病院ほど、ここが効きます</p>
+            </div>
+
+            <h3 style="font-size: 1.3rem; margin-bottom: 2rem;">可視化すべき3つの流れ</h3>
+
+            <div class="card-grid animate-on-scroll">
+                <div class="card">
+                    <div class="card-icon cyan">📨</div>
+                    <h4 class="card-title">① 情報の流れ</h4>
+                    <ul class="card-text" style="list-style: none; padding: 0;">
+                        <li style="padding: 0.3rem 0;">• 誰が最初に情報を持つか</li>
+                        <li style="padding: 0.3rem 0;">• 誰に伝わるまでに何工程あるか</li>
+                        <li style="padding: 0.3rem 0;">• どこで情報が欠落・変質するか</li>
+                    </ul>
+                    <div class="flow-container" style="padding: 1rem 0; margin: 1rem 0; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                        <span class="flow-item">口頭</span>
+                        <span class="flow-arrow">→</span>
+                        <span class="flow-item">メモ</span>
+                        <span class="flow-arrow">→</span>
+                        <span class="flow-item">清書</span>
+                        <span class="flow-arrow">→</span>
+                        <span class="flow-item">転記</span>
+                        <span class="flow-arrow">→</span>
+                        <span class="flow-item">再入力</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon amber">🎯</div>
+                    <h4 class="card-title">② 意思決定の流れ</h4>
+                    <ul class="card-text" style="list-style: none; padding: 0;">
+                        <li style="padding: 0.3rem 0;">• 誰が判断権限を持っているか</li>
+                        <li style="padding: 0.3rem 0;">• 例外は誰が処理しているか</li>
+                        <li style="padding: 0.3rem 0;">• 「確認」が何段階あるか</li>
+                    </ul>
+                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(255,107,107,0.1); border-radius: 8px; font-size: 0.9rem;">
+                        <strong style="color: var(--accent-coral);">多くの病院で起きていること：</strong><br>
+                        現場は判断できない → 管理職は情報が遅い → 結果、誰も責任を持てない
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon teal">📊</div>
+                    <h4 class="card-title">③ データの流れ</h4>
+                    <ul class="card-text" style="list-style: none; padding: 0;">
+                        <li style="padding: 0.3rem 0;">• 同じ情報が何回入力されているか</li>
+                        <li style="padding: 0.3rem 0;">• 正がどれか分からないデータはどれか</li>
+                        <li style="padding: 0.3rem 0;">• 集計にどれだけ人手がかかっているか</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 style="font-size: 1.3rem; margin: 3rem 0 1.5rem; color: var(--accent-coral);">⚠️ ここでやってはいけないこと</h3>
+
+            <div class="misconception-list animate-on-scroll">
+                <div class="misconception-item">
+                    <span class="misconception-icon">🚫</span>
+                    <span class="misconception-text">いきなり「理想システム図」を描く</span>
+                </div>
+                <div class="misconception-item">
+                    <span class="misconception-icon">🚫</span>
+                    <span class="misconception-text">電子カルテ前提で話を進める</span>
+                </div>
+                <div class="misconception-item">
+                    <span class="misconception-icon">🚫</span>
+                    <span class="misconception-text">全部一気に変えようとする</span>
+                </div>
+            </div>
+
+            <div class="key-message animate-on-scroll">
+                <p class="key-message-text">
+                    まずやるのは<br>
+                    「<span class="highlight">現実を正確に言語化すること</span>」
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5 -->
+    <section class="section" id="section5">
+        <div class="section-inner">
+            <div class="section-header animate-on-scroll">
+                <span class="section-number">SECTION Ⅴ</span>
+                <h2 class="section-title">病院DXの進め方</h2>
+                <p class="section-subtitle">実務レベルのロードマップ</p>
+            </div>
+
+            <div class="timeline animate-on-scroll">
+                <div class="timeline-item phase-0">
+                    <span class="phase-badge cyan">PHASE 0</span>
+                    <h4 class="timeline-title">DX以前の整理（最重要）</h4>
+                    <p class="timeline-subtitle">ここを飛ばすと、ほぼ確実に失敗します</p>
+                    <ul class="task-list">
+                        <li>DXの意思決定者を明確にする（院長？事務長？DX委員会？）</li>
+                        <li>現場要望の受け口を一本化</li>
+                        <li>「今はやらない」ことを決める勇気</li>
+                    </ul>
+                    <div class="alert alert-info" style="margin-top: 1.5rem;">
+                        <span class="alert-icon">💡</span>
+                        <div class="alert-content">
+                            <p>DXで一番大事なのは「<strong>選ばないことを決めること</strong>」</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item phase-1">
+                    <span class="phase-badge teal">PHASE 1</span>
+                    <h4 class="timeline-title">整流化（紙があってもできるDX）</h4>
+                    <p class="timeline-subtitle">狙いは「混線をほどく」こと</p>
+                    <ul class="task-list">
+                        <li>フォーマットの統一</li>
+                        <li>入力ルールの統一</li>
+                        <li>マスタ（人・部署・物品・診療区分）の整理</li>
+                        <li>RPA対象業務の棚卸し</li>
+                    </ul>
+                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,184,148,0.1); border-radius: 8px; font-size: 0.9rem;">
+                        ✨ この段階で成果が出ると、現場の信頼が生まれます
+                    </div>
+                </div>
+
+                <div class="timeline-item phase-2">
+                    <span class="phase-badge amber">PHASE 2</span>
+                    <h4 class="timeline-title">プロセス改革</h4>
+                    <p class="timeline-subtitle">ここからがDXの本丸</p>
+                    <ul class="task-list">
+                        <li>部署間をまたぐ業務を狙う</li>
+                        <li>「誰が入力するか」より「どこで情報が生まれるか」に注目</li>
+                        <li>中間帳票・中間確認を減らす</li>
+                    </ul>
+                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(255,201,60,0.1); border-radius: 8px; font-size: 0.9rem;">
+                        📌 電子カルテ導入は、このフェーズの途中または後半で意味を持ちます
+                    </div>
+                </div>
+
+                <div class="timeline-item phase-3">
+                    <span class="phase-badge coral">PHASE 3</span>
+                    <h4 class="timeline-title">データ駆動</h4>
+                    <p class="timeline-subtitle">データを「改善」のために使う</p>
+                    <ul class="task-list">
+                        <li>KPIを「管理」ではなく「改善」に使う</li>
+                        <li>数字は人を責めるためではなく、仕組みを直すために使う</li>
+                        <li>現場が「数字を見て自分で考える」状態を作る</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 6 -->
+    <section class="section" id="section6" style="background: rgba(0,0,0,0.2);">
+        <div class="section-inner">
+            <div class="section-header animate-on-scroll">
+                <span class="section-number">SECTION Ⅵ</span>
+                <h2 class="section-title">セキュリティ・ガバナンス</h2>
+                <p class="section-subtitle">最低限だが致命的 — DXで事故が起きるのは、だいたいここです</p>
+            </div>
+
+            <div class="security-grid animate-on-scroll">
+                <div class="security-item">
+                    <div class="security-icon">💻</div>
+                    <div class="security-label">端末管理</div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">誰がどの端末を使うか</p>
+                </div>
+                <div class="security-item">
+                    <div class="security-icon">🔐</div>
+                    <div class="security-label">アカウント管理</div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">共有アカウント禁止</p>
+                </div>
+                <div class="security-item">
+                    <div class="security-icon">🛡️</div>
+                    <div class="security-label">権限設計</div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">見えていいもの／ダメなもの</p>
+                </div>
+                <div class="security-item">
+                    <div class="security-icon">📝</div>
+                    <div class="security-label">ログ</div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">何が起きたか追えるか</p>
+                </div>
+                <div class="security-item">
+                    <div class="security-icon">💾</div>
+                    <div class="security-label">バックアップとBCP</div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">事業継続計画</p>
+                </div>
+            </div>
+
+            <div class="key-message animate-on-scroll">
+                <p class="key-message-text">
+                    セキュリティはDXの "<span class="highlight">ブレーキ</span>" ではなく<br>
+                    "<span class="highlight">保険</span>"
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 7 -->
+    <section class="section" id="section7">
+        <div class="section-inner">
+            <div class="section-header animate-on-scroll">
+                <span class="section-number">SECTION Ⅶ</span>
+                <h2 class="section-title">この講義のゴール設定</h2>
+                <p class="section-subtitle">「DXを理解した」では終わりません</p>
+            </div>
+
+            <div class="goal-section animate-on-scroll">
+                <div class="goal-header">
+                    <h3 class="goal-title">🎯 真のゴール</h3>
+                    <p class="goal-subtitle">この勉強会で目指すべき到達点</p>
+                </div>
+
+                <div class="goal-list">
+                    <div class="goal-item">
+                        <div class="goal-number">1</div>
+                        <div class="goal-content">
+                            <h4>自院の業務を「構造として」考え始められる人が数人生まれること</h4>
+                            <p>個別の問題ではなく、仕組みの問題として捉える視点を持つ人材の育成</p>
+                        </div>
+                    </div>
+                    <div class="goal-item">
+                        <div class="goal-number">2</div>
+                        <div class="goal-content">
+                            <h4>電子カルテ導入を「目的」ではなく「手段」として語れる状態になること</h4>
+                            <p>システム導入がゴールではなく、業務改善のための一つの選択肢であると理解する</p>
+                        </div>
+                    </div>
+                    <div class="goal-item">
+                        <div class="goal-number">3</div>
+                        <div class="goal-content">
+                            <h4>RPAを「便利ツール」ではなく「過渡期の装置」と認識できること</h4>
+                            <p>自動化は最終形ではなく、本質的な構造改革への橋渡しであると捉える</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-success animate-on-scroll" style="margin-top: 3rem;">
+                <span class="alert-icon">🚀</span>
+                <div class="alert-content">
+                    <h4>最後に</h4>
+                    <p>DXは一日にしてならず。でも、今日この場で「構造的に考える」という種が蒔かれれば、それが病院の未来を変える第一歩になります。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <p class="footer-text">病院DX勉強会 — 電子カルテ未導入病院のためのDX戦略入門</p>
+</footer>
+
+<script>
+    // Scroll Animation
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        observer.observe(el);
+    });
+
+    // Smooth scroll for navigation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Navigation background on scroll
+    const nav = document.querySelector('.nav');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            nav.style.background = 'rgba(10, 25, 47, 0.98)';
+        } else {
+            nav.style.background = 'rgba(10, 25, 47, 0.95)';
+        }
+    });
+</script>
+
+</body>
+</html>
