@@ -1,0 +1,1722 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新規事業企画書 | 医療DX共創エコシステム</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #0a0a0a;
+            --white: #ffffff;
+            --gray-50: #fafafa;
+            --gray-100: #f4f4f5;
+            --gray-200: #e4e4e7;
+            --gray-400: #a1a1aa;
+            --gray-600: #52525b;
+            --gray-800: #27272a;
+            --emerald: #10b981;
+            --emerald-dark: #059669;
+            --cyan: #06b6d4;
+            --violet: #8b5cf6;
+            --rose: #f43f5e;
+            --amber: #f59e0b;
+        }
+
+```
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: 'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif;
+        background: var(--black);
+        color: var(--white);
+        line-height: 1.8;
+        overflow-x: hidden;
+    }
+
+    /* ========================================
+       HERO SECTION
+    ======================================== */
+    .hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        padding: 2rem;
+        overflow: hidden;
+    }
+
+    .hero-bg {
+        position: absolute;
+        inset: 0;
+        background: 
+            radial-gradient(ellipse 80% 50% at 50% -20%, rgba(16, 185, 129, 0.3), transparent),
+            radial-gradient(ellipse 60% 40% at 80% 60%, rgba(6, 182, 212, 0.2), transparent),
+            radial-gradient(ellipse 50% 30% at 20% 80%, rgba(139, 92, 246, 0.15), transparent);
+        animation: bgPulse 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes bgPulse {
+        0% { opacity: 0.8; transform: scale(1); }
+        100% { opacity: 1; transform: scale(1.05); }
+    }
+
+    .hero-grid {
+        position: absolute;
+        inset: 0;
+        background-image: 
+            linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+        background-size: 60px 60px;
+        mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 10;
+        text-align: center;
+        max-width: 1000px;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+        padding: 0.6rem 1.5rem;
+        border-radius: 100px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-bottom: 2rem;
+        animation: fadeInDown 0.8s ease-out;
+    }
+
+    .hero-badge::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background: var(--emerald);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.5; transform: scale(1.2); }
+    }
+
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-title {
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        font-weight: 900;
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
+        animation: fadeInUp 0.8s ease-out 0.2s backwards;
+    }
+
+    .hero-title .gradient-text {
+        background: linear-gradient(135deg, var(--emerald) 0%, var(--cyan) 50%, var(--violet) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hero-subtitle {
+        font-size: clamp(1rem, 2vw, 1.25rem);
+        color: var(--gray-400);
+        margin-bottom: 3rem;
+        animation: fadeInUp 0.8s ease-out 0.4s backwards;
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-meta {
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        flex-wrap: wrap;
+        animation: fadeInUp 0.8s ease-out 0.6s backwards;
+    }
+
+    .hero-meta-item {
+        text-align: center;
+    }
+
+    .hero-meta-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--gray-400);
+        margin-bottom: 0.25rem;
+    }
+
+    .hero-meta-value {
+        font-weight: 700;
+        font-size: 1rem;
+    }
+
+    .scroll-hint {
+        position: absolute;
+        bottom: 3rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        animation: fadeInUp 0.8s ease-out 1s backwards;
+    }
+
+    .scroll-hint span {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--gray-400);
+    }
+
+    .scroll-line {
+        width: 1px;
+        height: 60px;
+        background: linear-gradient(to bottom, var(--emerald), transparent);
+        animation: scrollLine 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollLine {
+        0%, 100% { transform: scaleY(1); opacity: 1; }
+        50% { transform: scaleY(0.5); opacity: 0.5; }
+    }
+
+    /* ========================================
+       NAVIGATION
+    ======================================== */
+    .nav {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(10, 10, 10, 0.8);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding: 1rem 2rem;
+    }
+
+    .nav-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        gap: 0.25rem;
+        flex-wrap: wrap;
+    }
+
+    .nav-link {
+        color: var(--gray-400);
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .nav-link:hover {
+        color: var(--white);
+        background: rgba(255,255,255,0.1);
+    }
+
+    /* ========================================
+       MAIN
+    ======================================== */
+    .main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    /* ========================================
+       SECTION
+    ======================================== */
+    .section {
+        padding: 8rem 0;
+        position: relative;
+    }
+
+    .section-header {
+        margin-bottom: 4rem;
+    }
+
+    .section-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .section-number {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--emerald);
+        letter-spacing: 0.1em;
+    }
+
+    .section-line {
+        width: 60px;
+        height: 1px;
+        background: linear-gradient(90deg, var(--emerald), transparent);
+    }
+
+    .section-title {
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 900;
+        line-height: 1.3;
+        margin-bottom: 1rem;
+    }
+
+    .section-lead {
+        font-size: 1.1rem;
+        color: var(--gray-400);
+        max-width: 700px;
+    }
+
+    /* ========================================
+       SUMMARY SECTION
+    ======================================== */
+    .summary-card {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 24px;
+        padding: 3rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .summary-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--emerald), var(--cyan), var(--violet));
+    }
+
+    .summary-text {
+        font-size: 1.15rem;
+        line-height: 2.2;
+        margin-bottom: 1.5rem;
+    }
+
+    .summary-text:last-child {
+        margin-bottom: 0;
+    }
+
+    .highlight {
+        position: relative;
+        color: var(--emerald);
+        font-weight: 700;
+    }
+
+    .callout-box {
+        background: rgba(0,0,0,0.3);
+        border-radius: 16px;
+        padding: 1.5rem 2rem;
+        margin: 2rem 0;
+        border-left: 3px solid var(--emerald);
+    }
+
+    .callout-box p {
+        font-size: 1.05rem;
+        margin: 0;
+    }
+
+    /* ========================================
+       PROBLEM SECTION
+    ======================================== */
+    .problem-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        margin-top: 3rem;
+    }
+
+    @media (max-width: 768px) {
+        .problem-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .problem-card {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 20px;
+        padding: 2rem;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .problem-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.02) 100%);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }
+
+    .problem-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(255,255,255,0.2);
+    }
+
+    .problem-card:hover::before {
+        opacity: 1;
+    }
+
+    .problem-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .problem-card.red .problem-icon { background: rgba(244, 63, 94, 0.2); }
+    .problem-card.gray .problem-icon { background: rgba(161, 161, 170, 0.2); }
+    .problem-card.amber .problem-icon { background: rgba(245, 158, 11, 0.2); }
+    .problem-card.violet .problem-icon { background: rgba(139, 92, 246, 0.2); }
+
+    .problem-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+
+    .problem-text {
+        font-size: 0.95rem;
+        color: var(--gray-400);
+        line-height: 1.8;
+    }
+
+    .subsection-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .subsection-title::before {
+        content: '';
+        width: 4px;
+        height: 24px;
+        background: var(--emerald);
+        border-radius: 2px;
+    }
+
+    .subsection {
+        margin-top: 4rem;
+    }
+
+    /* ========================================
+       COMPARISON TABLE
+    ======================================== */
+    .table-wrapper {
+        margin-top: 2rem;
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.95rem;
+    }
+
+    .comparison-table thead {
+        background: rgba(255,255,255,0.05);
+    }
+
+    .comparison-table th {
+        padding: 1.25rem 1.5rem;
+        text-align: left;
+        font-weight: 700;
+        font-size: 0.9rem;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .comparison-table th:first-child {
+        width: 140px;
+    }
+
+    .comparison-table td {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        vertical-align: top;
+    }
+
+    .comparison-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .comparison-table tbody tr:hover {
+        background: rgba(255,255,255,0.02);
+    }
+
+    .comparison-table td:first-child {
+        font-weight: 600;
+        color: var(--gray-400);
+        background: rgba(255,255,255,0.02);
+    }
+
+    .comparison-table .highlight-cell {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--emerald);
+        font-weight: 500;
+    }
+
+    /* ========================================
+       SOLUTIONS
+    ======================================== */
+    .solution-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    @media (max-width: 900px) {
+        .solution-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .solution-card {
+        background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 20px;
+        padding: 2rem;
+        position: relative;
+        transition: all 0.4s ease;
+    }
+
+    .solution-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--emerald);
+        box-shadow: 0 20px 40px rgba(16, 185, 129, 0.1);
+    }
+
+    .solution-number {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        font-size: 3rem;
+        font-weight: 900;
+        color: rgba(255,255,255,0.05);
+        line-height: 1;
+    }
+
+    .solution-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, var(--emerald), var(--cyan));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .solution-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+
+    .solution-text {
+        font-size: 0.9rem;
+        color: var(--gray-400);
+        line-height: 1.7;
+    }
+
+    /* ========================================
+       ROLE SECTION
+    ======================================== */
+    .role-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+
+    @media (max-width: 900px) {
+        .role-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .role-card {
+        border-radius: 24px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.02);
+    }
+
+    .role-header {
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .role-header.sier {
+        background: linear-gradient(135deg, rgba(6, 182, 212, 0.3) 0%, rgba(139, 92, 246, 0.2) 100%);
+    }
+
+    .role-header.medical {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(6, 182, 212, 0.2) 100%);
+    }
+
+    .role-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: rgba(255,255,255,0.7);
+        margin-bottom: 0.5rem;
+    }
+
+    .role-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+    }
+
+    .role-body {
+        padding: 2rem;
+    }
+
+    .role-item {
+        margin-bottom: 1.5rem;
+    }
+
+    .role-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .role-item h4 {
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .role-item h4::before {
+        content: '▸';
+        color: var(--emerald);
+    }
+
+    .role-item p {
+        font-size: 0.9rem;
+        color: var(--gray-400);
+        line-height: 1.7;
+        padding-left: 1rem;
+    }
+
+    .role-goal {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin-top: 1.5rem;
+    }
+
+    .role-goal-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--emerald);
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+
+    .role-goal-text {
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    /* ========================================
+       REVENUE SECTION
+    ======================================== */
+    .revenue-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+
+    @media (max-width: 900px) {
+        .revenue-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .revenue-card {
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 20px;
+        padding: 2rem;
+    }
+
+    .revenue-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .revenue-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+    .revenue-tag {
+        background: linear-gradient(135deg, var(--emerald), var(--cyan));
+        color: var(--black);
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 0.35rem 0.75rem;
+        border-radius: 100px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .revenue-list {
+        list-style: none;
+    }
+
+    .revenue-list li {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        align-items: flex-start;
+    }
+
+    .revenue-list li:last-child {
+        margin-bottom: 0;
+    }
+
+    .revenue-bullet {
+        width: 28px;
+        height: 28px;
+        background: rgba(16, 185, 129, 0.2);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--emerald);
+        flex-shrink: 0;
+    }
+
+    .revenue-content strong {
+        display: block;
+        font-size: 0.95rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .revenue-content span {
+        font-size: 0.85rem;
+        color: var(--gray-400);
+    }
+
+    /* ========================================
+       ROADMAP
+    ======================================== */
+    .roadmap {
+        margin-top: 3rem;
+        position: relative;
+    }
+
+    .roadmap::before {
+        content: '';
+        position: absolute;
+        left: 24px;
+        top: 60px;
+        bottom: 60px;
+        width: 2px;
+        background: linear-gradient(180deg, var(--emerald), var(--cyan), var(--violet));
+        border-radius: 1px;
+    }
+
+    @media (max-width: 640px) {
+        .roadmap::before {
+            display: none;
+        }
+    }
+
+    .phase {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+    }
+
+    .phase:last-child {
+        margin-bottom: 0;
+    }
+
+    @media (max-width: 640px) {
+        .phase {
+            flex-direction: column;
+            gap: 1rem;
+        }
+    }
+
+    .phase-marker {
+        width: 50px;
+        height: 50px;
+        background: var(--black);
+        border: 2px solid var(--emerald);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+        position: relative;
+        z-index: 10;
+    }
+
+    .phase:nth-child(2) .phase-marker {
+        border-color: var(--cyan);
+    }
+
+    .phase:nth-child(3) .phase-marker {
+        border-color: var(--violet);
+    }
+
+    .phase-content {
+        flex: 1;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 20px;
+        padding: 2rem;
+    }
+
+    .phase-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.25rem;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .phase-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+    }
+
+    .phase-period {
+        background: rgba(245, 158, 11, 0.2);
+        color: var(--amber);
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.35rem 1rem;
+        border-radius: 100px;
+    }
+
+    .phase-list {
+        list-style: none;
+    }
+
+    .phase-list li {
+        position: relative;
+        padding-left: 1.5rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+        color: var(--gray-400);
+    }
+
+    .phase-list li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: var(--emerald);
+        font-weight: 700;
+    }
+
+    .phase-note {
+        background: rgba(16, 185, 129, 0.1);
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+    }
+
+    .phase-note strong {
+        color: var(--emerald);
+    }
+
+    /* ========================================
+       CONCLUSION
+    ======================================== */
+    .conclusion {
+        margin: 6rem 0;
+        position: relative;
+    }
+
+    .conclusion-card {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(6, 182, 212, 0.1) 50%, rgba(139, 92, 246, 0.1) 100%);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 32px;
+        padding: 4rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .conclusion-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--emerald), var(--cyan), var(--violet));
+    }
+
+    .conclusion-number {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--emerald);
+        letter-spacing: 0.15em;
+        margin-bottom: 1rem;
+    }
+
+    .conclusion-title {
+        font-size: clamp(1.75rem, 3vw, 2.5rem);
+        font-weight: 900;
+        margin-bottom: 2rem;
+    }
+
+    .conclusion-text {
+        font-size: 1.1rem;
+        line-height: 2.2;
+        color: rgba(255,255,255,0.9);
+        max-width: 800px;
+        margin: 0 auto 2rem;
+    }
+
+    .conclusion-cta {
+        display: inline-block;
+        background: linear-gradient(135deg, var(--emerald), var(--cyan));
+        color: var(--black);
+        font-weight: 700;
+        font-size: 1.1rem;
+        padding: 1rem 2.5rem;
+        border-radius: 100px;
+        margin-top: 1rem;
+    }
+
+    /* ========================================
+       FAQ
+    ======================================== */
+    .faq-section {
+        padding-bottom: 6rem;
+    }
+
+    .faq-grid {
+        margin-top: 3rem;
+    }
+
+    .faq-item {
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 16px;
+        margin-bottom: 1rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+        border-color: rgba(255,255,255,0.2);
+    }
+
+    .faq-question {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1.5rem;
+        background: rgba(255,255,255,0.02);
+    }
+
+    .faq-badge {
+        width: 28px;
+        height: 28px;
+        background: linear-gradient(135deg, var(--emerald), var(--cyan));
+        color: var(--black);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+    }
+
+    .faq-q-text {
+        font-weight: 700;
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    .faq-answer {
+        padding: 0 1.5rem 1.5rem 4rem;
+    }
+
+    .faq-a-text {
+        font-size: 0.95rem;
+        color: var(--gray-400);
+        line-height: 1.8;
+    }
+
+    .faq-a-text strong {
+        color: var(--white);
+    }
+
+    /* ========================================
+       FOOTER
+    ======================================== */
+    .footer {
+        border-top: 1px solid rgba(255,255,255,0.1);
+        padding: 4rem 2rem;
+        text-align: center;
+    }
+
+    .footer-logo {
+        font-size: 1.5rem;
+        font-weight: 900;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, var(--emerald), var(--cyan));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .footer-text {
+        font-size: 0.9rem;
+        color: var(--gray-400);
+        margin-bottom: 2rem;
+    }
+
+    .footer-meta {
+        font-size: 0.9rem;
+        color: var(--gray-600);
+    }
+
+    .footer-meta strong {
+        color: var(--gray-400);
+    }
+
+    /* ========================================
+       TARGET BOX
+    ======================================== */
+    .target-box {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-top: 2rem;
+    }
+
+    .target-box p {
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+    }
+
+    .target-box p:last-child {
+        margin-bottom: 0;
+    }
+
+    .target-box strong {
+        color: var(--emerald);
+    }
+
+    /* ========================================
+       RESPONSIVE
+    ======================================== */
+    @media (max-width: 640px) {
+        .section {
+            padding: 5rem 0;
+        }
+
+        .summary-card {
+            padding: 2rem;
+        }
+
+        .solution-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .role-grid, .revenue-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .conclusion-card {
+            padding: 3rem 2rem;
+        }
+
+        .faq-answer {
+            padding-left: 1.5rem;
+        }
+
+        .hero-meta {
+            gap: 2rem;
+        }
+    }
+
+    /* ========================================
+       SCROLLBAR
+    ======================================== */
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--black);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--gray-800);
+        border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--gray-600);
+    }
+
+    /* ========================================
+       PRINT
+    ======================================== */
+    @media print {
+        body {
+            background: white;
+            color: black;
+        }
+
+        .hero {
+            min-height: auto;
+            padding: 2rem;
+        }
+
+        .hero-bg, .hero-grid, .scroll-hint {
+            display: none;
+        }
+
+        .nav {
+            display: none;
+        }
+
+        .section {
+            padding: 2rem 0;
+        }
+
+        .hero-title, .section-title, .conclusion-title {
+            background: none;
+            -webkit-text-fill-color: inherit;
+            color: black;
+        }
+
+        .gradient-text {
+            background: none;
+            -webkit-text-fill-color: inherit;
+            color: #059669;
+        }
+    }
+</style>
+
+</head>
+<body>
+    <!-- Hero -->
+    <header class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-grid"></div>
+        <div class="hero-content">
+            <div class="hero-badge">新規事業企画書</div>
+            <h1 class="hero-title">
+                医療DXの<span class="gradient-text">「無風地帯」</span>を<br>攻略する
+            </h1>
+            <p class="hero-subtitle">
+                内製化支援型・共創エコシステムの構築<br>
+                ─ エンジニアリング × インストラクショナルデザインによるSIビジネスモデルの構造変革 ─
+            </p>
+            <div class="hero-meta">
+                <div class="hero-meta-item">
+                    <div class="hero-meta-label">起案者</div>
+                    <div class="hero-meta-value">MyGEMS代表 助永 親彦</div>
+                </div>
+                <div class="hero-meta-item">
+                    <div class="hero-meta-label">肩書</div>
+                    <div class="hero-meta-value">現役麻酔科医・指導医</div>
+                </div>
+                <div class="hero-meta-item">
+                    <div class="hero-meta-label">提案先</div>
+                    <div class="hero-meta-value">[SIer企業名] 御中</div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-hint">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </header>
+
+
+<!-- Navigation -->
+<nav class="nav">
+    <div class="nav-inner">
+        <a href="#summary" class="nav-link">サマリー</a>
+        <a href="#background" class="nav-link">背景・課題</a>
+        <a href="#model" class="nav-link">ビジネスモデル</a>
+        <a href="#role" class="nav-link">MyGEMSの役割</a>
+        <a href="#revenue" class="nav-link">収益モデル</a>
+        <a href="#roadmap" class="nav-link">ロードマップ</a>
+        <a href="#faq" class="nav-link">FAQ</a>
+    </div>
+</nav>
+
+<!-- Main -->
+<main class="main">
+    <!-- Summary -->
+    <section class="section" id="summary">
+        <div class="section-header">
+            <div class="section-eyebrow">
+                <span class="section-number">SECTION 01</span>
+                <span class="section-line"></span>
+            </div>
+            <h2 class="section-title">エグゼクティブ・サマリー</h2>
+        </div>
+
+        <div class="summary-card">
+            <p class="summary-text">
+                本提案は、従来のSIerビジネスがリーチできていなかった<span class="highlight">「予算なき医療機関（ロングテール層）」</span>に対し、<span class="highlight">「システム開発の民主化（内製化支援）」</span>と<span class="highlight">「責任分界点の再定義」</span>によって新たな市場を創出するものです。
+            </p>
+
+            <div class="callout-box">
+                <p>その実現の鍵となるのが、<strong style="color: var(--emerald);">MyGEMS（医師・教育のプロ）</strong>による「SIerエンジニアのインストラクター化」と「医療機関の組織ガバナンス設計」です。</p>
+            </div>
+
+            <p class="summary-text">
+                単なるツールの提供にとどまらず、<strong>「技術を教えるエンジニア」</strong>と<strong>「自ら課題解決できる病院職員」</strong>を育成することで、持続可能な収益モデル（ストック型）と社会課題解決（医療DXの推進）を両立する<span class="highlight">「三方よし」</span>のビジネスモデルを提言します。
+            </p>
+        </div>
+    </section>
+
+    <!-- Background -->
+    <section class="section" id="background">
+        <div class="section-header">
+            <div class="section-eyebrow">
+                <span class="section-number">SECTION 02</span>
+                <span class="section-line"></span>
+            </div>
+            <h2 class="section-title">背景と課題認識（Why Now?）</h2>
+            <p class="section-lead">現在の医療DX市場は、深刻な構造的欠陥を抱えています。</p>
+        </div>
+
+        <div class="subsection">
+            <h3 class="subsection-title">医療DX市場の「二極化」と「限界」</h3>
+            <div class="problem-grid">
+                <div class="problem-card red">
+                    <div class="problem-icon">🔴</div>
+                    <h4 class="problem-title">富裕層向けレッドオーシャン</h4>
+                    <p class="problem-text">資金力のある大規模病院に対し、大手ベンダーが高額なシステム開発・保守（億単位）で激しく競合している。</p>
+                </div>
+                <div class="problem-card gray">
+                    <div class="problem-icon">⚪</div>
+                    <h4 class="problem-title">広大な空白地帯（デッドゾーン）</h4>
+                    <p class="problem-text">日本の医療機関の大多数を占める中小病院、公的病院は、DXの必要性を痛感しつつも、予算不足によりSIerの顧客になり得ていない。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="subsection">
+            <h3 class="subsection-title">SIerが抱えるジレンマ</h3>
+            <div class="problem-grid">
+                <div class="problem-card amber">
+                    <div class="problem-icon">⚠️</div>
+                    <h4 class="problem-title">人月商売の限界</h4>
+                    <p class="problem-text">エンジニアの人件費高騰により、低予算案件は利益が出ず、切り捨てざるを得ない状況。</p>
+                </div>
+                <div class="problem-card amber">
+                    <div class="problem-icon">🔄</div>
+                    <h4 class="problem-title">技術の空回り</h4>
+                    <p class="problem-text">高度な技術を持っていても、現場の細かなニーズ（Micro needs）との乖離があり、過剰スペックで高コストな提案になりがち。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="subsection">
+            <h3 class="subsection-title">医療現場のペイン</h3>
+            <div class="problem-grid">
+                <div class="problem-card violet">
+                    <div class="problem-icon">💸</div>
+                    <h4 class="problem-title">丸投げの弊害</h4>
+                    <p class="problem-text">高額な保守費を払い続けても、現場のちょっとした変更要望（帳票の修正、ワークフローの微修正）に数ヶ月・数百万かかり、DXが形骸化。</p>
+                </div>
+                <div class="problem-card violet">
+                    <div class="problem-icon">👥</div>
+                    <h4 class="problem-title">人材の未活用</h4>
+                    <p class="problem-text">事務職員やコメディカルの中には、潜在的にITリテラシーを持つ層がいるが、活躍の場とツールが与えられていない。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Business Model -->
+    <section class="section" id="model">
+        <div class="section-header">
+            <div class="section-eyebrow">
+                <span class="section-number">SECTION 03</span>
+                <span class="section-line"></span>
+            </div>
+            <h2 class="section-title">提案するビジネスモデル</h2>
+            <p class="section-lead">既存の「受託開発（松プラン）」を維持しつつ、新たな選択肢として「内製化支援（梅プラン）」を新設し、市場を総取りします。</p>
+        </div>
+
+        <div class="subsection">
+            <h3 class="subsection-title">ターゲット層の再定義</h3>
+            <div class="target-box">
+                <p><strong>組織：</strong>公的病院、中小規模病院、クリニックグループ</p>
+                <p><strong>人物（キーマン）：</strong>医師ではなく、「事務職員」「医事課」「医療情報管理部門」</p>
+                <p><strong>理由：</strong>彼らは日々の定型業務に忙殺されており、業務改善（RPA、kintone、生成AI活用）への切実なニーズと、リスキリングへの意欲を持っているため。</p>
+            </div>
+        </div>
+
+        <div class="subsection">
+            <h3 class="subsection-title">サービス概要：責任とコストのトレードオフ</h3>
+            <div class="table-wrapper">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>比較項目</th>
+                            <th>従来型SI（フルマネージド）</th>
+                            <th>本提案：内製化支援</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>開発主体</td>
+                            <td>SIer（プロエンジニア）</td>
+                            <td class="highlight-cell">医療機関（事務・情報担当職員）</td>
+                        </tr>
+                        <tr>
+                            <td>提供価値</td>
+                            <td>「完成品」の納品</td>
+                            <td class="highlight-cell">「開発環境」と「教育」と「安心（型）」の提供</td>
+                        </tr>
+                        <tr>
+                            <td>責任分界点</td>
+                            <td>SIerが瑕疵担保責任を負う</td>
+                            <td class="highlight-cell">医療機関が運用責任を負う（自己責任）</td>
+                        </tr>
+                        <tr>
+                            <td>コスト構造</td>
+                            <td>高額（人件費＋リスク管理費）</td>
+                            <td class="highlight-cell">低額（ライセンス費＋教育費）※助成金活用可</td>
+                        </tr>
+                        <tr>
+                            <td>SIerの役割</td>
+                            <td>開発、実装、保守運用</td>
+                            <td class="highlight-cell">教育、サンドボックス提供、コードレビュー、ガバナンス策定</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="subsection">
+            <h3 class="subsection-title">具体的な提供ソリューション</h3>
+            <div class="solution-grid">
+                <div class="solution-card">
+                    <span class="solution-number">01</span>
+                    <div class="solution-icon">🔒</div>
+                    <h4 class="solution-title">セキュアな開発サンドボックス</h4>
+                    <p class="solution-text">医療情報ガイドライン（3省3ガイドライン）に準拠した、安全なローコード/生成AI環境のサブスクリプション提供。</p>
+                </div>
+                <div class="solution-card">
+                    <span class="solution-number">02</span>
+                    <div class="solution-icon">🤝</div>
+                    <h4 class="solution-title">伴走型教育プログラム</h4>
+                    <p class="solution-text">「作って終わり」ではなく、毎月の「もくもく会」や「コードレビュー会」を通じた継続的な支援。</p>
+                </div>
+                <div class="solution-card">
+                    <span class="solution-number">03</span>
+                    <div class="solution-icon">📦</div>
+                    <h4 class="solution-title">テンプレート配布</h4>
+                    <p class="solution-text">SIerの過去の知見を「部品」として安価に提供。例：当直表作成ボット、物品請求アプリ等。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Role -->
+    <section class="section" id="role">
+        <div class="section-header">
+            <div class="section-eyebrow">
+                <span class="section-number">SECTION 04</span>
+                <span class="section-line"></span>
+            </div>
+            <h2 class="section-title">MyGEMS（助永親彦）の役割</h2>
+            <p class="section-lead">本モデル最大の懸念点である「エンジニアの教育力不足」と「病院側の属人化リスク」を、医師・教育者である私が介入することで解消します。</p>
+        </div>
+
+        <div class="role-grid">
+            <div class="role-card">
+                <div class="role-header sier">
+                    <div class="role-label">対 SIer</div>
+                    <div class="role-title">エンジニアの「インストラクター」化</div>
+                </div>
+                <div class="role-body">
+                    <p style="color: var(--gray-400); margin-bottom: 1.5rem; font-size: 0.95rem;">
+                        SIerのエンジニアに対し、以下のスキルセットをインストールし、<strong style="color: var(--white);">「カスタマーサクセス・エンジニア」</strong>へと変革させます。
+                    </p>
+
+                    <div class="role-item">
+                        <h4>インストラクショナルデザイン（ID）の導入</h4>
+                        <p>ADDIEモデルやガニェの9事象を用いた「初心者が挫折しないカリキュラム作成法」の伝授。医療現場の言葉でITを語る「翻訳スキル」の訓練。</p>
+                    </div>
+
+                    <div class="role-item">
+                        <h4>ファシリテーション技術</h4>
+                        <p>病院職員から潜在的なニーズを引き出し、内製化のモチベーションを維持させるコーチングスキルの指導。</p>
+                    </div>
+
+                    <div class="role-goal">
+                        <div class="role-goal-label">狙い</div>
+                        <p class="role-goal-text">エンジニアの稼働単価を「作業者」から「コンサルタント/講師」レベルへ引き上げます。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="role-card">
+                <div class="role-header medical">
+                    <div class="role-label">対 医療機関</div>
+                    <div class="role-title">組織の「非属人化」とガバナンス設計</div>
+                </div>
+                <div class="role-body">
+                    <p style="color: var(--gray-400); margin-bottom: 1.5rem; font-size: 0.95rem;">
+                        現役医師/管理職としての経験を活かし、ツール導入だけでなく<strong style="color: var(--white);">「運用し続けられる組織」</strong>を設計します。
+                    </p>
+
+                    <div class="role-item">
+                        <h4>「スーパーマン依存」の回避</h4>
+                        <p>特定の職員が辞めてもシステムが破綻しないよう、ドキュメント管理の標準化、ペアプログラミング的運用のルール化を指導。</p>
+                    </div>
+
+                    <div class="role-item">
+                        <h4>医療安全視点でのリスク管理</h4>
+                        <p>「やってはいけない自動化」と「やるべき自動化」の線引きを、医師の立場から明確にガイドライン化。</p>
+                    </div>
+
+                    <div class="role-goal">
+                        <div class="role-goal-label">狙い</div>
+                        <p class="role-goal-text">院長や事務長に「医師が監修しているから安心」という強力な信頼担保を提供します。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Revenue -->
+    <section class="section" id="revenue">
+        <div class="section-header">
+            <div class="section-eyebrow">
+                <span class="section-number">SECTION 05</span>
+                <span class="section-line"></span>
+            </div>
+            <h2 class="section-title">収益モデルとエコシステム</h2>
+            <p class="section-lead">フロー（売り切り）からストック（継続課金）への転換、および助成金活用を含めた多層的な収益源を確保します。</p>
+        </div>
+
+        <div class="revenue-grid">
+            <div class="revenue-card">
+                <div class="revenue-header">
+                    <h3 class="revenue-title">A. SIer側の収益源</h3>
+                    <span class="revenue-tag">ストック型</span>
+                </div>
+                <ul class="revenue-list">
+                    <li>
+                        <span class="revenue-bullet">1</span>
+                        <div class="revenue-content">
+                            <strong>プラットフォーム利用料（MRR）</strong>
+                            <span>開発環境およびテンプレート利用料</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="revenue-bullet">2</span>
+                        <div class="revenue-content">
+                            <strong>教育・伴走支援費（MRR）</strong>
+                            <span>月額制のQA対応、定期レビュー会参加費</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="revenue-bullet">3</span>
+                        <div class="revenue-content">
+                            <strong>人材開発支援助成金コンサルティング</strong>
+                            <span>国の助成金申請を支援し、予算を原資に契約獲得</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="revenue-bullet">4</span>
+                        <div class="revenue-content">
+                            <strong>「松プラン」へのアップセル</strong>
+                            <span>信頼関係から自然にSI案件として受注</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="revenue-card">
+                <div class="revenue-header">
+                    <h3 class="revenue-title">B. MyGEMSの報酬モデル</h3>
+                    <span class="revenue-tag">機能対価型</span>
+                </div>
+                <ul class="revenue-list">
+                    <li>
+                        <span class="revenue-bullet">1</span>
+                        <div class="revenue-content">
+                            <strong>SIer向け：教育・事業開発コンサルフィー</strong>
+                            <span>エンジニア向けID研修講師料 / アドバイザリー顧問料</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="revenue-bullet">2</span>
+                        <div class="revenue-content">
+                            <strong>医療機関向け：DX組織顧問料</strong>
+                            <span>プロジェクト統括、医療安全ガバナンス監修料</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="revenue-bullet">3</span>
+                        <div class="revenue-content">
+                            <strong>レベニューシェア（ブリッジング報酬）</strong>
+                            <span>新規顧客売上に対し一定期間・一定料率のシェア</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Roadmap -->
+    <section class="section" id="roadmap">
+        <div class="section-header">
+            <div class="section-eyebrow">
+                <span class="section-number">SECTION 06</span>
+                <span class="section-line"></span>
+            </div>
+            <h2 class="section-title">実現へのロードマップ</h2>
+        </div>
+
+        <div class="roadmap">
+            <div class="phase">
+                <div class="phase-marker">1</div>
+                <div class="phase-content">
+                    <div class="phase-header">
+                        <h3 class="phase-title">Phase 1: PoC（概念実証）とモデルケース構築</h3>
+                        <span class="phase-period">1〜3ヶ月</span>
+                    </div>
+                    <ul class="phase-list">
+                        <li>私の関係する医療機関、または貴社の休眠顧客から1〜2施設を選定</li>
+                        <li>ターゲット：事務部門（医事課、総務課）</li>
+                        <li>私がエンジニアとタッグを組み「生成AI×ローコード」のワークショップを実施</li>
+                        <li>小さな成功体験を作る（例：議事録自動化、シフト作成補助）</li>
+                    </ul>
+                    <div class="phase-note">
+                        <strong>MyGEMSの動き：</strong>このプロセスでエンジニアの教え方をモニタリングし、ID視点でフィードバック・修正を行う
+                    </div>
+                </div>
+            </div>
+
+            <div class="phase">
+                <div class="phase-marker">2</div>
+                <div class="phase-content">
+                    <div class="phase-header">
+                        <h3 class="phase-title">Phase 2: 「教育パッケージ」の商品化</h3>
+                        <span class="phase-period">3〜6ヶ月</span>
+                    </div>
+                    <ul class="phase-list">
+                        <li>Phase 1の成功事例を元に、エンジニア向けマニュアル（Teaching Guide）を作成</li>
+                        <li>病院向け導入ガイドライン（Governance Book）を作成</li>
+                        <li>助成金活用スキームを確立し、営業資料に落とし込む</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="phase">
+                <div class="phase-marker">3</div>
+                <div class="phase-content">
+                    <div class="phase-header">
+                        <h3 class="phase-title">Phase 3: 水平展開と市場拡大</h3>
+                        <span class="phase-period">6ヶ月〜</span>
+                    </div>
+                    <ul class="phase-list">
+                        <li>地方自治体や医師会などのネットワークを通じてセミナー展開</li>
+                        <li>「現場が作ったアプリ」のデータを集約し、汎用性の高いものをSIer公式プロダクトとして再販</li>
+                        <li>知財のエコシステム化を推進</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Conclusion -->
+    <section class="conclusion">
+        <div class="conclusion-card">
+            <div class="conclusion-number">SECTION 07 ─ CONCLUSION</div>
+            <h2 class="conclusion-title">本プロジェクトの意義</h2>
+            <p class="conclusion-text">
+                本提案は、貴社にとって単なる「低価格プラン」の追加ではありません。<br><br>
+                <strong>「エンジニアのスキルセット変革」</strong>と<strong>「未開拓市場（ブルーオーシャン）へのリーチ」</strong>を同時に達成する、経営戦略レベルの構造改革です。<br><br>
+                「予算がないからDXできない」と嘆く現場と、「技術はあるが売れない」と悩むSIer。<br>
+                この両者の間に、<strong>「現役医師による翻訳（教育・ガバナンス）」</strong>という架け橋をかけることで、<br>日本の医療DXは初めて実質的な一歩を踏み出せると確信しています。
+            </p>
+            <span class="conclusion-cta">この「三方よし」の挑戦をご一緒させてください</span>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section" id="faq">
+        <div class="section-header">
+            <div class="section-eyebrow">
+                <span class="section-number">APPENDIX</span>
+                <span class="section-line"></span>
+            </div>
+            <h2 class="section-title">想定されるFAQと切り返し</h2>
+        </div>
+
+        <div class="faq-grid">
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-badge">Q</span>
+                    <p class="faq-q-text">素人が作ったシステムが医療事故を起こしたら誰の責任か？</p>
+                </div>
+                <div class="faq-answer">
+                    <p class="faq-a-text">
+                        契約上、内製化部分の運用責任は医療機関に帰属させます。しかし、事故を防ぐために、私が<strong>「医療安全ガバナンス規定（開発して良い領域と悪い領域の定義）」</strong>を策定・提供します。これにより、SIerのリスクを遮断しつつ、現場の安全を担保します。
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-badge">Q</span>
+                    <p class="faq-q-text">エンジニアを教育者に育て上げるコストが見合うか？</p>
+                </div>
+                <div class="faq-answer">
+                    <p class="faq-a-text">
+                        見合います。これからのSIerは「作る力」だけでなく<strong>「顧客のビジネスに伴走する力」</strong>が求められます。ここで得たID（インストラクショナルデザイン）とファシリテーションスキルは、高額な大規模案件の要件定義能力向上にも直結し、全社的な人材価値向上に寄与します。
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-badge">Q</span>
+                    <p class="faq-q-text">病院の担当者が辞めたらどうするのか？</p>
+                </div>
+                <div class="faq-answer">
+                    <p class="faq-a-text">
+                        だからこそ、MyGEMSが<strong>「属人化しない組織作り」</strong>を支援します。マニュアル化、チーム体制の構築をセットで提供します。また、担当者不在で維持できなくなった場合は、貴社の保守プラン（松プラン）へ移行するチャンス（リード獲得）となります。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-logo">MyGEMS</div>
+    <p class="footer-text">医療DXの「無風地帯」を攻略する「内製化支援型・共創エコシステム」の構築</p>
+    <p class="footer-meta">起案者：<strong>助永 親彦</strong>（現役麻酔科医・指導医）</p>
+</footer>
+
+<script>
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                const offset = 80;
+                const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // Intersection Observer for fade-in
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.section, .conclusion').forEach(section => {
+        section.style.opacity = '0';
+        section.style.transform = 'translateY(40px)';
+        section.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+        observer.observe(section);
+    });
+</script>
+
+</body>
+</html>
