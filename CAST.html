@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAST分析教育資材 - インスリン過量投与事例</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --secondary: #c53030;
+            --accent: #dd6b20;
+            --success: #276749;
+            --warning: #c05621;
+            --bg-main: #f7fafc;
+            --bg-card: #ffffff;
+            --bg-dark: #1a202c;
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --text-muted: #718096;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+```
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Noto Sans JP', sans-serif;
+        background: var(--bg-main);
+        color: var(--text-primary);
+        line-height: 1.8;
+        font-size: 15px;
+    }
+
+    /* Header */
+    .header {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        color: white;
+        padding: 3rem 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        opacity: 0.5;
+    }
+
+    .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .header-badge {
+        display: inline-block;
+        background: rgba(255,255,255,0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+        backdrop-filter: blur(4px);
+    }
+
+    .header h1 {
+        font-family: 'Noto Serif JP', serif;
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        letter-spacing: 0.02em;
+    }
+
+    .header-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        font-weight: 300;
+    }
+
+    /* Navigation */
+    .nav-container {
+        background: var(--bg-card);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: var(--shadow);
+    }
+
+    .nav {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        gap: 0.5rem;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .nav-item {
+        padding: 1rem 1.25rem;
+        text-decoration: none;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        font-weight: 500;
+        white-space: nowrap;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s ease;
+    }
+
+    .nav-item:hover {
+        color: var(--primary);
+        background: rgba(26, 54, 93, 0.05);
+    }
+
+    .nav-item.active {
+        color: var(--primary);
+        border-bottom-color: var(--primary);
+    }
+
+    /* Main Content */
+    .main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    /* Section */
+    .section {
+        margin-bottom: 3rem;
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--border);
+    }
+
+    .section-number {
+        width: 48px;
+        height: 48px;
+        background: var(--primary);
+        color: white;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+    .section-title {
+        font-family: 'Noto Serif JP', serif;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary);
+    }
+
+    /* Cards */
+    .card {
+        background: var(--bg-card);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .card-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+
+    .card-icon.patient { background: #fed7d7; color: var(--secondary); }
+    .card-icon.event { background: #feebc8; color: var(--accent); }
+    .card-icon.warning { background: #fff5f5; color: var(--secondary); }
+    .card-icon.info { background: #bee3f8; color: var(--primary); }
+    .card-icon.success { background: #c6f6d5; color: var(--success); }
+
+    .card-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: var(--text-primary);
+    }
+
+    /* Patient Info */
+    .patient-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .patient-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .patient-label {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .patient-value {
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+
+    /* Situation Box */
+    .situation-box {
+        background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+        border-left: 4px solid var(--secondary);
+        padding: 1.25rem;
+        border-radius: 0 12px 12px 0;
+        margin-top: 1rem;
+    }
+
+    .situation-title {
+        font-weight: 600;
+        color: var(--secondary);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* Direct Event */
+    .direct-event {
+        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        border: 2px solid #f59e0b;
+        padding: 1.25rem;
+        border-radius: 12px;
+        margin-top: 1rem;
+    }
+
+    .direct-event-title {
+        font-weight: 600;
+        color: #b45309;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* Timeline */
+    .timeline {
+        position: relative;
+        padding-left: 2rem;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 8px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(to bottom, var(--primary), var(--secondary));
+    }
+
+    .timeline-item {
+        position: relative;
+        padding-bottom: 1.5rem;
+        padding-left: 1rem;
+    }
+
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -1.5rem;
+        top: 0.5rem;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--bg-card);
+        border: 3px solid var(--primary);
+    }
+
+    .timeline-item.critical::before {
+        background: var(--secondary);
+        border-color: var(--secondary);
+        box-shadow: 0 0 0 4px rgba(197, 48, 48, 0.2);
+    }
+
+    .timeline-item.warning::before {
+        background: var(--accent);
+        border-color: var(--accent);
+    }
+
+    .timeline-time {
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 0.95rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .timeline-item.critical .timeline-time {
+        color: var(--secondary);
+    }
+
+    .timeline-content {
+        background: var(--bg-card);
+        padding: 1rem;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+    }
+
+    .timeline-event {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .timeline-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+    }
+
+    .timeline-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    /* Loss & Hazard */
+    .loss-hazard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .loss-box {
+        background: linear-gradient(135deg, #fff5f5 0%, #fed7e2 100%);
+        border: 2px solid var(--secondary);
+        border-radius: 16px;
+        padding: 1.5rem;
+    }
+
+    .hazard-box {
+        background: linear-gradient(135deg, #fffbeb 0%, #fed7aa 100%);
+        border: 2px solid var(--accent);
+        border-radius: 16px;
+        padding: 1.5rem;
+    }
+
+    .box-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .loss-box .box-title { color: var(--secondary); }
+    .hazard-box .box-title { color: var(--accent); }
+
+    .box-list {
+        list-style: none;
+    }
+
+    .box-list li {
+        padding: 0.5rem 0;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+
+    .box-list li::before {
+        content: '●';
+        position: absolute;
+        left: 0;
+        font-size: 0.6rem;
+    }
+
+    .loss-box .box-list li::before { color: var(--secondary); }
+    .hazard-box .box-list li::before { color: var(--accent); }
+
+    /* Questions */
+    .question-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .question-item {
+        background: var(--bg-card);
+        padding: 1.25rem;
+        border-radius: 12px;
+        border-left: 4px solid var(--primary);
+        box-shadow: var(--shadow);
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .question-number {
+        width: 28px;
+        height: 28px;
+        background: var(--primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        font-weight: 600;
+        flex-shrink: 0;
+    }
+
+    .question-text {
+        font-weight: 500;
+        line-height: 1.6;
+    }
+
+    /* Control Structure */
+    .control-structure {
+        background: var(--bg-card);
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: var(--shadow);
+    }
+
+    .hierarchy {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .hierarchy-level {
+        display: flex;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .hierarchy-connector {
+        width: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hierarchy-line {
+        width: 3px;
+        flex-grow: 1;
+        background: linear-gradient(to bottom, var(--primary), var(--primary-light));
+    }
+
+    .hierarchy-arrow {
+        width: 0;
+        height: 0;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-top: 10px solid var(--primary-light);
+    }
+
+    .hierarchy-box {
+        flex: 1;
+        padding: 1rem 1.25rem;
+        border-radius: 10px;
+        border: 2px solid;
+    }
+
+    .hierarchy-box.level-1 {
+        background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+        border-color: #3182ce;
+    }
+
+    .hierarchy-box.level-2 {
+        background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
+        border-color: #38a169;
+    }
+
+    .hierarchy-box.level-3 {
+        background: linear-gradient(135deg, #fffaf0 0%, #feebc8 100%);
+        border-color: #dd6b20;
+    }
+
+    .hierarchy-box.level-4 {
+        background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+        border-color: #e53e3e;
+    }
+
+    .hierarchy-title {
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .hierarchy-desc {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+    }
+
+    /* Component Analysis */
+    .component-card {
+        background: var(--bg-card);
+        border-radius: 16px;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+    }
+
+    .component-header {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        color: white;
+        padding: 1rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .component-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+
+    .component-name {
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .component-body {
+        padding: 1.5rem;
+    }
+
+    .analysis-row {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: 1rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .analysis-row:last-child {
+        border-bottom: none;
+    }
+
+    .analysis-label {
+        font-weight: 600;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+
+    .analysis-label.responsibility { color: var(--primary); }
+    .analysis-label.contribution { color: var(--secondary); }
+    .analysis-label.mental-model { color: var(--accent); }
+    .analysis-label.context { color: var(--success); }
+
+    .analysis-content {
+        color: var(--text-primary);
+    }
+
+    .analysis-content ul {
+        margin-left: 1.25rem;
+        margin-top: 0.25rem;
+    }
+
+    .analysis-content li {
+        margin-bottom: 0.25rem;
+    }
+
+    /* System Defects */
+    .defect-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .defect-card {
+        background: var(--bg-card);
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        border-top: 4px solid;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .defect-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .defect-card:nth-child(1) { border-top-color: #e53e3e; }
+    .defect-card:nth-child(2) { border-top-color: #dd6b20; }
+    .defect-card:nth-child(3) { border-top-color: #d69e2e; }
+    .defect-card:nth-child(4) { border-top-color: #38a169; }
+    .defect-card:nth-child(5) { border-top-color: #3182ce; }
+
+    .defect-number {
+        font-size: 2rem;
+        font-weight: 700;
+        opacity: 0.15;
+        margin-bottom: -0.5rem;
+    }
+
+    .defect-title {
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+        color: var(--text-primary);
+    }
+
+    .defect-desc {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        line-height: 1.7;
+    }
+
+    /* Improvements */
+    .improvement-section {
+        margin-bottom: 2rem;
+    }
+
+    .improvement-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background: linear-gradient(135deg, var(--bg-card) 0%, #f0fff4 100%);
+        border-radius: 12px;
+        border-left: 4px solid var(--success);
+    }
+
+    .improvement-icon {
+        width: 36px;
+        height: 36px;
+        background: var(--success);
+        color: white;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+    }
+
+    .improvement-title {
+        font-weight: 600;
+        font-size: 1.05rem;
+        color: var(--success);
+    }
+
+    .improvement-list {
+        background: var(--bg-card);
+        border-radius: 12px;
+        padding: 1.25rem;
+        box-shadow: var(--shadow);
+    }
+
+    .improvement-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .improvement-item:last-child {
+        border-bottom: none;
+    }
+
+    .improvement-check {
+        width: 22px;
+        height: 22px;
+        background: #c6f6d5;
+        color: var(--success);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+        margin-top: 0.1rem;
+    }
+
+    .improvement-text {
+        line-height: 1.6;
+    }
+
+    /* Summary */
+    .summary-box {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .summary-box::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+    }
+
+    .summary-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .summary-title {
+        font-family: 'Noto Serif JP', serif;
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .summary-points {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .summary-point {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 1.25rem;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .summary-point-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+    }
+
+    .summary-point-desc {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        line-height: 1.7;
+    }
+
+    /* Footer */
+    .footer {
+        background: var(--bg-dark);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+        margin-top: 3rem;
+    }
+
+    .footer-text {
+        opacity: 0.7;
+        font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .header h1 {
+            font-size: 1.6rem;
+        }
+
+        .nav-item {
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        .main {
+            padding: 1.5rem 1rem;
+        }
+
+        .section-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .analysis-row {
+            grid-template-columns: 1fr;
+            gap: 0.25rem;
+        }
+
+        .hierarchy-level {
+            flex-direction: column;
+        }
+
+        .hierarchy-connector {
+            width: 100%;
+            height: 30px;
+            flex-direction: row;
+        }
+
+        .hierarchy-line {
+            height: 3px;
+            width: auto;
+            flex-grow: 1;
+        }
+
+        .hierarchy-arrow {
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: none;
+            border-left: 10px solid var(--primary-light);
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+        }
+    }
+
+    /* Print styles */
+    @media print {
+        .nav-container {
+            display: none;
+        }
+
+        .section {
+            page-break-inside: avoid;
+        }
+
+        .card, .component-card {
+            box-shadow: none;
+            border: 1px solid #ccc;
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-badge">📚 医療安全教育資材</div>
+            <h1>CAST分析による医療事故分析</h1>
+            <p class="header-subtitle">システム理論に基づく因果分析（Causal Analysis based on Systems Theory）</p>
+        </div>
+    </header>
+
+```
+<!-- Navigation -->
+<nav class="nav-container">
+    <div class="nav">
+        <a href="#section0" class="nav-item active">事例概要</a>
+        <a href="#section1" class="nav-item">Step 1: 損失・ハザード</a>
+        <a href="#section2" class="nav-item">Step 2: 制御構造</a>
+        <a href="#section3" class="nav-item">Step 3: コンポーネント分析</a>
+        <a href="#section4" class="nav-item">Step 4: システム欠陥</a>
+        <a href="#section5" class="nav-item">Step 5: 改善提案</a>
+        <a href="#summary" class="nav-item">まとめ</a>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<main class="main">
+    <!-- Section 0: Case Overview -->
+    <section id="section0" class="section">
+        <div class="section-header">
+            <div class="section-number">0</div>
+            <h2 class="section-title">仮想事例データ</h2>
+        </div>
+
+        <!-- Patient Info Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon patient">👤</div>
+                <h3 class="card-title">患者情報</h3>
+            </div>
+            <div class="patient-info">
+                <div class="patient-item">
+                    <span class="patient-label">年齢・性別</span>
+                    <span class="patient-value">68歳 男性</span>
+                </div>
+                <div class="patient-item">
+                    <span class="patient-label">基礎疾患</span>
+                    <span class="patient-value">2型糖尿病、CKD3</span>
+                </div>
+                <div class="patient-item">
+                    <span class="patient-label">入院理由</span>
+                    <span class="patient-value">肺炎</span>
+                </div>
+            </div>
+
+            <div class="situation-box">
+                <div class="situation-title">⚠️ 状況</div>
+                <p>入院2日目の夜、低血糖 → 意識障害 → 痙攣 → ICU移送<br>
+                <strong>（後遺症なしだが重篤事例）</strong></p>
+            </div>
+
+            <div class="direct-event">
+                <div class="direct-event-title">🎯 直接の出来事</div>
+                <p>速効型インスリン（皮下）10単位のはずが、<strong>静注インスリン10単位/時の持続投与</strong>が開始され、低血糖が進行</p>
+            </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon event">📋</div>
+                <h3 class="card-title">タイムライン（イベントデータ）</h3>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-time">19:05</div>
+                    <div class="timeline-content">
+                        <div class="timeline-event">夕食摂取量が30%（食欲低下）</div>
+                        <div class="timeline-meta">
+                            <span class="timeline-meta-item">👤 病棟看護師</span>
+                            <span class="timeline-meta-item">📄 看護記録（摂取量）</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-time">19:20</div>
+                    <div class="timeline-content">
+                        <div class="timeline-event">医師が「スライディングスケール」注文</div>
+                        <div class="timeline-meta">
+                            <span class="timeline-meta-item">👨‍⚕️ 当直医</span>
+                            <span class="timeline-meta-item">💻 EHRの糖尿病オーダーセット</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item warning">
+                    <div class="timeline-time">19:23</div>
+                    <div class="timeline-content">
+                        <div class="timeline-event">EHR上で<strong>"Insulin regular (IV infusion)"</strong>が上位候補に表示</div>
+                        <div class="timeline-meta">
+                            <span class="timeline-meta-item">👨‍⚕️ 当直医</span>
+                            <span class="timeline-meta-item">💻 EHR候補表示（名称が類似）</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item critical">
+                    <div class="timeline-time">19:25</div>
+                    <div class="timeline-content">
+                        <div class="timeline-event">医師がオーダー確定（誤ってIV持続が選択）</div>
+                        <div class="timeline-meta">
+                            <span class="timeline-meta-item">👨‍⚕️ 当直医</span>
+                            <span class="timeline-meta-item">💻 EHRオーダー画面</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-time">19:27</div>
+                    <div class="timeline-content">
+                        <div class="timeline-event">薬剤部が「IVインスリン」払い出し準備</div>
+                        <div class="timeline-meta">
+                            <span class="timeline-meta-item">💊 薬剤師</span>
+                            <span class="timeline-meta-item">📋 キュー表示（臨床文脈は薄い）</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-time">19:40</div>
+                    <div class="timeline-content">
+                        <div class="timeline-event">病棟へ薬剤到着（IV用インスリン・輸液ライン部材）</div>
+                        <div class="timeline-meta">
+                            <span class="timeline-meta-item">📦 薬剤部→病棟</span>
+                            <span class="timeline-meta-item">🚚 物品配送</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-time">19:50</div>
+                    <div class="timeline-content">
+                        <div class="timeline-event">看護師Aが「いつもの補正インスリン」と思い、準備</div>
+                        <div class="timeline-meta">
+                            <span class="timeline-meta-item">👩‍⚕️ 看護師A</span>
+                            <span class="timeline-meta-item">💻 EHRの"未実施オーダー一覧"</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item critical">
+                    <div class="timeline-time">19:55</div>
+                    <div class="timeline-content">
+                        <div class="timeline-event">点滴ルートに接続、10単位/時で開始</div>
+                        <div class="timeline-meta">
+                            <span class="timeline-meta-item">👩‍⚕️ 看護師A</span>
+                            <span class="timeline-meta-item">⚠️ ダブルチェック未実施</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item warning">
+                    <div class="timeline-time">20:15</div>
+                    <div class="timeline-content">
+                        <div class="timeline-event">患者発汗・不穏（初期症状）</div>
+                        <div class="timeline-meta">
+                            <span class="timeline-meta-item">👩‍⚕️ 看護師B</span>
+                            <span class="timeline-meta-item">🛏️ ベッドサイド観察</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item warning">
+                    <div class="timeline-time">20:20</div>
+                    <div class="timeline-content">
+                        <div class="timeline-event">血糖測定 <strong>54 mg/dL</strong></div>
+                        <div class="timeline-meta">
+                            <span class="timeline-meta-item">👩‍⚕️ 看護師B</span>
+                            <span class="timeline-meta-item">📊 血糖測定器→EHR反映は遅延</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-time">20:25</div>
+                    <div class="timeline-content">
+                        <div class="timeline-event">ブドウ糖投与（一次対応）</div>
+                        <div class="timeline-meta">
+                            <span class="timeline-meta-item">👩‍⚕️ 看護師B</span>
+                            <span class="timeline-meta-item">💉 手技</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item critical">
+                    <div class="timeline-time">20:35</div>
+                    <div class="timeline-content">
+                        <div class="timeline-event">血糖 <strong>42 mg/dL</strong>、痙攣</div>
+                        <div class="timeline-meta">
+                            <span class="timeline-meta-item">👩‍⚕️ 看護師B→医師</span>
+                            <span class="timeline-meta-item">📞 コール</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item critical">
+                    <div class="timeline-time">20:45</div>
+                    <div class="timeline-content">
+                        <div class="timeline-event">ICU移送、持続投与停止が判明</div>
+                        <div class="timeline-meta">
+                            <span class="timeline-meta-item">👥 チーム</span>
+                            <span class="timeline-meta-item">💻 eMAR/オーダー詳細画面確認</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Data -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon warning">📊</div>
+                <h3 class="card-title">事故後に判明した追加データ</h3>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                <div>
+                    <h4 style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="color: var(--secondary);">👥</span> 人員状況
+                    </h4>
+                    <ul style="margin-left: 1.25rem; color: var(--text-secondary);">
+                        <li>病棟は人員不足：夜勤が通常より1名少ない</li>
+                        <li>ダブルチェック手順は"原則"だが、夜間は形骸化しがち</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="color: var(--accent);">💻</span> EHR画面の問題
+                    </h4>
+                    <ul style="margin-left: 1.25rem; color: var(--text-secondary);">
+                        <li>オーダー確定画面では「IV infusion」表記が省略表示</li>
+                        <li>詳細は別画面で確認が必要</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="color: var(--warning);">🔔</span> アラートの問題
+                    </h4>
+                    <ul style="margin-left: 1.25rem; color: var(--text-secondary);">
+                        <li>「食事摂取量低下」→インスリン投与注意のアラートなし</li>
+                        <li>「IVインスリン開始」→看護師管理者への通知なし</li>
+                        <li>「低血糖」→閾値アラートはあるが、EHR反映が遅延</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 1: Loss and Hazard -->
+    <section id="section1" class="section">
+        <div class="section-header">
+            <div class="section-number">1</div>
+            <h2 class="section-title">CAST Step 1：損失とハザード、初期質問</h2>
+        </div>
+
+        <div class="loss-hazard-grid">
+            <div class="loss-box">
+                <div class="box-title">
+                    <span>💔</span> Loss（損失）
+                </div>
+                <ul class="box-list">
+                    <li><strong>患者の損失：</strong>重篤低血糖（意識障害・痙攣・ICU移送）</li>
+                    <li><strong>組織の損失：</strong>医療者の心理的負担</li>
+                    <li><strong>組織の損失：</strong>患者・家族からの信頼低下</li>
+                    <li><strong>組織の損失：</strong>追加医療資源の消費</li>
+                </ul>
+            </div>
+
+            <div class="hazard-box">
+                <div class="box-title">
+                    <span>⚠️</span> Hazard（ハザード）
+                </div>
+                <p style="color: var(--text-secondary); line-height: 1.7;">
+                    損失につながりうるシステム状態：
+                </p>
+                <p style="margin-top: 0.75rem; font-weight: 500; color: #b45309; background: rgba(255,255,255,0.5); padding: 0.75rem; border-radius: 8px;">
+                    過量・不適切経路のインスリンが投与されている状態<br>
+                    （特にIV持続投与）
+                </p>
+            </div>
+        </div>
+
+        <!-- Initial Questions -->
+        <div class="card" style="margin-top: 1.5rem;">
+            <div class="card-header">
+                <div class="card-icon info">❓</div>
+                <h3 class="card-title">初期の「なぜ」質問（WhoではなくWhy）</h3>
+            </div>
+
+            <div class="question-list">
+                <div class="question-item">
+                    <div class="question-number">1</div>
+                    <div class="question-text">なぜ当直医は皮下補正ではなくIV持続を選択したのか？</div>
+                </div>
+                <div class="question-item">
+                    <div class="question-number">2</div>
+                    <div class="question-text">なぜ看護師はIV持続を「いつもの補正」と解釈できたのか？</div>
+                </div>
+                <div class="question-item">
+                    <div class="question-number">3</div>
+                    <div class="question-text">なぜ薬剤部は臨床文脈（摂取量30%）に照らした疑義照会が起きなかったのか？</div>
+                </div>
+                <div class="question-item">
+                    <div class="question-number">4</div>
+                    <div class="question-text">なぜダブルチェックや高リスク薬の追加確認が機能しなかったのか？</div>
+                </div>
+                <div class="question-item">
+                    <div class="question-number">5</div>
+                    <div class="question-text">なぜ低血糖の兆候が早期に拾われても、重篤化を止められなかったのか？（検知・反応・停止）</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Control Structure -->
+    <section id="section2" class="section">
+        <div class="section-header">
+            <div class="section-number">2</div>
+            <h2 class="section-title">CAST Step 2：安全制御構造モデル</h2>
+        </div>
+
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+            この事象に関係する「制御者（Controller）」と「制御対象（患者・投薬プロセス）」を階層で示します。
+        </p>
+
+        <div class="control-structure">
+            <div class="hierarchy">
+                <!-- Level 1 -->
+                <div class="hierarchy-level">
+                    <div class="hierarchy-connector" style="visibility: hidden;"></div>
+                    <div class="hierarchy-box level-1">
+                        <div class="hierarchy-title">🏥 病院経営/安全管理（上位）</div>
+                        <div class="hierarchy-desc">高リスク薬ポリシー、EHR設計方針、人員配置、教育</div>
+                    </div>
+                </div>
+
+                <div class="hierarchy-level">
+                    <div class="hierarchy-connector">
+                        <div class="hierarchy-line"></div>
+                        <div class="hierarchy-arrow"></div>
+                    </div>
+                    <div class="hierarchy-box level-1">
+                        <div class="hierarchy-title">📋 診療科/病棟マネジメント</div>
+                        <div class="hierarchy-desc">夜勤体制、ダブルチェック運用、インスリン運用標準</div>
+                    </div>
+                </div>
+
+                <div class="hierarchy-level">
+                    <div class="hierarchy-connector">
+                        <div class="hierarchy-line"></div>
+                        <div class="hierarchy-arrow"></div>
+                    </div>
+                    <div class="hierarchy-box level-2">
+                        <div class="hierarchy-title">💻 EHR（情報システム）</div>
+                        <div class="hierarchy-desc">オーダーセット、表示、アラート、eMAR、連携遅延</div>
+                    </div>
+                </div>
+
+                <div class="hierarchy-level">
+                    <div class="hierarchy-connector">
+                        <div class="hierarchy-line"></div>
+                        <div class="hierarchy-arrow"></div>
+                    </div>
+                    <div class="hierarchy-box level-3">
+                        <div class="hierarchy-title">👨‍⚕️ 当直医（処方者）</div>
+                        <div class="hierarchy-desc">オーダー入力、意図の伝達</div>
+                    </div>
+                </div>
+
+                <div class="hierarchy-level">
+                    <div class="hierarchy-connector">
+                        <div class="hierarchy-line"></div>
+                        <div class="hierarchy-arrow"></div>
+                    </div>
+                    <div class="hierarchy-box level-3">
+                        <div class="hierarchy-title">💊 薬剤部（調剤・監査）</div>
+                        <div class="hierarchy-desc">処方監査、疑義照会、供給</div>
+                    </div>
+                </div>
+
+                <div class="hierarchy-level">
+                    <div class="hierarchy-connector">
+                        <div class="hierarchy-line"></div>
+                        <div class="hierarchy-arrow"></div>
+                    </div>
+                    <div class="hierarchy-box level-4">
+                        <div class="hierarchy-title">👩‍⚕️ 病棟看護（実施者）</div>
+                        <div class="hierarchy-desc">投与実施、ポンプ設定、観察、低血糖対応</div>
+                    </div>
+                </div>
+
+                <div class="hierarchy-level">
+                    <div class="hierarchy-connector">
+                        <div class="hierarchy-line"></div>
+                        <div class="hierarchy-arrow"></div>
+                    </div>
+                    <div class="hierarchy-box level-4">
+                        <div class="hierarchy-title">⚙️ 医療機器（輸液ポンプ）</div>
+                        <div class="hierarchy-desc">設定、ガードレール（制限）、アラーム</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Component Analysis -->
+    <section id="section3" class="section">
+        <div class="section-header">
+            <div class="section-number">3</div>
+            <h2 class="section-title">CAST Step 3：個別コンポーネント分析</h2>
+        </div>
+
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+            各コンポーネントの「責任 → 寄与 → なぜ（メンタルモデル/文脈）」を分析します。
+        </p>
+
+        <!-- 3-1 当直医 -->
+        <div class="component-card">
+            <div class="component-header">
+                <div class="component-icon">👨‍⚕️</div>
+                <div class="component-name">3-1. 当直医</div>
+            </div>
+            <div class="component-body">
+                <div class="analysis-row">
+                    <div class="analysis-label responsibility">責任</div>
+                    <div class="analysis-content">適切なインスリンの種類・経路・用量を指示</div>
+                </div>
+                <div class="analysis-row">
+                    <div class="analysis-label contribution">寄与</div>
+                    <div class="analysis-content">IV持続を選択しオーダー確定</div>
+                </div>
+                <div class="analysis-row">
+                    <div class="analysis-label mental-model">なぜ？<br>（メンタルモデル）</div>
+                    <div class="analysis-content">
+                        <ul>
+                            <li>「スライディングスケール＝いつもの補正」のつもりだった</li>
+                            <li>EHRの省略表示で"IV infusion"を認識できていない（または重要度を低く見積もった）</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="analysis-row">
+                    <div class="analysis-label context">なぜ？<br>（文脈）</div>
+                    <div class="analysis-content">
+                        <ul>
+                            <li>夜間で多忙（コール対応が連続）</li>
+                            <li>オーダーセット候補が類似名称で、上位表示がIV持続</li>
+                            <li>摂取量30%情報が処方画面に出てこない（意思決定の入力が欠落）</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3-2 薬剤部 -->
+        <div class="component-card">
+            <div class="component-header">
+                <div class="component-icon">💊</div>
+                <div class="component-name">3-2. 薬剤部</div>
+            </div>
+            <div class="component-body">
+                <div class="analysis-row">
+                    <div class="analysis-label responsibility">責任</div>
+                    <div class="analysis-content">高リスク薬の処方監査、疑義照会</div>
+                </div>
+                <div class="analysis-row">
+                    <div class="analysis-label contribution">寄与</div>
+                    <div class="analysis-content">IVインスリンを通常処理で払い出し</div>
+                </div>
+                <div class="analysis-row">
+                    <div class="analysis-label mental-model">なぜ？<br>（メンタルモデル）</div>
+                    <div class="analysis-content">
+                        <ul>
+                            <li>「医師が必要だから出している」という前提</li>
+                            <li>病棟の臨床状況（摂取量低下、腎機能、普段のレジメン）が監査画面に十分見えない</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="analysis-row">
+                    <div class="analysis-label context">なぜ？<br>（文脈）</div>
+                    <div class="analysis-content">
+                        <ul>
+                            <li>監査キューが混雑、優先度ルールが「禁忌・相互作用」中心</li>
+                            <li>"IVインスリン＝必ず疑義照会"というローカルルールが未整備</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3-3 看護師A -->
+        <div class="component-card">
+            <div class="component-header">
+                <div class="component-icon">👩‍⚕️</div>
+                <div class="component-name">3-3. 病棟看護師A（投与開始）</div>
+            </div>
+            <div class="component-body">
+                <div class="analysis-row">
+                    <div class="analysis-label responsibility">責任</div>
+                    <div class="analysis-content">薬剤・経路・速度の確認、ポンプ設定、ダブルチェック</div>
+                </div>
+                <div class="analysis-row">
+                    <div class="analysis-label contribution">寄与</div>
+                    <div class="analysis-content">10単位/時のIV持続を開始、ダブルチェックなし</div>
+                </div>
+                <div class="analysis-row">
+                    <div class="analysis-label mental-model">なぜ？<br>（メンタルモデル）</div>
+                    <div class="analysis-content">
+                        <ul>
+                            <li>「補正インスリンが来た」と解釈（IV持続という概念が頭に上がらない）</li>
+                            <li>オーダー一覧の表示が簡略で、経路の識別が弱い</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="analysis-row">
+                    <div class="analysis-label context">なぜ？<br>（文脈）</div>
+                    <div class="analysis-content">
+                        <ul>
+                            <li>夜勤の人手不足で、独力で複数患者を回す</li>
+                            <li>ダブルチェックは"原則"だが、相手が捕まらない状況が常態化</li>
+                            <li>ポンプに薬剤ガードレール（上限/プロトコル）が設定されていない、または緩い</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3-4 看護師B -->
+        <div class="component-card">
+            <div class="component-header">
+                <div class="component-icon">👩‍⚕️</div>
+                <div class="component-name">3-4. 病棟看護師B（低血糖対応）</div>
+            </div>
+            <div class="component-body">
+                <div class="analysis-row">
+                    <div class="analysis-label responsibility">責任</div>
+                    <div class="analysis-content">状態監視、低血糖対応、原因探索（投与停止含む）</div>
+                </div>
+                <div class="analysis-row">
+                    <div class="analysis-label contribution">寄与</div>
+                    <div class="analysis-content">対応はしたが、重篤化まで止めきれなかった</div>
+                </div>
+                <div class="analysis-row">
+                    <div class="analysis-label mental-model">なぜ？<br>（メンタルモデル）</div>
+                    <div class="analysis-content">
+                        <ul>
+                            <li>低血糖＝「一時的イベント」と捉え、持続投与が原因と即断できない</li>
+                            <li>"投与中のIVインスリン"が一目で見える仕組みがない</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="analysis-row">
+                    <div class="analysis-label context">なぜ？<br>（文脈）</div>
+                    <div class="analysis-content">
+                        <ul>
+                            <li>血糖測定→EHR反映遅延で、チームの共有が遅い</li>
+                            <li>"高リスク薬投与中の低血糖"を自動で疑う支援がない</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3-5 EHR -->
+        <div class="component-card">
+            <div class="component-header">
+                <div class="component-icon">💻</div>
+                <div class="component-name">3-5. EHR（情報システム）</div>
+            </div>
+            <div class="component-body">
+                <div class="analysis-row">
+                    <div class="analysis-label responsibility">責任</div>
+                    <div class="analysis-content">安全な意思決定と実施を支える表示・フィードバック</div>
+                </div>
+                <div class="analysis-row">
+                    <div class="analysis-label contribution">寄与</div>
+                    <div class="analysis-content">誤選択・誤解釈・未検知を助長</div>
+                </div>
+                <div class="analysis-row">
+                    <div class="analysis-label mental-model">なぜ？<br>（設計上の問題）</div>
+                    <div class="analysis-content">
+                        <ul>
+                            <li>類似薬剤が同じ導線で選べ、誤選択を防ぐ制約が弱い</li>
+                            <li>オーダー画面とeMARが分断され、「オーダー＝実施」の誤った安心を生む</li>
+                            <li>"摂取量低下"など重要な文脈が処方導線に入らない</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3-6 輸液ポンプ -->
+        <div class="component-card">
+            <div class="component-header">
+                <div class="component-icon">⚙️</div>
+                <div class="component-name">3-6. 輸液ポンプ</div>
+            </div>
+            <div class="component-body">
+                <div class="analysis-row">
+                    <div class="analysis-label responsibility">責任</div>
+                    <div class="analysis-content">危険設定の抑止（ガードレール）、アラーム</div>
+                </div>
+                <div class="analysis-row">
+                    <div class="analysis-label contribution">寄与</div>
+                    <div class="analysis-content">危険速度を許容し、開始を止めなかった</div>
+                </div>
+                <div class="analysis-row">
+                    <div class="analysis-label context">なぜ？<br>（文脈）</div>
+                    <div class="analysis-content">
+                        <ul>
+                            <li>インスリン用プロファイル未設定</li>
+                            <li>病棟のポンプ標準化が未完（導入はしたが設定・教育が追いついていない）</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: System Defects -->
+    <section id="section4" class="section">
+        <div class="section-header">
+            <div class="section-number">4</div>
+            <h2 class="section-title">CAST Step 4：制御構造全体の欠陥（システム要因）</h2>
+        </div>
+
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+            個別の"行動"の背後にある、横断的な欠陥をまとめます。
+        </p>
+
+        <div class="defect-grid">
+            <div class="defect-card">
+                <div class="defect-number">4-1</div>
+                <div class="defect-title">責任・権限・説明責任の曖昧さ</div>
+                <div class="defect-desc">
+                    「IVインスリンは必ず疑義照会」「必ずダブルチェック」のような<strong>強制力ある設計がなく</strong>、現場判断に依存している。
+                </div>
+            </div>
+
+            <div class="defect-card">
+                <div class="defect-number">4-2</div>
+                <div class="defect-title">フィードバック不足</div>
+                <div class="defect-desc">
+                    特に"未実施/実施中"の可視化が不十分。誰が見ても一瞬で分かる形で<strong>"IVインスリンが動いている"が共有されない</strong>（EHR画面分断・反映遅延）。
+                </div>
+            </div>
+
+            <div class="defect-card">
+                <div class="defect-number">4-3</div>
+                <div class="defect-title">部門間の調整の脆弱性</div>
+                <div class="defect-desc">
+                    処方⇄調剤⇄実施の境界が危険地帯。典型的に事故が起きやすい<strong>「ハンドオフ領域」</strong>なのに、形式化された確認が弱い。
+                </div>
+            </div>
+
+            <div class="defect-card">
+                <div class="defect-number">4-4</div>
+                <div class="defect-title">変化（Change）に対する管理不足</div>
+                <div class="defect-desc">
+                    人員不足・夜勤体制変更・EHR更新・ポンプ更新などの変化が、<strong>リスク評価（MoC的な管理）なし</strong>に積み重なっている。
+                </div>
+            </div>
+
+            <div class="defect-card">
+                <div class="defect-number">4-5</div>
+                <div class="defect-title">安全情報システムの弱さ</div>
+                <div class="defect-desc">
+                    過去にも"インスリン関連ヒヤリ"があったが、<strong>学習が局所で止まっている</strong>（院内共有・設計改善につながらない）。
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Improvements -->
+    <section id="section5" class="section">
+        <div class="section-header">
+            <div class="section-number">5</div>
+            <h2 class="section-title">CAST Step 5：改善提案（システム再設計として）</h2>
+        </div>
+
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+            「人に注意」ではなく、<strong>構造を変えて行動が自然に変わる提案</strong>にします。
+        </p>
+
+        <!-- 5-1 EHR改善 -->
+        <div class="improvement-section">
+            <div class="improvement-header">
+                <div class="improvement-icon">💻</div>
+                <div class="improvement-title">5-1. EHRの改善（最優先）</div>
+            </div>
+            <div class="improvement-list">
+                <div class="improvement-item">
+                    <div class="improvement-check">✓</div>
+                    <div class="improvement-text">IVインスリンは<strong>別導線（高リスク用の注文フロー）</strong>に分離</div>
+                </div>
+                <div class="improvement-item">
+                    <div class="improvement-check">✓</div>
+                    <div class="improvement-text">オーダー候補の上位表示ルールを見直し（誤選択を起こしにくく）</div>
+                </div>
+                <div class="improvement-item">
+                    <div class="improvement-check">✓</div>
+                    <div class="improvement-text">オーダー確定画面に<strong>経路（IV/SC）を強調表示</strong>（省略禁止）</div>
+                </div>
+                <div class="improvement-item">
+                    <div class="improvement-check">✓</div>
+                    <div class="improvement-text">"摂取量低下/腎機能/直近血糖"を処方導線に表示し、意思決定の入力を増やす</div>
+                </div>
+                <div class="improvement-item">
+                    <div class="improvement-check">✓</div>
+                    <div class="improvement-text">eMAR/投与中薬剤の状態を一画面で見える化（「動いている」フィードバック）</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5-2 高リスク薬の制御 -->
+        <div class="improvement-section">
+            <div class="improvement-header">
+                <div class="improvement-icon">💊</div>
+                <div class="improvement-title">5-2. 高リスク薬の"制御"を強化（運用をシステム化）</div>
+            </div>
+            <div class="improvement-list">
+                <div class="improvement-item">
+                    <div class="improvement-check">✓</div>
+                    <div class="improvement-text">IVインスリン開始は<strong>強制ダブルチェック</strong>（相手がいないなら開始できない設計へ）</div>
+                </div>
+                <div class="improvement-item">
+                    <div class="improvement-check">✓</div>
+                    <div class="improvement-text">薬剤部：IVインスリンは自動で疑義照会フラグ（文脈不足を補う）</div>
+                </div>
+                <div class="improvement-item">
+                    <div class="improvement-check">✓</div>
+                    <div class="improvement-text">病棟：インスリン運用を「通常（SC）」と「緊急（IV）」で標準プロトコル化</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5-3 ポンプのガードレール -->
+        <div class="improvement-section">
+            <div class="improvement-header">
+                <div class="improvement-icon">⚙️</div>
+                <div class="improvement-title">5-3. ポンプのガードレール</div>
+            </div>
+            <div class="improvement-list">
+                <div class="improvement-item">
+                    <div class="improvement-check">✓</div>
+                    <div class="improvement-text">インスリン用ライブラリを整備し、<strong>危険速度を物理的に入力できないように</strong></div>
+                </div>
+                <div class="improvement-item">
+                    <div class="improvement-check">✓</div>
+                    <div class="improvement-text">例外解除は理由入力＋上位者承認（制御構造としての抑止）</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5-4 学習プロセス -->
+        <div class="improvement-section">
+            <div class="improvement-header">
+                <div class="improvement-icon">📚</div>
+                <div class="improvement-title">5-4. 学習プロセス（継続的改善）</div>
+            </div>
+            <div class="improvement-list">
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                    事故後の推奨が実装されない問題を防ぐために：
+                </p>
+                <div class="improvement-item">
+                    <div class="improvement-check">✓</div>
+                    <div class="improvement-text"><strong>実装責任者を明確化</strong></div>
+                </div>
+                <div class="improvement-item">
+                    <div class="improvement-check">✓</div>
+                    <div class="improvement-text"><strong>実装確認（監査）</strong></div>
+                </div>
+                <div class="improvement-item">
+                    <div class="improvement-check">✓</div>
+                    <div class="improvement-text"><strong>効果確認</strong>（低血糖・インスリン逸脱の指標を追跡）</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Summary -->
+    <section id="summary" class="section">
+        <div class="section-header">
+            <div class="section-number">∑</div>
+            <h2 class="section-title">まとめ：この事故をCASTで見ると何が変わるか</h2>
+        </div>
+
+        <div class="summary-box">
+            <div class="summary-content">
+                <div class="summary-title">
+                    <span>🔍</span> CASTによるシステム分析の意義
+                </div>
+
+                <div class="summary-points">
+                    <div class="summary-point">
+                        <div class="summary-point-title">❌ 従来の分析</div>
+                        <div class="summary-point-desc">
+                            "看護師のダブルチェック不足"で終わる
+                        </div>
+                    </div>
+
+                    <div class="summary-point">
+                        <div class="summary-point-title">✅ CASTによる分析</div>
+                        <div class="summary-point-desc">
+                            EHRの表示・分断、薬剤監査の文脈欠落、夜勤体制、ポンプ設定、学習の仕組みが<strong>一つの因果プロセス</strong>として見える
+                        </div>
+                    </div>
+
+                    <div class="summary-point">
+                        <div class="summary-point-title">🔄 改善の方向転換</div>
+                        <div class="summary-point-desc">
+                            改善が「注意喚起」から<strong>制御構造の再設計</strong>へ移る
+                        </div>
+                    </div>
+
+                    <div class="summary-point">
+                        <div class="summary-point-title">🎯 本質的な安全向上</div>
+                        <div class="summary-point-desc">
+                            個人の行動変容に頼らず、<strong>構造を変えて行動が自然に変わる</strong>持続可能な改善を実現
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <p class="footer-text">
+        CAST分析教育資材 | Causal Analysis based on Systems Theory<br>
+        本資料は教育目的で作成された仮想事例です
+    </p>
+</footer>
+
+<script>
+    // Smooth scrolling for navigation
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                const navHeight = document.querySelector('.nav-container').offsetHeight;
+                const targetPosition = targetElement.offsetTop - navHeight - 20;
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // Active navigation on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navItems = document.querySelectorAll('.nav-item');
+
+    function updateActiveNav() {
+        const scrollPosition = window.scrollY + 150;
+
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            const sectionId = section.getAttribute('id');
+
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('href') === '#' + sectionId) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+        });
+    }
+
+    window.addEventListener('scroll', updateActiveNav);
+    updateActiveNav();
+
+    // Animate elements on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.card, .component-card, .defect-card, .improvement-section').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        observer.observe(el);
+    });
+</script>
+```
+
+</body>
+</html>
