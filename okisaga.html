@@ -1,0 +1,925 @@
+import React, { useState, useCallback, useEffect, useRef } from ‘react’;
+
+// 効果音生成
+const useSound = () => {
+const audioCtx = useRef(null);
+
+const getCtx = () => {
+if (!audioCtx.current) {
+audioCtx.current = new (window.AudioContext || window.webkitAudioContext)();
+}
+return audioCtx.current;
+};
+
+const play = (type) => {
+try {
+const ctx = getCtx();
+const osc = ctx.createOscillator();
+const gain = ctx.createGain();
+osc.connect(gain);
+gain.connect(ctx.destination);
+
+```
+  switch (type) {
+    case 'attack':
+      osc.frequency.setValueAtTime(200, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+      osc.start(); osc.stop(ctx.currentTime + 0.1);
+      break;
+    case 'hit':
+      osc.frequency.setValueAtTime(150, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(50, ctx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+      osc.start(); osc.stop(ctx.currentTime + 0.15);
+      break;
+    case 'critical':
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(400, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+      osc.start(); osc.stop(ctx.currentTime + 0.15);
+      break;
+    case 'win':
+      osc.type = 'sine';
+      [523, 659, 784, 1047].forEach((f, i) => {
+        osc.frequency.setValueAtTime(f, ctx.currentTime + i * 0.12);
+      });
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+      osc.start(); osc.stop(ctx.currentTime + 0.5);
+      break;
+    case 'lose':
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(300, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.5);
+      gain.gain.setValueAtTime(0.25, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+      osc.start(); osc.stop(ctx.currentTime + 0.5);
+      break;
+    case 'levelup':
+      osc.type = 'sine';
+      [440, 554, 659, 880].forEach((f, i) => {
+        osc.frequency.setValueAtTime(f, ctx.currentTime + i * 0.1);
+      });
+      gain.gain.setValueAtTime(0.25, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+      osc.start(); osc.stop(ctx.currentTime + 0.5);
+      break;
+    case 'gacha':
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(300, ctx.currentTime);
+      osc.frequency.linearRampToValueAtTime(600, ctx.currentTime + 0.5);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.5);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
+      osc.start(); osc.stop(ctx.currentTime + 0.6);
+      break;
+    case 'gachaHit':
+      osc.type = 'sine';
+      [880, 1108, 1318, 1760].forEach((f, i) => {
+        osc.frequency.setValueAtTime(f, ctx.currentTime + i * 0.08);
+      });
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+      osc.start(); osc.stop(ctx.currentTime + 0.4);
+      break;
+    case 'gachaRare':
+      osc.type = 'sine';
+      for (let i = 0; i < 8; i++) {
+        osc.frequency.setValueAtTime(600 + i * 100, ctx.currentTime + i * 0.06);
+      }
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
+      osc.start(); osc.stop(ctx.currentTime + 0.6);
+      break;
+    case 'button':
+      osc.frequency.setValueAtTime(800, ctx.currentTime);
+      gain.gain.setValueAtTime(0.1, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+      osc.start(); osc.stop(ctx.currentTime + 0.05);
+      break;
+    case 'heal':
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523, ctx.currentTime);
+      osc.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      osc.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+      osc.start(); osc.stop(ctx.currentTime + 0.3);
+      break;
+    case 'boss':
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(80, ctx.currentTime);
+      osc.frequency.setValueAtTime(60, ctx.currentTime + 0.2);
+      osc.frequency.setValueAtTime(80, ctx.currentTime + 0.4);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+      osc.start(); osc.stop(ctx.currentTime + 0.5);
+      break;
+    default:
+      break;
+  }
+} catch (e) {}
+```
+
+};
+return play;
+};
+
+// 職業定義
+const JOBS = {
+fisherman: { name: ‘漁師’, icon: ‘🎣’, color: ‘#4169E1’, baseAtk: 12, baseDef: 8, baseHp: 110, special: ‘shell’, rarity: ‘N’ },
+salaryman: { name: ‘サラリーマン’, icon: ‘👔’, color: ‘#708090’, baseAtk: 10, baseDef: 10, baseHp: 100, special: ‘exp’, rarity: ‘N’ },
+sumo: { name: ‘力士’, icon: ‘🤼’, color: ‘#8B4513’, baseAtk: 15, baseDef: 5, baseHp: 180, special: ‘counter’, rarity: ‘R’ },
+doctor: { name: ‘医者’, icon: ‘👨‍⚕️’, color: ‘#00CED1’, baseAtk: 8, baseDef: 12, baseHp: 100, special: ‘heal’, rarity: ‘R’ },
+diver: { name: ‘海女’, icon: ‘🤿’, color: ‘#20B2AA’, baseAtk: 14, baseDef: 6, baseHp: 90, special: ‘crit’, rarity: ‘R’ },
+chef: { name: ‘料理人’, icon: ‘👨‍🍳’, color: ‘#FF6347’, baseAtk: 10, baseDef: 8, baseHp: 95, special: ‘item’, rarity: ‘SR’ },
+shrine: { name: ‘神主’, icon: ‘⛩️’, color: ‘#9932CC’, baseAtk: 11, baseDef: 11, baseHp: 105, special: ‘divine’, rarity: ‘SR’ },
+captain: { name: ‘船長’, icon: ‘🚢’, color: ‘#FFD700’, baseAtk: 13, baseDef: 13, baseHp: 120, special: ‘double’, rarity: ‘SSR’ },
+emperor: { name: ‘後鳥羽上皇’, icon: ‘👑’, color: ‘#FF4500’, baseAtk: 18, baseDef: 15, baseHp: 150, special: ‘pierce’, rarity: ‘SSR’ },
+dragon: { name: ‘龍神’, icon: ‘🐉’, color: ‘#00FF7F’, baseAtk: 25, baseDef: 20, baseHp: 200, special: ‘all’, rarity: ‘UR’ },
+};
+const JOB_IDS = Object.keys(JOBS);
+
+const SHELLS = {
+1: { name: ‘シジミ’, color: ‘#8B7355’, icon: ‘🐚’, itemCost: 10, jobCost: 15 },
+2: { name: ‘アサリ’, color: ‘#CD853F’, icon: ‘🦪’, itemCost: 8, jobCost: 12 },
+3: { name: ‘ハマグリ’, color: ‘#DAA520’, icon: ‘🐚’, itemCost: 5, jobCost: 8 },
+4: { name: ‘サザエ’, color: ‘#228B22’, icon: ‘🐚’, itemCost: 3, jobCost: 5 },
+5: { name: ‘アワビ’, color: ‘#4169E1’, icon: ‘🦪’, itemCost: 1, jobCost: 2 },
+};
+
+// 敵定義（通常＋ボス）- プレイヤーレベルに応じてスケール
+const ENEMIES = [
+// 通常敵
+{ name: ‘ウニ’, hp: 30, atk: 8, def: 3, exp: 15, drop: [1,1,1,2], color: ‘#8B008B’, icon: ‘🦔’, lv: 1, boss: false },
+{ name: ‘ヒトデ’, hp: 45, atk: 12, def: 4, exp: 25, drop: [1,2,2,2], color: ‘#FF6347’, icon: ‘⭐’, lv: 1, boss: false },
+{ name: ‘クラゲ’, hp: 40, atk: 15, def: 2, exp: 20, drop: [1,1,2,2], color: ‘#FFB6C1’, icon: ‘🪼’, lv: 2, boss: false },
+{ name: ‘タコ’, hp: 80, atk: 22, def: 8, exp: 45, drop: [2,2,3,3], color: ‘#FF4500’, icon: ‘🐙’, lv: 5, boss: false },
+{ name: ‘カニ’, hp: 100, atk: 18, def: 20, exp: 55, drop: [2,2,3,3], color: ‘#DC143C’, icon: ‘🦀’, lv: 6, boss: false },
+{ name: ‘サメ’, hp: 180, atk: 40, def: 15, exp: 120, drop: [3,3,4,4], color: ‘#4682B4’, icon: ‘🦈’, lv: 10, boss: false },
+{ name: ‘ウミガメ’, hp: 220, atk: 30, def: 35, exp: 130, drop: [3,4,4,4], color: ‘#2E8B57’, icon: ‘🐢’, lv: 12, boss: false },
+{ name: ‘シャチ’, hp: 280, atk: 55, def: 25, exp: 180, drop: [3,4,4,5], color: ‘#1C1C1C’, icon: ‘🐋’, lv: 15, boss: false },
+{ name: ‘大王イカ’, hp: 380, atk: 70, def: 30, exp: 250, drop: [4,4,5,5], color: ‘#800080’, icon: ‘🦑’, lv: 20, boss: false },
+{ name: ‘メガロドン’, hp: 550, atk: 95, def: 45, exp: 400, drop: [4,5,5,5], color: ‘#696969’, icon: ‘🦈’, lv: 28, boss: false },
+{ name: ‘海坊主’, hp: 750, atk: 110, def: 55, exp: 550, drop: [5,5,5,5], color: ‘#191970’, icon: ‘👹’, lv: 35, boss: false },
+{ name: ‘海神ワダツミ’, hp: 1200, atk: 150, def: 80, exp: 1000, drop: [5,5,5,5], color: ‘#00CED1’, icon: ‘🔱’, lv: 45, boss: false },
+
+// ボス敵（色違い・強化版）
+{ name: ‘毒キングウニ’, hp: 80, atk: 20, def: 8, exp: 50, drop: [2,2,2,3], color: ‘#FF00FF’, icon: ‘🦔’, lv: 3, boss: true, glow: ‘#FF00FF’ },
+{ name: ‘灼熱ヒトデ’, hp: 120, atk: 30, def: 10, exp: 80, drop: [2,2,3,3], color: ‘#FF4500’, icon: ‘⭐’, lv: 5, boss: true, glow: ‘#FF4500’ },
+{ name: ‘電撃クラゲ’, hp: 100, atk: 40, def: 5, exp: 70, drop: [2,3,3,3], color: ‘#00FFFF’, icon: ‘🪼’, lv: 6, boss: true, glow: ‘#00FFFF’ },
+{ name: ‘深海大ダコ’, hp: 200, atk: 55, def: 18, exp: 150, drop: [3,3,4,4], color: ‘#8B0000’, icon: ‘🐙’, lv: 10, boss: true, glow: ‘#FF0000’ },
+{ name: ‘鋼鉄カニ’, hp: 250, atk: 45, def: 50, exp: 180, drop: [3,4,4,4], color: ‘#C0C0C0’, icon: ‘🦀’, lv: 12, boss: true, glow: ‘#FFFFFF’ },
+{ name: ‘白鯨シャーク’, hp: 400, atk: 90, def: 35, exp: 350, drop: [4,4,5,5], color: ‘#F0F8FF’, icon: ‘🦈’, lv: 18, boss: true, glow: ‘#87CEEB’ },
+{ name: ‘玄武’, hp: 500, atk: 70, def: 80, exp: 400, drop: [4,4,5,5], color: ‘#006400’, icon: ‘🐢’, lv: 22, boss: true, glow: ‘#00FF00’ },
+{ name: ‘覇王シャチ’, hp: 650, atk: 130, def: 50, exp: 550, drop: [4,5,5,5], color: ‘#4B0082’, icon: ‘🐋’, lv: 28, boss: true, glow: ‘#9400D3’ },
+{ name: ‘クラーケン’, hp: 900, atk: 160, def: 60, exp: 800, drop: [5,5,5,5], color: ‘#2F0040’, icon: ‘🦑’, lv: 35, boss: true, glow: ‘#8B008B’ },
+{ name: ‘古代メガロドン’, hp: 1300, atk: 200, def: 80, exp: 1200, drop: [5,5,5,5], color: ‘#1a1a1a’, icon: ‘🦈’, lv: 42, boss: true, glow: ‘#FFD700’ },
+{ name: ‘暴風海坊主’, hp: 1800, atk: 250, def: 100, exp: 1800, drop: [5,5,5,5], color: ‘#000033’, icon: ‘👹’, lv: 48, boss: true, glow: ‘#00BFFF’ },
+{ name: ‘龍宮の王’, hp: 3000, atk: 350, def: 150, exp: 3000, drop: [5,5,5,5], color: ‘#FFD700’, icon: ‘👑’, lv: 55, boss: true, glow: ‘#FFD700’ },
+];
+
+// 隠岐らしい装備
+const ITEMS = {
+1: [
+{ id: ‘w1a’, name: ‘漁師の銛’, type: ‘W’, rarity: ‘N’, atk: 3, def: 0, hp: 0 },
+{ id: ‘a1a’, name: ‘藁編みの胴着’, type: ‘A’, rarity: ‘N’, atk: 0, def: 3, hp: 5 },
+{ id: ‘w1b’, name: ‘貝殻の小刀’, type: ‘W’, rarity: ‘R’, atk: 5, def: 0, hp: 0 },
+{ id: ‘a1b’, name: ‘海藻の羽織’, type: ‘A’, rarity: ‘R’, atk: 0, def: 4, hp: 10 },
+{ id: ‘c1a’, name: ‘白島の護石’, type: ‘C’, rarity: ‘SR’, atk: 3, def: 3, hp: 15 },
+],
+2: [
+{ id: ‘w2a’, name: ‘隠岐杉の棍棒’, type: ‘W’, rarity: ‘N’, atk: 6, def: 0, hp: 0 },
+{ id: ‘a2a’, name: ‘牛皮の胸当て’, type: ‘A’, rarity: ‘N’, atk: 0, def: 6, hp: 10 },
+{ id: ‘w2b’, name: ‘イカ釣りの鉤槍’, type: ‘W’, rarity: ‘R’, atk: 10, def: 0, hp: 0 },
+{ id: ‘a2b’, name: ‘中ノ島の漁師合羽’, type: ‘A’, rarity: ‘R’, atk: 0, def: 8, hp: 15 },
+{ id: ‘c2a’, name: ‘西郷湾の真珠’, type: ‘C’, rarity: ‘SR’, atk: 5, def: 5, hp: 25 },
+],
+3: [
+{ id: ‘w3a’, name: ‘知夫里の鯨骨刀’, type: ‘W’, rarity: ‘R’, atk: 15, def: 0, hp: 0 },
+{ id: ‘a3a’, name: ‘サザエ殻の鎧’, type: ‘A’, rarity: ‘R’, atk: 0, def: 15, hp: 20 },
+{ id: ‘w3b’, name: ‘海士の三叉槍’, type: ‘W’, rarity: ‘SR’, atk: 20, def: 0, hp: 0 },
+{ id: ‘a3b’, name: ‘牛突きの化粧廻し’, type: ‘A’, rarity: ‘SR’, atk: 5, def: 12, hp: 30 },
+{ id: ‘c3a’, name: ‘玉若酢命の勾玉’, type: ‘C’, rarity: ‘SSR’, atk: 10, def: 10, hp: 40 },
+],
+4: [
+{ id: ‘w4a’, name: ‘黒曜石の太刀’, type: ‘W’, rarity: ‘SR’, atk: 30, def: 0, hp: 0 },
+{ id: ‘a4a’, name: ‘摩天崖の岩鎧’, type: ‘A’, rarity: ‘SR’, atk: 0, def: 30, hp: 35 },
+{ id: ‘w4b’, name: ‘國賀神社の神剣’, type: ‘W’, rarity: ‘SSR’, atk: 40, def: 5, hp: 0 },
+{ id: ‘a4b’, name: ‘焼火神社の神衣’, type: ‘A’, rarity: ‘SSR’, atk: 5, def: 35, hp: 50 },
+{ id: ‘c4a’, name: ‘ローソク島の聖火’, type: ‘C’, rarity: ‘UR’, atk: 20, def: 20, hp: 60 },
+],
+5: [
+{ id: ‘w5a’, name: ‘後鳥羽院の御剣’, type: ‘W’, rarity: ‘SSR’, atk: 50, def: 5, hp: 0 },
+{ id: ‘a5a’, name: ‘承久の戦装束’, type: ‘A’, rarity: ‘SSR’, atk: 5, def: 50, hp: 60 },
+{ id: ‘w5b’, name: ‘龍神の三叉戟’, type: ‘W’, rarity: ‘UR’, atk: 65, def: 10, hp: 20 },
+{ id: ‘a5b’, name: ‘隠岐国造の大鎧’, type: ‘A’, rarity: ‘UR’, atk: 10, def: 60, hp: 80 },
+{ id: ‘c5a’, name: ‘島前島後の神璽’, type: ‘C’, rarity: ‘LR’, atk: 40, def: 40, hp: 100 },
+],
+};
+const ALL_ITEMS = Object.values(ITEMS).flat();
+
+const RARITY_COLOR = { N: ‘#808080’, R: ‘#4169E1’, SR: ‘#9932CC’, SSR: ‘#FFD700’, UR: ‘#FF4500’, LR: ‘#00FF7F’ };
+const RARITY_LIST = [‘N’, ‘R’, ‘SR’, ‘SSR’, ‘UR’, ‘LR’];
+const TYPE_ICON = { W: ‘⚔️’, A: ‘🛡️’, C: ‘💎’ };
+const TYPE_NAME = { W: ‘武器’, A: ‘防具’, C: ‘装飾’ };
+
+const ITEM_RATES = { 1: [.4,.35,.25,0,0], 2: [.35,.35,.3,0,0], 3: [0,.35,.4,.25,0], 4: [0,0,.4,.45,.15], 5: [0,0,.3,.45,.25] };
+const JOB_RATES = { 1: {N:.8,R:.18,SR:.02}, 2: {N:.6,R:.35,SR:.05}, 3: {N:.3,R:.5,SR:.18,SSR:.02}, 4: {N:.1,R:.3,SR:.45,SSR:.14,UR:.01}, 5: {R:.1,SR:.4,SSR:.4,UR:.1} };
+
+const SPELL = ‘あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん’;
+
+const encode = (p) => {
+let d = [p.level, p.exp % 47, Math.floor(p.exp / 47) % 47, JOB_IDS.indexOf(p.currentJob)];
+let jf = 0; p.unlockedJobs.forEach(j => jf |= 1 << JOB_IDS.indexOf(j)); d.push(jf % 47, Math.floor(jf / 47) % 47);
+for (let i = 1; i <= 5; i++) d.push(p.shells[i] % 47);
+JOB_IDS.forEach(j => d.push((p.jobLevels[j] || 1) - 1));
+d.push(p.items.length);
+p.items.forEach(it => { d.push(ALL_ITEMS.findIndex(x => x.id === it.id)); d.push((it.lv || 1) - 1); });
+d.push(d.reduce((a, b) => a + b, 0) % 47);
+return d.map(n => SPELL[n % 47]).join(’’);
+};
+
+const decode = (s) => {
+try {
+const c = s.replace(/\s/g, ‘’).split(’’).map(x => SPELL.indexOf(x));
+let i = 0;
+const level = c[i++], exp = c[i++] + c[i++] * 47, currentJob = JOB_IDS[c[i++]];
+const jf = c[i++] + c[i++] * 47;
+const unlockedJobs = JOB_IDS.filter((_, idx) => jf & (1 << idx));
+if (!unlockedJobs.includes(‘fisherman’)) unlockedJobs.push(‘fisherman’);
+const shells = {}; for (let j = 1; j <= 5; j++) shells[j] = c[i++];
+const jobLevels = {}; JOB_IDS.forEach(j => jobLevels[j] = c[i++] + 1);
+const itemCount = c[i++], items = [];
+for (let j = 0; j < itemCount; j++) { const it = ALL_ITEMS[c[i++]]; if (it) items.push({ …it, lv: c[i++] + 1 }); else i++; }
+return { level, exp, currentJob, unlockedJobs, shells, jobLevels, items };
+} catch { return null; }
+};
+
+export default function Game() {
+const [screen, setScreen] = useState(‘title’);
+const [player, setPlayer] = useState({
+level: 1, exp: 0, currentJob: ‘fisherman’,
+unlockedJobs: [‘fisherman’, ‘salaryman’],
+shells: { 1: 5, 2: 3, 3: 1, 4: 0, 5: 0 },
+jobLevels: { fisherman: 1, salaryman: 1 },
+items: [],
+});
+const [hp, setHp] = useState(null);
+const [enemy, setEnemy] = useState(null);
+const [log, setLog] = useState([]);
+const [anim, setAnim] = useState(false);
+const [tab, setTab] = useState(‘gacha’);
+const [gachaPhase, setGachaPhase] = useState(null);
+const [gachaType, setGachaType] = useState(null);
+const [gachaRank, setGachaRank] = useState(null);
+const [gachaRarity, setGachaRarity] = useState(null);
+const [result, setResult] = useState(null);
+const [showPw, setShowPw] = useState(false);
+const [pwInput, setPwInput] = useState(’’);
+const [pwError, setPwError] = useState(’’);
+const [showPwInput, setShowPwInput] = useState(false);
+
+const sound = useSound();
+const job = JOBS[player.currentJob];
+const jLv = player.jobLevels[player.currentJob] || 1;
+const jBonus = 1 + (jLv - 1) * 0.15;
+const spBonus = 15 + (jLv - 1) * 8;
+
+const getStats = useCallback(() => {
+let atk = Math.floor((job.baseAtk + (player.level - 1) * 3) * jBonus);
+let def = Math.floor((job.baseDef + (player.level - 1) * 2) * jBonus);
+let mhp = Math.floor((job.baseHp + (player.level - 1) * 20) * jBonus);
+player.items.forEach(it => {
+const b = 1 + ((it.lv || 1) - 1) * 0.25;
+atk += Math.floor(it.atk * b);
+def += Math.floor(it.def * b);
+mhp += Math.floor(it.hp * b);
+});
+if (job.special === ‘item’ || job.special === ‘all’) { atk = Math.floor(atk * (1 + spBonus / 100)); def = Math.floor(def * (1 + spBonus / 100)); }
+if (job.special === ‘divine’ || job.special === ‘all’) { atk = Math.floor(atk * 1.1); def = Math.floor(def * 1.1); mhp = Math.floor(mhp * 1.1); }
+return { atk, def, mhp };
+}, [player, job, jBonus, spBonus]);
+
+const stats = getStats();
+const maxHp = stats.mhp;
+const curHp = hp ?? maxHp;
+
+useEffect(() => { if (hp === null) setHp(maxHp); }, [hp, maxHp]);
+
+const expNext = (lv) => Math.floor(lv * 50 * (1 + lv * 0.1));
+
+// 敵のスケーリング（プレイヤーレベルに応じて強化）
+const scaleEnemy = (base, playerLv) => {
+const lvDiff = playerLv - base.lv;
+const scale = 1 + Math.max(0, lvDiff) * 0.12; // レベル差1につき12%強化
+const bossScale = base.boss ? 1.5 : 1; // ボスは1.5倍
+return {
+…base,
+maxHp: Math.floor(base.hp * scale * bossScale),
+hp: Math.floor(base.hp * scale * bossScale),
+atk: Math.floor(base.atk * scale * bossScale),
+def: Math.floor(base.def * scale * bossScale),
+exp: Math.floor(base.exp * scale * (base.boss ? 2 : 1)),
+};
+};
+
+const startBattle = () => {
+sound(‘button’);
+if (curHp <= 0) setHp(maxHp);
+
+```
+// レベルに応じた敵を選択（ボス20%出現）
+const isBoss = Math.random() < 0.2;
+const availEnemies = ENEMIES.filter(e => e.boss === isBoss && e.lv <= player.level + 8 && e.lv >= player.level - 10);
+const fallback = ENEMIES.filter(e => e.boss === isBoss);
+const pool = availEnemies.length > 0 ? availEnemies : fallback;
+const base = pool[Math.floor(Math.random() * pool.length)];
+const scaled = scaleEnemy(base, player.level);
+
+if (scaled.boss) sound('boss');
+setEnemy(scaled);
+setLog([`${scaled.boss ? '⚠️ BOSS! ' : ''}${scaled.name}が現れた！`]);
+setScreen('battle');
+```
+
+};
+
+const doAttack = () => {
+if (!enemy || anim) return;
+setAnim(true);
+sound(‘attack’);
+
+```
+const sp = job.special;
+let dmg = Math.max(1, stats.atk - Math.floor(enemy.def / ((sp === 'pierce' || sp === 'all') ? 3 : 2)));
+const isCrit = Math.random() < ((sp === 'crit' || sp === 'all') ? spBonus / 100 : 0.05);
+if (isCrit) { dmg = Math.floor(dmg * 1.5); sound('critical'); }
+const bonus = Math.random() < ((sp === 'double' || sp === 'all') ? spBonus / 100 : 0) ? Math.floor(dmg * 0.5) : 0;
+const eDmg = Math.max(1, enemy.atk - Math.floor(stats.def / 2));
+const reflect = Math.floor(eDmg * ((sp === 'counter' || sp === 'all') ? spBonus / 100 : 0));
+const heal = Math.floor(maxHp * ((sp === 'heal' || sp === 'all') ? spBonus / 200 : 0));
+const newEHp = Math.max(0, enemy.hp - dmg - bonus - reflect);
+const newHp = Math.min(maxHp, Math.max(0, curHp - eDmg + heal));
+
+const newLog = [...log];
+newLog.push(`${isCrit ? '💥クリティカル! ' : ''}${dmg}${bonus > 0 ? `+${bonus}` : ''}ダメージ！`);
+if (reflect > 0) newLog.push(`🔄反射${reflect}！`);
+
+if (newEHp <= 0) {
+  sound('win');
+  let rank = enemy.drop[Math.floor(Math.random() * enemy.drop.length)];
+  if (Math.random() < ((sp === 'shell' || sp === 'all') ? spBonus / 100 : 0)) rank = Math.min(5, rank + 1);
+  const expRate = (sp === 'exp' || sp === 'all') ? 1 + spBonus / 100 : 1;
+  const expG = Math.floor(enemy.exp * expRate);
+  let [nExp, nLv] = [player.exp + expG, player.level];
+  while (nExp >= expNext(nLv)) { nExp -= expNext(nLv); nLv++; }
+  newLog.push(`🎉勝利！ ${SHELLS[rank].icon}${SHELLS[rank].name}+1 💫${expG}EXP`);
+  if (nLv > player.level) { newLog.push(`⬆️ Lv${nLv}にアップ！`); sound('levelup'); }
+  setPlayer(p => ({ ...p, shells: { ...p.shells, [rank]: p.shells[rank] + 1 }, exp: nExp, level: nLv }));
+  setHp(nLv > player.level ? getStats().mhp : newHp);
+  setEnemy(null);
+} else {
+  setTimeout(() => sound('hit'), 200);
+  newLog.push(`${enemy.name}の反撃！ ${eDmg}ダメージ！${heal > 0 ? ` 💚+${heal}` : ''}`);
+  if (newHp <= 0) { newLog.push('💀敗北...'); sound('lose'); setHp(0); setEnemy(null); }
+  else { setEnemy(e => ({ ...e, hp: newEHp })); setHp(newHp); }
+}
+setLog(newLog.slice(-5));
+setTimeout(() => setAnim(false), 200);
+```
+
+};
+
+const getTiming = (r) => {
+const i = RARITY_LIST.indexOf(r);
+return { spin: 1000 + i * 200, build: i >= 2 ? 1000 + i * 500 : 0 };
+};
+
+const pullItem = (rank) => {
+if (player.shells[rank] < SHELLS[rank].itemCost) return;
+sound(‘gacha’);
+setPlayer(p => ({ …p, shells: { …p.shells, [rank]: p.shells[rank] - SHELLS[rank].itemCost } }));
+setGachaRank(rank); setGachaType(‘item’); setGachaPhase(‘spin’);
+let r = Math.random(), idx = 0;
+ITEM_RATES[rank].forEach((rate, i) => { if (r > 0) { r -= rate; if (r <= 0) idx = i; } });
+const item = ITEMS[rank][idx];
+setGachaRarity(item.rarity);
+const t = getTiming(item.rarity);
+setTimeout(() => {
+if (t.build > 0) { setGachaPhase(‘build’); sound(‘gachaRare’); setTimeout(() => finishItem(item), t.build); }
+else finishItem(item);
+}, t.spin);
+};
+
+const finishItem = (item) => {
+setGachaPhase(‘result’);
+sound(‘gachaHit’);
+const idx = player.items.findIndex(x => x.id === item.id);
+if (idx >= 0) {
+const newLv = Math.min(10, (player.items[idx].lv || 1) + 1);
+const newItems = […player.items]; newItems[idx] = { …newItems[idx], lv: newLv };
+setPlayer(p => ({ …p, items: newItems }));
+setResult({ …item, lv: newLv, isUp: true });
+} else {
+setPlayer(p => ({ …p, items: […p.items, { …item, lv: 1 }] }));
+setResult({ …item, lv: 1, isUp: false });
+}
+};
+
+const pullJob = (rank) => {
+if (player.shells[rank] < SHELLS[rank].jobCost) return;
+sound(‘gacha’);
+setPlayer(p => ({ …p, shells: { …p.shells, [rank]: p.shells[rank] - SHELLS[rank].jobCost } }));
+setGachaRank(rank); setGachaType(‘job’); setGachaPhase(‘spin’);
+const byR = {}; Object.entries(JOBS).forEach(([id, j]) => { byR[j.rarity] = byR[j.rarity] || []; byR[j.rarity].push(id); });
+let r = Math.random(), rarity = ‘N’;
+Object.entries(JOB_RATES[rank] || {}).forEach(([ra, rate]) => { if (r > 0) { r -= rate; if (r <= 0) rarity = ra; } });
+const jobId = byR[rarity]?.[Math.floor(Math.random() * (byR[rarity]?.length || 1))] || ‘fisherman’;
+setGachaRarity(JOBS[jobId].rarity);
+const t = getTiming(JOBS[jobId].rarity);
+setTimeout(() => {
+if (t.build > 0) { setGachaPhase(‘build’); sound(‘gachaRare’); setTimeout(() => finishJob(jobId), t.build); }
+else finishJob(jobId);
+}, t.spin);
+};
+
+const finishJob = (jobId) => {
+setGachaPhase(‘result’);
+sound(‘gachaHit’);
+const isNew = !player.unlockedJobs.includes(jobId);
+const newLv = Math.min(10, (player.jobLevels[jobId] || 0) + 1);
+setPlayer(p => ({
+…p,
+unlockedJobs: isNew ? […p.unlockedJobs, jobId] : p.unlockedJobs,
+jobLevels: { …p.jobLevels, [jobId]: newLv },
+}));
+setResult({ type: ‘job’, jobId, job: JOBS[jobId], lv: newLv, isNew });
+};
+
+const closeResult = () => { setResult(null); setGachaPhase(null); setGachaRarity(null); };
+
+const handlePw = () => {
+const d = decode(pwInput);
+if (d) { setPlayer(d); setHp(null); setPwError(’’); setShowPwInput(false); setPwInput(’’); setScreen(‘home’); sound(‘levelup’); }
+else setPwError(‘じゅもんが ちがいます’);
+};
+
+const ri = RARITY_LIST.indexOf(gachaRarity || ‘N’);
+
+// タイトル
+if (screen === ‘title’) return (
+<div style={{
+minHeight: ‘100vh’,
+background: ‘linear-gradient(180deg, #000510 0%, #001030 30%, #002855 60%, #004080 100%)’,
+fontFamily: ‘“Hiragino Kaku Gothic Pro”, “Yu Gothic”, sans-serif’,
+display: ‘flex’,
+flexDirection: ‘column’,
+alignItems: ‘center’,
+justifyContent: ‘center’,
+position: ‘relative’,
+overflow: ‘hidden’,
+}}>
+{/* 海の波アニメーション */}
+<div style={{ position: ‘absolute’, bottom: 0, left: 0, right: 0, height: ‘30%’, background: ‘linear-gradient(180deg, transparent 0%, rgba(0,100,180,0.3) 50%, rgba(0,150,220,0.4) 100%)’, animation: ‘wave 4s ease-in-out infinite’ }} />
+<div style={{ position: ‘absolute’, bottom: 0, left: 0, right: 0, height: ‘25%’, background: ‘linear-gradient(180deg, transparent 0%, rgba(0,80,150,0.2) 50%, rgba(0,120,200,0.3) 100%)’, animation: ‘wave 3s ease-in-out infinite reverse’ }} />
+
+```
+  {/* 浮遊する泡 */}
+  {[...Array(15)].map((_, i) => (
+    <div key={i} style={{
+      position: 'absolute',
+      width: 8 + Math.random() * 15,
+      height: 8 + Math.random() * 15,
+      borderRadius: '50%',
+      background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4), rgba(100,200,255,0.1))',
+      left: `${5 + Math.random() * 90}%`,
+      bottom: `${Math.random() * 40}%`,
+      animation: `bubble ${4 + Math.random() * 4}s ease-in-out infinite`,
+      animationDelay: `${Math.random() * 3}s`,
+    }} />
+  ))}
+  
+  {/* 光の筋 */}
+  <div style={{ position: 'absolute', top: 0, left: '20%', width: '2px', height: '60%', background: 'linear-gradient(180deg, rgba(255,255,255,0.3), transparent)', transform: 'rotate(15deg)', animation: 'shimmer 3s ease-in-out infinite' }} />
+  <div style={{ position: 'absolute', top: 0, left: '70%', width: '2px', height: '50%', background: 'linear-gradient(180deg, rgba(255,255,255,0.2), transparent)', transform: 'rotate(-10deg)', animation: 'shimmer 4s ease-in-out infinite 1s' }} />
+  
+  {/* パスワード入力モーダル */}
+  {showPwInput && (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
+      <div style={{ background: 'linear-gradient(135deg, #0a1525 0%, #1a2a45 100%)', padding: 30, borderRadius: 20, border: '2px solid #FFD700', boxShadow: '0 0 40px rgba(255,215,0,0.3)', width: '90%', maxWidth: 380 }}>
+        <div style={{ color: '#FFD700', fontSize: 20, textAlign: 'center', marginBottom: 20, textShadow: '0 0 10px rgba(255,215,0,0.5)' }}>📜 ふっかつのじゅもん</div>
+        <textarea value={pwInput} onChange={e => setPwInput(e.target.value)} placeholder="じゅもんを にゅうりょく..." style={{ width: '100%', height: 110, padding: 12, fontSize: 15, background: 'rgba(0,0,0,0.5)', border: '2px solid #4169E1', borderRadius: 10, color: '#fff', resize: 'none', boxSizing: 'border-box' }} />
+        {pwError && <div style={{ color: '#ff6b6b', fontSize: 13, textAlign: 'center', marginTop: 10 }}>{pwError}</div>}
+        <div style={{ display: 'flex', gap: 12, marginTop: 20 }}>
+          <button onClick={() => { setShowPwInput(false); setPwInput(''); setPwError(''); }} style={{ flex: 1, padding: 12, background: 'rgba(100,100,100,0.5)', border: '1px solid #666', borderRadius: 10, color: '#fff', cursor: 'pointer', fontSize: 15 }}>もどる</button>
+          <button onClick={handlePw} style={{ flex: 1, padding: 12, background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)', border: 'none', borderRadius: 10, color: '#1a1a2e', fontWeight: 'bold', cursor: 'pointer', fontSize: 15, boxShadow: '0 4px 15px rgba(255,215,0,0.4)' }}>けってい</button>
+        </div>
+      </div>
+    </div>
+  )}
+  
+  {/* メインコンテンツ */}
+  <div style={{ position: 'relative', zIndex: 10, textAlign: 'center', padding: '0 20px' }}>
+    {/* アイコン群 */}
+    <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 25 }}>
+      <span style={{ fontSize: 45, animation: 'float 3s ease-in-out infinite', filter: 'drop-shadow(0 0 10px rgba(255,200,100,0.5))' }}>🐚</span>
+      <span style={{ fontSize: 55, animation: 'float 3s ease-in-out infinite 0.3s', filter: 'drop-shadow(0 0 15px rgba(100,200,255,0.6))' }}>🐉</span>
+      <span style={{ fontSize: 45, animation: 'float 3s ease-in-out infinite 0.6s', filter: 'drop-shadow(0 0 10px rgba(255,100,100,0.5))' }}>🦈</span>
+    </div>
+    
+    {/* メインタイトル */}
+    <h1 style={{ 
+      fontSize: 44, 
+      fontWeight: 900,
+      color: 'transparent',
+      background: 'linear-gradient(180deg, #FFE566 0%, #FFD700 30%, #FF9500 70%, #FF6B00 100%)',
+      backgroundClip: 'text',
+      WebkitBackgroundClip: 'text',
+      textShadow: '0 0 40px rgba(255,180,0,0.6), 0 4px 8px rgba(0,0,0,0.5)',
+      marginBottom: 8,
+      letterSpacing: 6,
+      lineHeight: 1.2,
+    }}>
+      隠岐海伝説
+    </h1>
+    
+    {/* 英語サブ */}
+    <div style={{
+      fontSize: 11,
+      color: '#87CEEB',
+      letterSpacing: 8,
+      marginBottom: 15,
+      opacity: 0.8,
+    }}>
+      OKI OCEAN SAGA
+    </div>
+    
+    {/* サブタイトル */}
+    <div style={{
+      fontSize: 15,
+      color: '#fff',
+      textShadow: '0 0 20px rgba(100,200,255,0.5)',
+      marginBottom: 8,
+      letterSpacing: 2,
+    }}>
+      〜 神々の眠る海で、伝説を継げ 〜
+    </div>
+    
+    {/* キャッチコピー */}
+    <div style={{
+      fontSize: 11,
+      color: '#aaa',
+      marginBottom: 40,
+      letterSpacing: 1,
+    }}>
+      貝を集め、職業を極め、龍神の力を手に入れろ
+    </div>
+    
+    {/* スタートボタン */}
+    <button 
+      onClick={() => { sound('button'); setScreen('home'); }} 
+      style={{ 
+        padding: '18px 60px', 
+        fontSize: 20, 
+        fontWeight: 'bold',
+        background: 'linear-gradient(180deg, #FFE566 0%, #FFD700 40%, #FF9500 100%)',
+        border: 'none', 
+        borderRadius: 50, 
+        color: '#1a0a00',
+        cursor: 'pointer', 
+        marginBottom: 20,
+        boxShadow: '0 6px 30px rgba(255,180,0,0.5), inset 0 2px 0 rgba(255,255,255,0.3)',
+        letterSpacing: 4,
+        transition: 'all 0.2s ease',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+      onMouseOver={(e) => { e.target.style.transform = 'scale(1.05)'; e.target.style.boxShadow = '0 8px 40px rgba(255,180,0,0.7)'; }}
+      onMouseOut={(e) => { e.target.style.transform = 'scale(1)'; e.target.style.boxShadow = '0 6px 30px rgba(255,180,0,0.5)'; }}
+    >
+      ⚔️ 冒険をはじめる
+    </button>
+    
+    {/* じゅもんボタン */}
+    <div>
+      <button 
+        onClick={() => { sound('button'); setShowPwInput(true); }} 
+        style={{ 
+          padding: '12px 35px', 
+          fontSize: 13, 
+          background: 'rgba(255,255,255,0.05)', 
+          border: '2px solid rgba(135,206,235,0.5)', 
+          borderRadius: 25, 
+          color: '#87CEEB', 
+          cursor: 'pointer',
+          backdropFilter: 'blur(10px)',
+          transition: 'all 0.2s ease',
+        }}
+        onMouseOver={(e) => { e.target.style.background = 'rgba(135,206,235,0.15)'; e.target.style.borderColor = '#87CEEB'; }}
+        onMouseOut={(e) => { e.target.style.background = 'rgba(255,255,255,0.05)'; e.target.style.borderColor = 'rgba(135,206,235,0.5)'; }}
+      >
+        📜 ふっかつのじゅもん
+      </button>
+    </div>
+    
+    {/* フッター */}
+    <div style={{ marginTop: 50, fontSize: 10, color: 'rgba(255,255,255,0.3)', letterSpacing: 1 }}>
+      🏝️ SHIMANE・OKI ISLANDS 🏝️
+    </div>
+  </div>
+  
+  {/* タイトル用アニメーション */}
+  <style>{`
+    @keyframes wave {
+      0%, 100% { transform: translateY(0) translateX(0); }
+      50% { transform: translateY(-15px) translateX(10px); }
+    }
+    @keyframes bubble {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+      50% { transform: translateY(-80px) scale(1.1); opacity: 0.3; }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    @keyframes shimmer {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+    }
+  `}</style>
+</div>
+```
+
+);
+
+// バトル
+if (screen === ‘battle’) return (
+<div style={{ minHeight: ‘100vh’, background: ‘linear-gradient(180deg,#0a1628,#1a3a5c)’, fontFamily: ‘sans-serif’, padding: 15 }}>
+<div style={{ display: ‘flex’, justifyContent: ‘space-between’, alignItems: ‘center’, marginBottom: 15 }}>
+<div style={{ background: ‘rgba(0,0,0,0.5)’, padding: 10, borderRadius: 10, border: `2px solid ${job.color}` }}>
+<div style={{ color: job.color, fontSize: 12 }}>{job.icon} {job.name} JLv{jLv} / PLv{player.level}</div>
+<div style={{ width: 120, height: 12, background: ‘#222’, borderRadius: 6, overflow: ‘hidden’, marginTop: 5 }}>
+<div style={{ width: `${curHp / maxHp * 100}%`, height: ‘100%’, background: ‘#f44’ }} />
+</div>
+<div style={{ color: ‘#fff’, fontSize: 10 }}>HP:{curHp}/{maxHp} 攻:{stats.atk} 防:{stats.def}</div>
+</div>
+<button onClick={() => { sound(‘button’); setEnemy(null); setLog([]); setScreen(‘home’); }} style={{ padding: ‘8px 15px’, background: ‘#555’, border: ‘none’, borderRadius: 15, color: ‘#fff’, cursor: ‘pointer’, fontSize: 12 }}>逃げる</button>
+</div>
+
+```
+  {enemy && (
+    <div style={{ textAlign: 'center', marginBottom: 20 }}>
+      {enemy.boss && (
+        <div style={{ color: enemy.glow, fontSize: 14, fontWeight: 'bold', marginBottom: 5, textShadow: `0 0 10px ${enemy.glow}` }}>
+          ⚠️ BOSS ⚠️
+        </div>
+      )}
+      <div style={{ 
+        fontSize: 80, 
+        filter: enemy.boss ? `drop-shadow(0 0 30px ${enemy.glow}) drop-shadow(0 0 60px ${enemy.glow})` : `drop-shadow(0 0 20px ${enemy.color})`,
+        animation: enemy.boss ? 'bossPulse 1s infinite' : 'none'
+      }}>{enemy.icon}</div>
+      <div style={{ color: enemy.boss ? enemy.glow : '#fff', fontSize: 16, fontWeight: enemy.boss ? 'bold' : 'normal' }}>{enemy.name}</div>
+      <div style={{ width: 150, height: 12, background: '#222', borderRadius: 6, overflow: 'hidden', margin: '5px auto', border: enemy.boss ? `2px solid ${enemy.glow}` : 'none' }}>
+        <div style={{ width: `${enemy.hp / enemy.maxHp * 100}%`, height: '100%', background: enemy.boss ? enemy.glow : enemy.color }} />
+      </div>
+      <div style={{ color: '#aaa', fontSize: 11 }}>HP:{enemy.hp}/{enemy.maxHp} 攻:{enemy.atk} 防:{enemy.def}</div>
+    </div>
+  )}
+  
+  {!enemy && log.length > 0 && <div style={{ textAlign: 'center', fontSize: 50, marginBottom: 20 }}>{curHp > 0 ? '🎉' : '💀'}</div>}
+  
+  <div style={{ background: 'rgba(0,0,0,0.5)', borderRadius: 10, padding: 10, minHeight: 100, marginBottom: 15 }}>
+    {log.map((l, i) => <div key={i} style={{ 
+      color: l.includes('勝利') || l.includes('アップ') ? '#FFD700' : l.includes('敗北') ? '#f44' : l.includes('クリティカル') ? '#FF69B4' : l.includes('BOSS') ? '#FF4500' : '#fff', 
+      fontSize: 13, padding: 2 
+    }}>{l}</div>)}
+  </div>
+  
+  <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+    {enemy ? (
+      <button onClick={doAttack} disabled={anim} style={{ padding: '15px 40px', fontSize: 18, background: anim ? '#555' : '#f44', border: 'none', borderRadius: 25, color: '#fff', fontWeight: 'bold', cursor: anim ? 'default' : 'pointer' }}>⚔️ 攻撃</button>
+    ) : (
+      <>
+        <button onClick={startBattle} disabled={curHp <= 0} style={{ padding: '12px 25px', fontSize: 14, background: curHp <= 0 ? '#555' : '#4169E1', border: 'none', borderRadius: 20, color: '#fff', cursor: curHp <= 0 ? 'default' : 'pointer' }}>🌊 次へ</button>
+        <button onClick={() => { sound('button'); setScreen('home'); }} style={{ padding: '12px 25px', fontSize: 14, background: '#228B22', border: 'none', borderRadius: 20, color: '#fff', cursor: 'pointer' }}>🏠 戻る</button>
+      </>
+    )}
+  </div>
+  
+  <style>{`
+    @keyframes bossPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+  `}</style>
+</div>
+```
+
+);
+
+// ホーム
+return (
+<div style={{ minHeight: ‘100vh’, background: ‘linear-gradient(180deg,#1a1a2e,#16213e)’, fontFamily: ‘sans-serif’, padding: 12 }}>
+{/* ガチャ演出 */}
+{(gachaPhase === ‘spin’ || gachaPhase === ‘build’) && (
+<div style={{ position: ‘fixed’, inset: 0, background: gachaPhase === ‘build’ ? `radial-gradient(circle,${RARITY_COLOR[gachaRarity]}44,#000)` : ‘#000’, display: ‘flex’, alignItems: ‘center’, justifyContent: ‘center’, zIndex: 100 }}>
+{gachaPhase === ‘spin’ && <div style={{ fontSize: 100, animation: ‘spin 1s linear infinite’ }}>{gachaType === ‘job’ ? ‘👤’ : SHELLS[gachaRank]?.icon}</div>}
+{gachaPhase === ‘build’ && (
+<div style={{ textAlign: ‘center’, position: ‘relative’ }}>
+{ri >= 2 && <div style={{ position: ‘absolute’, top: ‘50%’, left: ‘50%’, transform: ‘translate(-50%,-50%)’, width: 200, height: 200, border: `3px solid ${RARITY_COLOR[gachaRarity]}`, borderRadius: ‘50%’, borderTopColor: ‘transparent’, animation: ‘spin 1s linear infinite’ }} />}
+{ri >= 4 && <div style={{ position: ‘absolute’, top: ‘50%’, left: ‘50%’, transform: ‘translate(-50%,-50%)’, width: 250, height: 250, background: ‘conic-gradient(red,yellow,lime,aqua,blue,magenta,red)’, borderRadius: ‘50%’, animation: ‘spin 2s linear infinite’, opacity: 0.3, filter: ‘blur(10px)’ }} />}
+<div style={{ fontSize: 80, position: ‘relative’, animation: ri >= 3 ? ‘shake 0.1s infinite’ : ‘pulse 0.5s infinite’, filter: `drop-shadow(0 0 30px ${RARITY_COLOR[gachaRarity]})` }}>❓</div>
+<div style={{ color: RARITY_COLOR[gachaRarity], fontSize: 20, marginTop: 20, fontWeight: ‘bold’ }}>
+{ri >= 5 ? ‘！！伝説の輝き！！’ : ri >= 4 ? ‘！神々しい光！’ : ri >= 3 ? ‘金色の光が！’ : ‘紫の光…’}
+</div>
+</div>
+)}
+</div>
+)}
+
+```
+  {/* 結果表示 */}
+  {result && gachaPhase === 'result' && (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.95)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
+      <div style={{ textAlign: 'center', padding: 20 }}>
+        {result.type === 'job' ? (
+          <>
+            {result.isNew ? <div style={{ color: '#0f0', fontSize: 18, marginBottom: 10 }}>🆕 NEW!</div> : <div style={{ color: '#0ff', fontSize: 18, marginBottom: 10 }}>⬆️ レベルアップ！</div>}
+            <div style={{ color: RARITY_COLOR[result.job.rarity], fontSize: 18 }}>★{result.job.rarity}★</div>
+            <div style={{ fontSize: 80, margin: '15px 0', filter: `drop-shadow(0 0 30px ${result.job.color})` }}>{result.job.icon}</div>
+            <div style={{ color: '#fff', fontSize: 24, marginBottom: 5 }}>{result.job.name}</div>
+            <div style={{ color: '#FFD700', fontSize: 20 }}>職業Lv.{result.lv}</div>
+            <div style={{ color: '#aaa', fontSize: 12, marginTop: 10 }}>ステータス+{((result.lv - 1) * 15)}% / 特殊効果+{15 + (result.lv - 1) * 8}%</div>
+          </>
+        ) : (
+          <>
+            {result.isUp ? <div style={{ color: '#0ff', fontSize: 18, marginBottom: 10 }}>⬆️ レベルアップ！</div> : <div style={{ color: '#0f0', fontSize: 18, marginBottom: 10 }}>🆕 NEW!</div>}
+            <div style={{ color: RARITY_COLOR[result.rarity], fontSize: 18 }}>★{result.rarity}★</div>
+            <div style={{ fontSize: 60, margin: '15px 0' }}>{TYPE_ICON[result.type]}</div>
+            <div style={{ color: '#888', fontSize: 12 }}>{TYPE_NAME[result.type]}</div>
+            <div style={{ color: '#fff', fontSize: 22, marginBottom: 5 }}>{result.name}</div>
+            <div style={{ color: '#FFD700', fontSize: 18 }}>Lv.{result.lv}</div>
+            <div style={{ color: '#aaa', fontSize: 12, marginTop: 10 }}>
+              攻+{Math.floor(result.atk * (1 + (result.lv - 1) * 0.25))} 防+{Math.floor(result.def * (1 + (result.lv - 1) * 0.25))} HP+{Math.floor(result.hp * (1 + (result.lv - 1) * 0.25))}
+            </div>
+          </>
+        )}
+        <button onClick={() => { sound('button'); closeResult(); }} style={{ marginTop: 25, padding: '12px 40px', background: '#FFD700', border: 'none', borderRadius: 20, fontWeight: 'bold', cursor: 'pointer' }}>OK</button>
+      </div>
+    </div>
+  )}
+
+  {/* パスワード表示 */}
+  {showPw && (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
+      <div style={{ background: '#1a1a2e', padding: 25, borderRadius: 15, border: '2px solid #FFD700', width: '90%', maxWidth: 400, textAlign: 'center' }}>
+        <div style={{ color: '#FFD700', fontSize: 18, marginBottom: 15 }}>📜 ふっかつのじゅもん</div>
+        <div style={{ background: '#0a0a1a', padding: 15, borderRadius: 8, marginBottom: 15 }}>
+          <div style={{ color: '#fff', fontSize: 16, fontFamily: 'monospace', wordBreak: 'break-all', lineHeight: 1.8 }}>{encode(player)}</div>
+        </div>
+        <div style={{ color: '#888', fontSize: 11, marginBottom: 15 }}>Lv{player.level} / 職業{player.unlockedJobs.length}種 / 装備{player.items.length}個</div>
+        <button onClick={() => navigator.clipboard?.writeText(encode(player))} style={{ padding: '8px 20px', background: '#4169E1', border: 'none', borderRadius: 15, color: '#fff', cursor: 'pointer', marginRight: 10 }}>コピー</button>
+        <button onClick={() => { sound('button'); setShowPw(false); }} style={{ padding: '8px 20px', background: '#FFD700', border: 'none', borderRadius: 15, fontWeight: 'bold', cursor: 'pointer' }}>とじる</button>
+      </div>
+    </div>
+  )}
+
+  {/* ヘッダー */}
+  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
+    <div style={{ background: 'rgba(0,0,0,0.5)', padding: 10, borderRadius: 10, border: `2px solid ${job.color}`, display: 'flex', alignItems: 'center', gap: 10 }}>
+      <span style={{ fontSize: 24 }}>{job.icon}</span>
+      <div>
+        <div style={{ color: job.color, fontSize: 11 }}>{job.name} JLv{jLv}</div>
+        <div style={{ color: '#FFD700', fontSize: 14, fontWeight: 'bold' }}>PLv{player.level}</div>
+      </div>
+    </div>
+    <div style={{ display: 'flex', gap: 6 }}>
+      <button onClick={() => { sound('button'); setShowPw(true); }} style={{ padding: '8px 12px', background: 'rgba(255,215,0,0.2)', border: '1px solid #FFD700', borderRadius: 15, color: '#FFD700', cursor: 'pointer', fontSize: 11 }}>📜</button>
+      <button onClick={() => { sound('heal'); setHp(maxHp); }} style={{ padding: '8px 12px', background: '#00CED1', border: 'none', borderRadius: 15, color: '#fff', cursor: 'pointer', fontSize: 11 }}>💚回復</button>
+      <button onClick={startBattle} disabled={curHp <= 0} style={{ padding: '8px 12px', background: curHp <= 0 ? '#555' : '#f44', border: 'none', borderRadius: 15, color: '#fff', cursor: curHp <= 0 ? 'default' : 'pointer', fontSize: 11 }}>⚔️戦闘</button>
+    </div>
+  </div>
+
+  {/* ステータス */}
+  <div style={{ background: 'rgba(0,0,0,0.4)', borderRadius: 10, padding: 10, marginBottom: 12 }}>
+    <div style={{ color: '#fff', fontSize: 12, marginBottom: 5 }}>HP:{curHp}/{maxHp} 攻:{stats.atk} 防:{stats.def}</div>
+    <div style={{ width: '100%', height: 6, background: '#222', borderRadius: 3, overflow: 'hidden' }}>
+      <div style={{ width: `${curHp / maxHp * 100}%`, height: '100%', background: '#f44' }} />
+    </div>
+  </div>
+
+  {/* 貝（名前表示追加） */}
+  <div style={{ display: 'flex', gap: 4, marginBottom: 12, flexWrap: 'wrap' }}>
+    {Object.entries(SHELLS).map(([r, s]) => (
+      <div key={r} style={{ background: `${s.color}22`, border: `1px solid ${s.color}`, borderRadius: 8, padding: '6px 8px', textAlign: 'center', minWidth: 55, flex: '1 1 auto' }}>
+        <div style={{ fontSize: 18 }}>{s.icon}</div>
+        <div style={{ color: s.color, fontSize: 10, fontWeight: 'bold' }}>{s.name}</div>
+        <div style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>{player.shells[r]}</div>
+      </div>
+    ))}
+  </div>
+
+  {/* タブ */}
+  <div style={{ display: 'flex', gap: 4, marginBottom: 12 }}>
+    {[['gacha', '🎰ガチャ'], ['jobs', '👤職業'], ['items', '📦装備']].map(([id, label]) => (
+      <button key={id} onClick={() => { sound('button'); setTab(id); }} style={{ flex: 1, padding: 10, background: tab === id ? '#4169E1' : '#333', border: tab === id ? '2px solid #87CEEB' : '2px solid #444', borderRadius: 8, color: '#fff', fontSize: 12, cursor: 'pointer' }}>{label}</button>
+    ))}
+  </div>
+
+  {/* ガチャタブ */}
+  {tab === 'gacha' && (
+    <div style={{ background: 'rgba(0,0,0,0.4)', borderRadius: 10, padding: 12 }}>
+      <div style={{ color: '#FFD700', fontSize: 13, marginBottom: 8, fontWeight: 'bold' }}>🎰 装備ガチャ</div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 6, marginBottom: 15 }}>
+        {Object.entries(SHELLS).map(([r, s]) => {
+          const can = player.shells[r] >= s.itemCost;
+          return <button key={r} onClick={() => can && pullItem(+r)} disabled={!can} style={{ padding: 6, background: can ? s.color : '#333', border: 'none', borderRadius: 8, color: '#fff', opacity: can ? 1 : 0.5, cursor: can ? 'pointer' : 'default' }}>
+            <div style={{ fontSize: 16 }}>{s.icon}</div>
+            <div style={{ fontSize: 8 }}>{s.name}</div>
+            <div style={{ fontSize: 9, marginTop: 2 }}>{s.itemCost}個</div>
+          </button>;
+        })}
+      </div>
+      <div style={{ color: '#9932CC', fontSize: 13, marginBottom: 8, fontWeight: 'bold' }}>👤 職業ガチャ</div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 6 }}>
+        {Object.entries(SHELLS).map(([r, s]) => {
+          const can = player.shells[r] >= s.jobCost;
+          return <button key={r} onClick={() => can && pullJob(+r)} disabled={!can} style={{ padding: 6, background: can ? '#9932CC' : '#333', border: 'none', borderRadius: 8, color: '#fff', opacity: can ? 1 : 0.5, cursor: can ? 'pointer' : 'default' }}>
+            <div style={{ fontSize: 16 }}>👤</div>
+            <div style={{ fontSize: 8 }}>{s.name}</div>
+            <div style={{ fontSize: 9, marginTop: 2 }}>{s.jobCost}個</div>
+          </button>;
+        })}
+      </div>
+    </div>
+  )}
+
+  {/* 職業タブ */}
+  {tab === 'jobs' && (
+    <div style={{ background: 'rgba(0,0,0,0.4)', borderRadius: 10, padding: 12 }}>
+      <div style={{ color: '#9932CC', fontSize: 13, marginBottom: 10, fontWeight: 'bold' }}>👤 職業 ({player.unlockedJobs.length}/10)</div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 8, maxHeight: 350, overflowY: 'auto' }}>
+        {Object.entries(JOBS).map(([id, j]) => {
+          const unlocked = player.unlockedJobs.includes(id);
+          const active = player.currentJob === id;
+          const lv = player.jobLevels[id] || 1;
+          return <button key={id} onClick={() => { if (unlocked) { sound('button'); setPlayer(p => ({ ...p, currentJob: id })); }}} disabled={!unlocked} style={{ padding: 10, background: active ? j.color : unlocked ? `${j.color}33` : '#222', border: active ? '2px solid #FFD700' : '1px solid #444', borderRadius: 8, color: '#fff', opacity: unlocked ? 1 : 0.4, cursor: unlocked ? 'pointer' : 'default', textAlign: 'left' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 24 }}>{unlocked ? j.icon : '❓'}</span>
+              <div>
+                <div style={{ fontSize: 10, color: RARITY_COLOR[j.rarity] }}>{j.rarity}</div>
+                <div style={{ fontSize: 12, fontWeight: 'bold' }}>{unlocked ? j.name : '???'}</div>
+                {unlocked && <div style={{ fontSize: 10, color: '#FFD700' }}>Lv{lv}</div>}
+              </div>
+            </div>
+            {active && <div style={{ fontSize: 9, color: '#FFD700', marginTop: 5 }}>▶使用中</div>}
+          </button>;
+        })}
+      </div>
+    </div>
+  )}
+
+  {/* 装備タブ */}
+  {tab === 'items' && (
+    <div style={{ background: 'rgba(0,0,0,0.4)', borderRadius: 10, padding: 12 }}>
+      <div style={{ color: '#FFD700', fontSize: 13, marginBottom: 10, fontWeight: 'bold' }}>📦 装備 ({player.items.length})</div>
+      {player.items.length === 0 ? <div style={{ color: '#666', textAlign: 'center', padding: 20 }}>装備なし</div> : (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 8, maxHeight: 350, overflowY: 'auto' }}>
+          {player.items.map((it, i) => {
+            const b = 1 + ((it.lv || 1) - 1) * 0.25;
+            return <div key={i} style={{ background: `${RARITY_COLOR[it.rarity]}22`, border: `1px solid ${RARITY_COLOR[it.rarity]}`, borderRadius: 8, padding: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ fontSize: 20 }}>{TYPE_ICON[it.type]}</span>
+                <div>
+                  <div style={{ fontSize: 9, color: RARITY_COLOR[it.rarity] }}>{it.rarity} {TYPE_NAME[it.type]}</div>
+                  <div style={{ fontSize: 11, color: '#fff' }}>{it.name}</div>
+                  <div style={{ fontSize: 10, color: '#FFD700' }}>Lv{it.lv || 1}</div>
+                </div>
+              </div>
+              <div style={{ fontSize: 9, color: '#aaa', marginTop: 5 }}>
+                攻+{Math.floor(it.atk * b)} 防+{Math.floor(it.def * b)} HP+{Math.floor(it.hp * b)}
+              </div>
+            </div>;
+          })}
+        </div>
+      )}
+    </div>
+  )}
+
+  <style>{`
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+    @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+  `}</style>
+</div>
+```
+
+);
+}
