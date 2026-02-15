@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>放射線科業務構造分析レポート</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Zen+Kaku+Gothic+New:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep: #0a0e1a;
+  --bg-card: #111827;
+  --bg-card-hover: #1a2332;
+  --border: #1e2d44;
+  --accent: #38bdf8;
+  --accent-glow: rgba(56, 189, 248, 0.15);
+  --accent-2: #818cf8;
+  --accent-3: #f472b6;
+  --accent-4: #34d399;
+  --accent-red: #fb7185;
+  --text: #e2e8f0;
+  --text-dim: #94a3b8;
+  --text-muted: #64748b;
+  --white: #f8fafc;
+}
+
+- { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+background: var(–bg-deep);
+color: var(–text);
+font-family: ‘Noto Sans JP’, ‘Zen Kaku Gothic New’, sans-serif;
+line-height: 1.8;
+overflow-x: hidden;
+}
+
+/* ===== HERO ===== */
+.hero {
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+text-align: center;
+position: relative;
+padding: 2rem;
+overflow: hidden;
+}
+
+.hero::before {
+content: ‘’;
+position: absolute;
+inset: 0;
+background:
+radial-gradient(ellipse 80% 60% at 50% 40%, rgba(56,189,248,0.08) 0%, transparent 60%),
+radial-gradient(ellipse 60% 40% at 20% 80%, rgba(129,140,248,0.06) 0%, transparent 50%),
+radial-gradient(ellipse 50% 50% at 80% 20%, rgba(244,114,182,0.04) 0%, transparent 50%);
+z-index: 0;
+}
+
+.hero-grid {
+position: absolute;
+inset: 0;
+background-image:
+linear-gradient(rgba(56,189,248,0.03) 1px, transparent 1px),
+linear-gradient(90deg, rgba(56,189,248,0.03) 1px, transparent 1px);
+background-size: 60px 60px;
+z-index: 0;
+animation: gridShift 20s linear infinite;
+}
+
+@keyframes gridShift {
+0% { transform: translateY(0); }
+100% { transform: translateY(60px); }
+}
+
+.hero-content { position: relative; z-index: 1; }
+
+.hero-badge {
+display: inline-block;
+padding: 0.4rem 1.2rem;
+border: 1px solid var(–accent);
+border-radius: 100px;
+font-size: 0.75rem;
+font-weight: 500;
+letter-spacing: 0.15em;
+color: var(–accent);
+text-transform: uppercase;
+margin-bottom: 2rem;
+animation: fadeInUp 0.8s ease-out;
+}
+
+.hero h1 {
+font-size: clamp(2rem, 5vw, 3.5rem);
+font-weight: 900;
+letter-spacing: -0.02em;
+line-height: 1.3;
+margin-bottom: 1rem;
+animation: fadeInUp 0.8s ease-out 0.15s both;
+}
+
+.hero h1 .highlight {
+background: linear-gradient(135deg, var(–accent), var(–accent-2));
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+}
+
+.hero-sub {
+font-size: 1.05rem;
+color: var(–text-dim);
+max-width: 600px;
+margin: 0 auto 2.5rem;
+animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+
+.hero-stats {
+display: flex;
+gap: 2rem;
+justify-content: center;
+flex-wrap: wrap;
+animation: fadeInUp 0.8s ease-out 0.45s both;
+}
+
+.hero-stat {
+text-align: center;
+padding: 1rem 1.5rem;
+background: rgba(255,255,255,0.03);
+border: 1px solid var(–border);
+border-radius: 16px;
+backdrop-filter: blur(10px);
+min-width: 140px;
+}
+
+.hero-stat .num {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 2rem;
+font-weight: 600;
+color: var(–accent);
+}
+
+.hero-stat .label {
+font-size: 0.75rem;
+color: var(–text-muted);
+margin-top: 0.25rem;
+}
+
+.scroll-hint {
+position: absolute;
+bottom: 2rem;
+left: 50%;
+transform: translateX(-50%);
+color: var(–text-muted);
+font-size: 0.75rem;
+animation: bounce 2s infinite;
+z-index: 1;
+}
+
+@keyframes bounce {
+0%, 100% { transform: translateX(-50%) translateY(0); }
+50% { transform: translateX(-50%) translateY(8px); }
+}
+
+/* ===== LAYOUT ===== */
+.container {
+max-width: 1100px;
+margin: 0 auto;
+padding: 0 1.5rem;
+}
+
+section {
+padding: 5rem 0;
+opacity: 0;
+transform: translateY(30px);
+transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+section.visible {
+opacity: 1;
+transform: translateY(0);
+}
+
+/* ===== SECTION HEADERS ===== */
+.section-num {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 0.7rem;
+letter-spacing: 0.2em;
+color: var(–accent);
+text-transform: uppercase;
+margin-bottom: 0.5rem;
+}
+
+.section-title {
+font-size: clamp(1.5rem, 3vw, 2.2rem);
+font-weight: 900;
+letter-spacing: -0.02em;
+margin-bottom: 0.75rem;
+}
+
+.section-desc {
+color: var(–text-dim);
+font-size: 0.95rem;
+margin-bottom: 2.5rem;
+max-width: 650px;
+}
+
+/* ===== CARDS ===== */
+.card {
+background: var(–bg-card);
+border: 1px solid var(–border);
+border-radius: 16px;
+padding: 2rem;
+margin-bottom: 1.5rem;
+transition: all 0.3s ease;
+}
+
+.card:hover {
+background: var(–bg-card-hover);
+border-color: rgba(56,189,248,0.2);
+box-shadow: 0 0 40px rgba(56,189,248,0.05);
+}
+
+.card-label {
+font-size: 0.7rem;
+font-weight: 700;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+color: var(–accent);
+margin-bottom: 0.75rem;
+}
+
+.card h3 {
+font-size: 1.2rem;
+font-weight: 700;
+margin-bottom: 1rem;
+}
+
+/* ===== ESSENCE BOX ===== */
+.essence-box {
+background: linear-gradient(135deg, rgba(56,189,248,0.08), rgba(129,140,248,0.08));
+border: 1px solid rgba(56,189,248,0.2);
+border-radius: 20px;
+padding: 2.5rem;
+text-align: center;
+position: relative;
+overflow: hidden;
+}
+
+.essence-box::before {
+content: ‘’;
+position: absolute;
+top: -50%;
+left: -50%;
+width: 200%;
+height: 200%;
+background: radial-gradient(circle at center, rgba(56,189,248,0.05) 0%, transparent 60%);
+animation: essencePulse 6s ease-in-out infinite;
+}
+
+@keyframes essencePulse {
+0%, 100% { transform: scale(0.8); opacity: 0.5; }
+50% { transform: scale(1.2); opacity: 1; }
+}
+
+.essence-box p {
+position: relative;
+font-size: 1.15rem;
+font-weight: 500;
+line-height: 2;
+z-index: 1;
+}
+
+.essence-box .em {
+color: var(–accent);
+font-weight: 700;
+}
+
+/* ===== OUTPUTS ===== */
+.outputs {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+gap: 1.25rem;
+margin-top: 2rem;
+}
+
+.output-item {
+background: var(–bg-card);
+border: 1px solid var(–border);
+border-radius: 14px;
+padding: 1.5rem;
+display: flex;
+align-items: flex-start;
+gap: 1rem;
+transition: all 0.3s ease;
+}
+
+.output-item:hover {
+transform: translateY(-2px);
+border-color: rgba(56,189,248,0.3);
+}
+
+.output-icon {
+width: 40px;
+height: 40px;
+border-radius: 10px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 1.2rem;
+flex-shrink: 0;
+}
+
+.output-icon.blue { background: rgba(56,189,248,0.15); }
+.output-icon.purple { background: rgba(129,140,248,0.15); }
+.output-icon.green { background: rgba(52,211,153,0.15); }
+
+.output-item h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.25rem; }
+.output-item p { font-size: 0.8rem; color: var(–text-dim); line-height: 1.5; }
+
+/* ===== PROCESS TABLE ===== */
+.process-table {
+width: 100%;
+border-collapse: separate;
+border-spacing: 0 6px;
+margin: 1.5rem 0;
+}
+
+.process-table thead th {
+padding: 0.75rem 1rem;
+font-size: 0.7rem;
+font-weight: 700;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(–text-muted);
+text-align: left;
+border-bottom: 1px solid var(–border);
+}
+
+.process-table tbody tr {
+background: var(–bg-card);
+transition: all 0.2s ease;
+}
+
+.process-table tbody tr:hover {
+background: var(–bg-card-hover);
+}
+
+.process-table td {
+padding: 0.85rem 1rem;
+font-size: 0.88rem;
+vertical-align: middle;
+}
+
+.process-table tbody tr td:first-child {
+border-radius: 10px 0 0 10px;
+}
+
+.process-table tbody tr td:last-child {
+border-radius: 0 10px 10px 0;
+}
+
+.step-num {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 0.75rem;
+color: var(–text-muted);
+background: rgba(255,255,255,0.04);
+width: 28px;
+height: 28px;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+border-radius: 6px;
+}
+
+.tag {
+display: inline-block;
+padding: 0.2rem 0.7rem;
+border-radius: 100px;
+font-size: 0.7rem;
+font-weight: 600;
+}
+
+.tag-core { background: rgba(52,211,153,0.15); color: var(–accent-4); }
+.tag-prep { background: rgba(56,189,248,0.12); color: var(–accent); }
+.tag-dup { background: rgba(251,113,133,0.15); color: var(–accent-red); }
+.tag-move { background: rgba(244,114,182,0.15); color: var(–accent-3); }
+.tag-cognitive { background: rgba(129,140,248,0.15); color: var(–accent-2); }
+.tag-doc { background: rgba(56,189,248,0.12); color: var(–accent); }
+.tag-paper { background: rgba(251,113,133,0.12); color: var(–accent-red); }
+
+.time-val {
+font-family: ‘JetBrains Mono’, monospace;
+font-weight: 600;
+font-size: 0.85rem;
+}
+
+.total-row {
+margin-top: 1.5rem;
+display: flex;
+gap: 2rem;
+flex-wrap: wrap;
+}
+
+.total-item {
+background: var(–bg-card);
+border: 1px solid var(–border);
+border-radius: 12px;
+padding: 1.25rem 1.75rem;
+flex: 1;
+min-width: 200px;
+}
+
+.total-item .label {
+font-size: 0.7rem;
+color: var(–text-muted);
+text-transform: uppercase;
+letter-spacing: 0.1em;
+margin-bottom: 0.4rem;
+}
+
+.total-item .value {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 1.6rem;
+font-weight: 600;
+color: var(–accent);
+}
+
+/* ===== BAR CHART ===== */
+.bar-chart {
+margin: 2rem 0;
+}
+
+.bar-row {
+display: flex;
+align-items: center;
+margin-bottom: 0.75rem;
+gap: 1rem;
+}
+
+.bar-label {
+width: 180px;
+font-size: 0.82rem;
+color: var(–text-dim);
+flex-shrink: 0;
+text-align: right;
+}
+
+.bar-track {
+flex: 1;
+height: 32px;
+background: rgba(255,255,255,0.03);
+border-radius: 8px;
+overflow: hidden;
+position: relative;
+}
+
+.bar-fill {
+height: 100%;
+border-radius: 8px;
+display: flex;
+align-items: center;
+padding-left: 0.75rem;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 0.75rem;
+font-weight: 600;
+color: var(–white);
+width: 0;
+transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bar-fill.core { background: linear-gradient(90deg, var(–accent-4), #10b981); }
+.bar-fill.sub { background: linear-gradient(90deg, var(–accent-2), #6366f1); }
+.bar-fill.non { background: linear-gradient(90deg, var(–accent-red), #e11d48); }
+
+/* ===== BOTTLENECK ===== */
+.bottleneck-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap: 1.25rem;
+}
+
+.bottleneck-card {
+background: var(–bg-card);
+border: 1px solid var(–border);
+border-radius: 16px;
+padding: 1.75rem;
+position: relative;
+overflow: hidden;
+}
+
+.bottleneck-card::before {
+content: ‘’;
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+height: 3px;
+}
+
+.bottleneck-card.red::before { background: linear-gradient(90deg, var(–accent-red), var(–accent-3)); }
+.bottleneck-card.orange::before { background: linear-gradient(90deg, #fb923c, #f59e0b); }
+.bottleneck-card.yellow::before { background: linear-gradient(90deg, #fbbf24, #a3e635); }
+
+.bottleneck-card h4 {
+font-size: 1rem;
+margin-bottom: 1rem;
+display: flex;
+align-items: center;
+gap: 0.5rem;
+}
+
+.bottleneck-card ul {
+list-style: none;
+padding: 0;
+}
+
+.bottleneck-card li {
+padding: 0.4rem 0;
+padding-left: 1.25rem;
+position: relative;
+font-size: 0.88rem;
+color: var(–text-dim);
+}
+
+.bottleneck-card li::before {
+content: ‘→’;
+position: absolute;
+left: 0;
+color: var(–text-muted);
+font-size: 0.8rem;
+}
+
+/* ===== ANNUAL LOAD ===== */
+.annual-highlight {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+gap: 1.25rem;
+margin: 2rem 0;
+}
+
+.annual-card {
+background: var(–bg-card);
+border: 1px solid var(–border);
+border-radius: 16px;
+padding: 2rem;
+text-align: center;
+}
+
+.annual-card .big-num {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 2.5rem;
+font-weight: 600;
+line-height: 1.2;
+}
+
+.annual-card .big-num.blue { color: var(–accent); }
+.annual-card .big-num.red { color: var(–accent-red); }
+.annual-card .big-num.purple { color: var(–accent-2); }
+
+.annual-card .unit {
+font-size: 0.85rem;
+color: var(–text-dim);
+margin-top: 0.5rem;
+}
+
+.annual-card .sub {
+font-size: 0.75rem;
+color: var(–text-muted);
+margin-top: 0.25rem;
+}
+
+/* ===== IMPACT ===== */
+.impact-list {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+gap: 1rem;
+margin: 1.5rem 0;
+}
+
+.impact-item {
+background: var(–bg-card);
+border: 1px solid var(–border);
+border-radius: 14px;
+padding: 1.5rem;
+text-align: center;
+transition: all 0.3s ease;
+}
+
+.impact-item:hover {
+border-color: rgba(56,189,248,0.3);
+transform: translateY(-3px);
+}
+
+.impact-item .icon { font-size: 1.8rem; margin-bottom: 0.75rem; }
+.impact-item h4 { font-size: 0.9rem; font-weight: 700; }
+
+/* ===== TO-BE ===== */
+.tobe-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap: 1.25rem;
+}
+
+.tobe-card {
+background: var(–bg-card);
+border: 1px solid var(–border);
+border-radius: 16px;
+padding: 1.75rem;
+}
+
+.tobe-card h4 {
+font-size: 1rem;
+font-weight: 700;
+margin-bottom: 1rem;
+display: flex;
+align-items: center;
+gap: 0.5rem;
+}
+
+.tobe-card ul {
+list-style: none;
+padding: 0;
+}
+
+.tobe-card li {
+padding: 0.5rem 0;
+padding-left: 1.5rem;
+position: relative;
+font-size: 0.88rem;
+color: var(–text-dim);
+}
+
+.tobe-card li::before {
+position: absolute;
+left: 0;
+font-size: 0.85rem;
+}
+
+.tobe-card.remove li::before { content: ‘✕’; color: var(–accent-red); }
+.tobe-card.auto li::before { content: ‘⚡’; }
+.tobe-card.focus li::before { content: ‘◎’; color: var(–accent-4); }
+
+/* ===== IMPROVEMENT ===== */
+.improvement-box {
+background: linear-gradient(135deg, rgba(52,211,153,0.08), rgba(56,189,248,0.08));
+border: 1px solid rgba(52,211,153,0.2);
+border-radius: 20px;
+padding: 3rem;
+text-align: center;
+}
+
+.improvement-arrow {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 1.5rem;
+margin: 1.5rem 0;
+flex-wrap: wrap;
+}
+
+.improvement-arrow .before {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 2.2rem;
+font-weight: 600;
+color: var(–text-muted);
+text-decoration: line-through;
+text-decoration-color: var(–accent-red);
+}
+
+.improvement-arrow .arrow {
+font-size: 1.5rem;
+color: var(–accent-4);
+}
+
+.improvement-arrow .after {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 2.5rem;
+font-weight: 600;
+color: var(–accent-4);
+}
+
+.saving-badge {
+display: inline-block;
+background: rgba(52,211,153,0.15);
+border: 1px solid rgba(52,211,153,0.3);
+border-radius: 100px;
+padding: 0.5rem 1.5rem;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 1rem;
+font-weight: 600;
+color: var(–accent-4);
+margin-top: 1rem;
+}
+
+/* ===== CONFIRM ===== */
+.confirm-section {
+background: linear-gradient(135deg, rgba(244,114,182,0.06), rgba(129,140,248,0.06));
+border: 1px solid rgba(244,114,182,0.15);
+border-radius: 20px;
+padding: 2.5rem;
+margin-top: 2rem;
+}
+
+.confirm-list {
+display: grid;
+gap: 0.75rem;
+margin-top: 1.5rem;
+}
+
+.confirm-item {
+display: flex;
+align-items: center;
+gap: 1rem;
+padding: 1rem 1.25rem;
+background: rgba(255,255,255,0.02);
+border: 1px solid rgba(255,255,255,0.05);
+border-radius: 12px;
+transition: all 0.2s ease;
+}
+
+.confirm-item:hover {
+background: rgba(255,255,255,0.04);
+border-color: rgba(244,114,182,0.2);
+}
+
+.confirm-check {
+width: 22px;
+height: 22px;
+border: 2px solid var(–text-muted);
+border-radius: 6px;
+flex-shrink: 0;
+cursor: pointer;
+transition: all 0.2s ease;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 0.7rem;
+color: transparent;
+}
+
+.confirm-check.checked {
+background: var(–accent-3);
+border-color: var(–accent-3);
+color: white;
+}
+
+.confirm-text {
+font-size: 0.92rem;
+}
+
+/* ===== FOOTER ===== */
+.report-footer {
+text-align: center;
+padding: 4rem 1.5rem 3rem;
+color: var(–text-muted);
+font-size: 0.8rem;
+}
+
+.divider {
+width: 60px;
+height: 2px;
+background: linear-gradient(90deg, var(–accent), var(–accent-2));
+margin: 3rem auto;
+border-radius: 1px;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp {
+from { opacity: 0; transform: translateY(20px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+.hero-stats { gap: 1rem; }
+.hero-stat { min-width: 120px; padding: 0.75rem 1rem; }
+.hero-stat .num { font-size: 1.5rem; }
+.bar-label { width: 100px; font-size: 0.75rem; }
+.process-table { font-size: 0.82rem; }
+.card { padding: 1.5rem; }
+.annual-card .big-num { font-size: 2rem; }
+.improvement-arrow .before { font-size: 1.6rem; }
+.improvement-arrow .after { font-size: 1.8rem; }
+}
+
+@media (max-width: 480px) {
+.bar-row { flex-direction: column; align-items: stretch; gap: 0.3rem; }
+.bar-label { width: 100%; text-align: left; }
+.process-table { display: block; overflow-x: auto; }
+}
+</style>
+
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">確認依頼版 — Workflow Analysis</div>
+    <h1>放射線科<br><span class="highlight">業務構造分析</span>レポート</h1>
+    <p class="hero-sub">他院から直接紹介された患者の画像所見レポート作成業務における<br>構造的課題と改善提案</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="num">20<span style="font-size:0.7em">分</span></div>
+        <div class="label">1件あたり所要時間</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">417<span style="font-size:0.7em">h</span></div>
+        <div class="label">年間総負荷</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">75<span style="font-size:0.7em">%</span></div>
+        <div class="label">非本質業務の割合</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num" style="color:var(--accent-4)">▲100<span style="font-size:0.7em">h+</span></div>
+        <div class="label">年間削減可能</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">↓ スクロールして詳細を確認</div>
+</div>
+
+<!-- ===== SECTION 1: 業務再定義 ===== -->
+
+<section id="sec1">
+  <div class="container">
+    <div class="section-num">Section 01</div>
+    <h2 class="section-title">業務の再定義</h2>
+    <p class="section-desc">現場で認識されている業務と、その本質的な目的を再定義します。</p>
+
+```
+<div class="card">
+  <div class="card-label">現場認識上の業務</div>
+  <h3>他院紹介患者のCT/MRI読影に関する一連の作業</h3>
+  <p style="color:var(--text-dim); font-size:0.9rem; line-height:2;">
+    紹介状確認 → 電子カルテ病名登録 → 返書作成 → 所見レポート記載 → 印刷・書類整理
+  </p>
+</div>
+
+<div class="essence-box">
+  <p>
+    この業務の本質は<br>
+    <span class="em">紹介元医療機関の臨床疑問</span>に対し<br>
+    <span class="em">正確かつ迅速に診断情報を返す</span>こと
+  </p>
+</div>
+
+<div class="outputs">
+  <div class="output-item">
+    <div class="output-icon blue">📋</div>
+    <div>
+      <h4>構造化された画像所見レポート</h4>
+      <p>正確な読影結果を体系的に記述</p>
+    </div>
+  </div>
+  <div class="output-item">
+    <div class="output-icon purple">✉️</div>
+    <div>
+      <h4>紹介元への回答文（返書）</h4>
+      <p>臨床疑問に対する明確な回答</p>
+    </div>
+  </div>
+  <div class="output-item">
+    <div class="output-icon green">💾</div>
+    <div>
+      <h4>診療情報の記録</h4>
+      <p>電子カルテへの適切な記録</p>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ===== SECTION 2: 現状プロセス ===== -->
+
+<section id="sec2">
+  <div class="container">
+    <div class="section-num">Section 02</div>
+    <h2 class="section-title">現状業務プロセス（As-Is）</h2>
+    <p class="section-desc">全11工程を作業分解し、所要時間と種別を可視化します。</p>
+
+```
+<div style="overflow-x:auto;">
+  <table class="process-table">
+    <thead>
+      <tr>
+        <th style="width:60px">Step</th>
+        <th>作業内容</th>
+        <th style="width:90px">所要時間</th>
+        <th style="width:100px">種別</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="step-num">1</span></td><td>リスト選択・画面展開</td><td class="time-val">1分</td><td><span class="tag tag-prep">準備</span></td></tr>
+      <tr><td><span class="step-num">2</span></td><td>患者IDコピー→電子カルテ展開</td><td class="time-val">1分</td><td><span class="tag tag-dup">二重操作</span></td></tr>
+      <tr><td><span class="step-num">3</span></td><td>棚へ紹介状を取りに行く</td><td class="time-val">2分</td><td><span class="tag tag-move">物理移動</span></td></tr>
+      <tr><td><span class="step-num">4</span></td><td>紹介状読解</td><td class="time-val">3分</td><td><span class="tag tag-cognitive">認知作業</span></td></tr>
+      <tr><td><span class="step-num">5</span></td><td>病名登録</td><td class="time-val">2分</td><td><span class="tag tag-dup">転記</span></td></tr>
+      <tr><td><span class="step-num">6</span></td><td>返書作成</td><td class="time-val">3分</td><td><span class="tag tag-doc">文書作成</span></td></tr>
+      <tr><td><span class="step-num">7</span></td><td>返書印刷</td><td class="time-val">1分</td><td><span class="tag tag-paper">紙工程</span></td></tr>
+      <tr><td><span class="step-num">8</span></td><td>依頼目的手入力</td><td class="time-val">2分</td><td><span class="tag tag-dup">二重入力</span></td></tr>
+      <tr><td><span class="step-num">9</span></td><td>読影・所見作成</td><td class="time-val">5分</td><td><span class="tag tag-core">本質業務</span></td></tr>
+      <tr><td><span class="step-num">10</span></td><td>レポート印刷</td><td class="time-val">1分</td><td><span class="tag tag-paper">紙工程</span></td></tr>
+      <tr><td><span class="step-num">11</span></td><td>書類まとめて棚へ</td><td class="time-val">1分</td><td><span class="tag tag-move">物理整理</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="total-row">
+  <div class="total-item">
+    <div class="label">合計所要時間（1件）</div>
+    <div class="value">約20分</div>
+  </div>
+  <div class="total-item">
+    <div class="label">1日あたり（約5件）</div>
+    <div class="value">約100分</div>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ===== SECTION 3: 構造分析 ===== -->
+
+<section id="sec3">
+  <div class="container">
+    <div class="section-num">Section 03</div>
+    <h2 class="section-title">工程分類（構造分析）</h2>
+    <p class="section-desc">各工程を「本質業務」「付随業務」「非本質業務」に分類し、時間配分を可視化します。</p>
+
+```
+<div class="bar-chart" id="barChart">
+  <div class="bar-row">
+    <div class="bar-label">本質業務<br><span style="font-size:0.7rem;color:var(--text-muted)">読影・所見作成</span></div>
+    <div class="bar-track">
+      <div class="bar-fill core" data-width="25%">5分</div>
+    </div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label">付随業務<br><span style="font-size:0.7rem;color:var(--text-muted)">紹介状読解・返書</span></div>
+    <div class="bar-track">
+      <div class="bar-fill sub" data-width="30%">6分</div>
+    </div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label">非本質業務<br><span style="font-size:0.7rem;color:var(--text-muted)">移動・印刷・手入力等</span></div>
+    <div class="bar-track">
+      <div class="bar-fill non" data-width="50%">10分+</div>
+    </div>
+  </div>
+</div>
+
+<div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem;">
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.75rem;flex:1;min-width:200px;text-align:center;">
+    <div style="font-size:0.7rem;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;">本質業務</div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:600;color:var(--accent-4);margin-top:0.25rem;">約5分</div>
+    <div style="font-size:0.75rem;color:var(--text-muted);">全体の25%</div>
+  </div>
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.75rem;flex:1;min-width:200px;text-align:center;">
+    <div style="font-size:0.7rem;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;">非本質業務</div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:600;color:var(--accent-red);margin-top:0.25rem;">10分以上</div>
+    <div style="font-size:0.75rem;color:var(--text-muted);">全体の50%超</div>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ===== SECTION 4: ボトルネック ===== -->
+
+<section id="sec4">
+  <div class="container">
+    <div class="section-num">Section 04</div>
+    <h2 class="section-title">ボトルネック構造</h2>
+    <p class="section-desc">業務遅延・負荷増大の構造的な原因を3つの類型で整理します。</p>
+
+```
+<div class="bottleneck-grid">
+  <div class="bottleneck-card red">
+    <h4>🔄 二重入力</h4>
+    <ul>
+      <li>紹介状内容 → 依頼目的手入力</li>
+      <li>紹介状 → 病名登録</li>
+      <li>IDコピー操作</li>
+    </ul>
+  </div>
+  <div class="bottleneck-card orange">
+    <h4>📄 紙依存工程</h4>
+    <ul>
+      <li>紹介状取得（物理移動）</li>
+      <li>返書印刷</li>
+      <li>所見レポート印刷</li>
+      <li>書類ファイリング</li>
+    </ul>
+  </div>
+  <div class="bottleneck-card yellow">
+    <h4>🧠 属人判断</h4>
+    <ul>
+      <li>検査目的の解釈</li>
+      <li>所見の記載粒度</li>
+      <li>病名付け判断</li>
+    </ul>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ===== SECTION 5: 年間負荷 ===== -->
+
+<section id="sec5">
+  <div class="container">
+    <div class="section-num">Section 05</div>
+    <h2 class="section-title">年間負荷推計</h2>
+    <p class="section-desc">100分/日 × 250日から算出した年間負荷の全体像です。</p>
+
+```
+<div class="annual-highlight">
+  <div class="annual-card">
+    <div class="big-num blue">25,000<span style="font-size:0.5em">分</span></div>
+    <div class="unit">年間総作業時間</div>
+    <div class="sub">≒ 約417時間/年</div>
+  </div>
+  <div class="annual-card">
+    <div class="big-num red">200<span style="font-size:0.5em">h+</span></div>
+    <div class="unit">非本質業務</div>
+    <div class="sub">全体の約半数を占める</div>
+  </div>
+  <div class="annual-card">
+    <div class="big-num purple">80〜100<span style="font-size:0.5em">h</span></div>
+    <div class="unit">紙関連工程</div>
+    <div class="sub">デジタル化で削減可能</div>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ===== SECTION 6: 影響範囲 ===== -->
+
+<section id="sec6">
+  <div class="container">
+    <div class="section-num">Section 06</div>
+    <h2 class="section-title">次工程への影響</h2>
+    <p class="section-desc">この業務の質は、以下の領域に直接的な影響を及ぼします。</p>
+
+```
+<div class="impact-list">
+  <div class="impact-item">
+    <div class="icon">🏥</div>
+    <h4>紹介元の治療方針決定</h4>
+  </div>
+  <div class="impact-item">
+    <div class="icon">🔍</div>
+    <h4>再検査判断</h4>
+  </div>
+  <div class="impact-item">
+    <div class="icon">🤝</div>
+    <h4>地域連携信頼度</h4>
+  </div>
+  <div class="impact-item">
+    <div class="icon">🛡️</div>
+    <h4>医療安全</h4>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ===== SECTION 7: 再設計 ===== -->
+
+<section id="sec7">
+  <div class="container">
+    <div class="section-num">Section 07</div>
+    <h2 class="section-title">再設計の方向性（To-Be概念案）</h2>
+    <p class="section-desc">廃止・自動化・集中すべき業務の3軸で整理します。</p>
+
+```
+<div class="tobe-grid">
+  <div class="tobe-card remove">
+    <h4>🚫 廃止可能工程</h4>
+    <ul>
+      <li>紹介状物理移動</li>
+      <li>印刷工程</li>
+      <li>手入力依頼目的</li>
+    </ul>
+  </div>
+  <div class="tobe-card auto">
+    <h4>⚡ 自動化候補</h4>
+    <ul>
+      <li>紹介状OCR化</li>
+      <li>依頼目的自動抽出</li>
+      <li>返書ドラフト自動生成</li>
+      <li>ID連携自動起動</li>
+    </ul>
+  </div>
+  <div class="tobe-card focus">
+    <h4>🎯 読影医が集中すべき業務</h4>
+    <ul>
+      <li>画像解釈</li>
+      <li>医学的判断</li>
+      <li>臨床的示唆</li>
+    </ul>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ===== SECTION 8: 改善効果 ===== -->
+
+<section id="sec8">
+  <div class="container">
+    <div class="section-num">Section 08</div>
+    <h2 class="section-title">改善効果試算</h2>
+    <p class="section-desc">再設計により期待される定量的効果を試算します。</p>
+
+```
+<div class="improvement-box">
+  <div style="font-size:0.85rem;color:var(--text-dim);margin-bottom:0.75rem;">1件あたり所要時間</div>
+  <div class="improvement-arrow">
+    <div class="before">20分</div>
+    <div class="arrow">→</div>
+    <div class="after">15分</div>
+  </div>
+  <div style="font-size:0.85rem;color:var(--text-dim);margin:1.5rem 0 0.75rem;">年間負荷</div>
+  <div class="improvement-arrow">
+    <div class="before">417h</div>
+    <div class="arrow">→</div>
+    <div class="after">約312h</div>
+  </div>
+  <div class="saving-badge">▲ 年間100時間以上 削減可能</div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ===== SECTION 9: 確認依頼 ===== -->
+
+<section id="sec9">
+  <div class="container">
+    <div class="section-num">Section 09</div>
+    <h2 class="section-title">確認依頼事項</h2>
+    <p class="section-desc">以下について事実確認をお願いします。チェックボックスをクリックして確認状況を記録できます。</p>
+
+```
+<div class="confirm-section">
+  <div class="confirm-list" id="confirmList">
+    <div class="confirm-item" onclick="toggleCheck(this)">
+      <div class="confirm-check">✓</div>
+      <div class="confirm-text">所要時間の妥当性</div>
+    </div>
+    <div class="confirm-item" onclick="toggleCheck(this)">
+      <div class="confirm-check">✓</div>
+      <div class="confirm-text">工程抜け漏れの有無</div>
+    </div>
+    <div class="confirm-item" onclick="toggleCheck(this)">
+      <div class="confirm-check">✓</div>
+      <div class="confirm-text">本質業務の認識違いがないか</div>
+    </div>
+    <div class="confirm-item" onclick="toggleCheck(this)">
+      <div class="confirm-check">✓</div>
+      <div class="confirm-text">特に負担が大きい工程はどれか</div>
+    </div>
+    <div class="confirm-item" onclick="toggleCheck(this)">
+      <div class="confirm-check">✓</div>
+      <div class="confirm-text">自動化に抵抗がありそうな工程はどれか</div>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<footer class="report-footer">
+  放射線科業務構造分析レポート（確認依頼版）<br>
+  <span style="color:var(--text-muted);">Radiology Workflow Structure Analysis Report</span>
+</footer>
+
+<script>
+// Scroll-triggered section visibility
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+
+      // Animate bars when section 3 is visible
+      if (entry.target.id === 'sec3') {
+        setTimeout(() => {
+          document.querySelectorAll('.bar-fill').forEach(bar => {
+            bar.style.width = bar.dataset.width;
+          });
+        }, 300);
+      }
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('section').forEach(sec => observer.observe(sec));
+
+// Toggle confirm checkboxes
+function toggleCheck(item) {
+  const check = item.querySelector('.confirm-check');
+  check.classList.toggle('checked');
+}
+</script>
+
+</body>
+</html>
