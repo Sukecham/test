@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+
+<html lang="ja" style="scroll-behavior:smooth">
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Zen+Kaku+Gothic+New:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>放射線科業務構造分析レポート</title>
+
+</head>
+<body style='background:#0a0e1a; color:#e2e8f0; font-family:"Noto Sans JP", "Zen Kaku Gothic New", sans-serif; line-height:1.8; overflow-x:hidden'>
+
+<!-- ===== HERO ===== -->
+
+<div class="hero" style="min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; position:relative; padding:2rem; overflow:hidden" align="center">
+  <div class="hero-grid" style="position:absolute; inset:0; background-image:linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px); background-size:60px 60px; z-index:0; animation:gridShift 20s linear infinite"></div>
+  <div class="hero-content" style="position:relative; z-index:1">
+    <div class="hero-badge" style="display:inline-block; padding:0.4rem 1.2rem; border:1px solid #38bdf8; border-radius:100px; font-size:0.75rem; font-weight:500; letter-spacing:0.15em; color:#38bdf8; text-transform:uppercase; margin-bottom:2rem; animation:fadeInUp 0.8s ease-out">確認依頼版 — Workflow Analysis</div>
+    <h1 style="font-size:clamp(2rem, 5vw, 3.5rem); font-weight:900; letter-spacing:-0.02em; line-height:1.3; margin-bottom:1rem; animation:fadeInUp 0.8s ease-out 0.15s both">放射線科<br><span class="highlight" style="background:linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text">業務構造分析</span>レポート</h1>
+    <p class="hero-sub" style="font-size:1.05rem; color:#94a3b8; max-width:600px; margin:0 auto 2.5rem; animation:fadeInUp 0.8s ease-out 0.3s both">他院から直接紹介された患者の画像所見レポート作成業務における<br>構造的課題と改善提案</p>
+    <div class="hero-stats" style="display:flex; gap:2rem; justify-content:center; flex-wrap:wrap; animation:fadeInUp 0.8s ease-out 0.45s both">
+      <div class="hero-stat" style="text-align:center; padding:1rem 1.5rem; background:rgba(255, 255, 255, 0.03); border:1px solid #1e2d44; border-radius:16px; backdrop-filter:blur(10px); min-width:140px" align="center">
+        <div class="num" style='font-family:"JetBrains Mono", monospace; font-size:2rem; font-weight:600; color:#38bdf8'>20<span style="font-size:0.7em">分</span></div>
+        <div class="label" style="font-size:0.75rem; color:#64748b; margin-top:0.25rem">1件あたり所要時間</div>
+      </div>
+      <div class="hero-stat" style="text-align:center; padding:1rem 1.5rem; background:rgba(255, 255, 255, 0.03); border:1px solid #1e2d44; border-radius:16px; backdrop-filter:blur(10px); min-width:140px" align="center">
+        <div class="num" style='font-family:"JetBrains Mono", monospace; font-size:2rem; font-weight:600; color:#38bdf8'>417<span style="font-size:0.7em">h</span></div>
+        <div class="label" style="font-size:0.75rem; color:#64748b; margin-top:0.25rem">年間総負荷</div>
+      </div>
+      <div class="hero-stat" style="text-align:center; padding:1rem 1.5rem; background:rgba(255, 255, 255, 0.03); border:1px solid #1e2d44; border-radius:16px; backdrop-filter:blur(10px); min-width:140px" align="center">
+        <div class="num" style='font-family:"JetBrains Mono", monospace; font-size:2rem; font-weight:600; color:#38bdf8'>75<span style="font-size:0.7em">%</span></div>
+        <div class="label" style="font-size:0.75rem; color:#64748b; margin-top:0.25rem">非本質業務の割合</div>
+      </div>
+      <div class="hero-stat" style="text-align:center; padding:1rem 1.5rem; background:rgba(255, 255, 255, 0.03); border:1px solid #1e2d44; border-radius:16px; backdrop-filter:blur(10px); min-width:140px" align="center">
+        <div class="num" style='font-family:"JetBrains Mono", monospace; font-size:2rem; font-weight:600; color:#34d399'>▲100<span style="font-size:0.7em">h+</span></div>
+        <div class="label" style="font-size:0.75rem; color:#64748b; margin-top:0.25rem">年間削減可能</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint" style="position:absolute; bottom:2rem; left:50%; transform:translatex(-50%); color:#64748b; font-size:0.75rem; animation:bounce 2s infinite; z-index:1">↓ スクロールして詳細を確認</div>
+</div>
+
+<!-- ===== SECTION 1: 業務再定義 ===== -->
+
+<section id="sec1" style="padding:5rem 0; opacity:1; transform:none">
+  <div class="container" style="max-width:1100px; margin:0 auto; padding:0 1.5rem">
+    <div class="section-num" style='font-family:"JetBrains Mono", monospace; font-size:0.7rem; letter-spacing:0.2em; color:#38bdf8; text-transform:uppercase; margin-bottom:0.5rem'>Section 01</div>
+    <h2 class="section-title" style="font-size:clamp(1.5rem, 3vw, 2.2rem); font-weight:900; letter-spacing:-0.02em; margin-bottom:0.75rem">業務の再定義</h2>
+    <p class="section-desc" style="color:#94a3b8; font-size:0.95rem; margin-bottom:2.5rem; max-width:650px">現場で認識されている業務と、その本質的な目的を再定義します。</p>
+
+```
+<div class="card" style="background:#111827; border:1px solid #1e2d44; border-radius:16px; padding:2rem; margin-bottom:1.5rem; transition:all 0.3s ease">
+  <div class="card-label" style="font-size:0.7rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#38bdf8; margin-bottom:0.75rem">現場認識上の業務</div>
+  <h3 style="font-size:1.2rem; font-weight:700; margin-bottom:1rem">他院紹介患者のCT/MRI読影に関する一連の作業</h3>
+  <p style="color:#94a3b8; font-size:0.9rem; line-height:2;">
+    紹介状確認 → 電子カルテ病名登録 → 返書作成 → 所見レポート記載 → 印刷・書類整理
+  </p>
+</div>
+
+<div class="essence-box" style="background:linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(129, 140, 248, 0.08)); border:1px solid rgba(56, 189, 248, 0.2); border-radius:20px; padding:2.5rem; text-align:center; position:relative; overflow:hidden" align="center">
+  <p style="position:relative; font-size:1.15rem; font-weight:500; line-height:2; z-index:1">
+    この業務の本質は<br>
+    <span class="em" style="color:#38bdf8; font-weight:700">紹介元医療機関の臨床疑問</span>に対し<br>
+    <span class="em" style="color:#38bdf8; font-weight:700">正確かつ迅速に診断情報を返す</span>こと
+  </p>
+</div>
+
+<div class="outputs" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:1.25rem; margin-top:2rem">
+  <div class="output-item" style="background:#111827; border:1px solid #1e2d44; border-radius:14px; padding:1.5rem; display:flex; align-items:flex-start; gap:1rem; transition:all 0.3s ease">
+    <div class="output-icon blue" style="width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; background:rgba(56, 189, 248, 0.15)" width="40" height="40">📋</div>
+    <div>
+      <h4 style="font-size:0.9rem; font-weight:700; margin-bottom:0.25rem">構造化された画像所見レポート</h4>
+      <p style="font-size:0.8rem; color:#94a3b8; line-height:1.5">正確な読影結果を体系的に記述</p>
+    </div>
+  </div>
+  <div class="output-item" style="background:#111827; border:1px solid #1e2d44; border-radius:14px; padding:1.5rem; display:flex; align-items:flex-start; gap:1rem; transition:all 0.3s ease">
+    <div class="output-icon purple" style="width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; background:rgba(129, 140, 248, 0.15)" width="40" height="40">✉️</div>
+    <div>
+      <h4 style="font-size:0.9rem; font-weight:700; margin-bottom:0.25rem">紹介元への回答文（返書）</h4>
+      <p style="font-size:0.8rem; color:#94a3b8; line-height:1.5">臨床疑問に対する明確な回答</p>
+    </div>
+  </div>
+  <div class="output-item" style="background:#111827; border:1px solid #1e2d44; border-radius:14px; padding:1.5rem; display:flex; align-items:flex-start; gap:1rem; transition:all 0.3s ease">
+    <div class="output-icon green" style="width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; background:rgba(52, 211, 153, 0.15)" width="40" height="40">💾</div>
+    <div>
+      <h4 style="font-size:0.9rem; font-weight:700; margin-bottom:0.25rem">診療情報の記録</h4>
+      <p style="font-size:0.8rem; color:#94a3b8; line-height:1.5">電子カルテへの適切な記録</p>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ===== SECTION 2: 現状プロセス ===== -->
+
+<section id="sec2" style="padding:5rem 0; opacity:1; transform:none">
+  <div class="container" style="max-width:1100px; margin:0 auto; padding:0 1.5rem">
+    <div class="section-num" style='font-family:"JetBrains Mono", monospace; font-size:0.7rem; letter-spacing:0.2em; color:#38bdf8; text-transform:uppercase; margin-bottom:0.5rem'>Section 02</div>
+    <h2 class="section-title" style="font-size:clamp(1.5rem, 3vw, 2.2rem); font-weight:900; letter-spacing:-0.02em; margin-bottom:0.75rem">現状業務プロセス（As-Is）</h2>
+    <p class="section-desc" style="color:#94a3b8; font-size:0.95rem; margin-bottom:2.5rem; max-width:650px">全11工程を作業分解し、所要時間と種別を可視化します。</p>
+
+```
+<div style="overflow-x:auto;">
+  <table class="process-table" style="width:100%; border-collapse:separate; border-spacing:0 6px; margin:1.5rem 0" width="100%">
+    <thead>
+      <tr>
+        <th style="padding:0.75rem 1rem; font-size:0.7rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#64748b; text-align:left; border-bottom:1px solid #1e2d44; width:60px" align="left" width="60">Step</th>
+        <th style="padding:0.75rem 1rem; font-size:0.7rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#64748b; text-align:left; border-bottom:1px solid #1e2d44" align="left">作業内容</th>
+        <th style="padding:0.75rem 1rem; font-size:0.7rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#64748b; text-align:left; border-bottom:1px solid #1e2d44; width:90px" align="left" width="90">所要時間</th>
+        <th style="padding:0.75rem 1rem; font-size:0.7rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#64748b; text-align:left; border-bottom:1px solid #1e2d44; width:100px" align="left" width="100">種別</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="background:#111827; transition:all 0.2s ease"><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle; border-radius:10px 0 0 10px" valign="middle"><span class="step-num" style='font-family:"JetBrains Mono", monospace; font-size:0.75rem; color:#64748b; background:rgba(255, 255, 255, 0.04); width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px' width="28" height="28">1</span></td><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle" valign="middle">リスト選択・画面展開</td><td class="time-val" style='font-family:"JetBrains Mono", monospace; font-weight:600; font-size:0.88rem; padding:0.85rem 1rem; vertical-align:middle' valign="middle">1分</td><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle; border-radius:0 10px 10px 0" valign="middle"><span class="tag tag-prep" style="display:inline-block; padding:0.2rem 0.7rem; border-radius:100px; font-size:0.7rem; font-weight:600; background:rgba(56, 189, 248, 0.12); color:#38bdf8">準備</span></td></tr>
+      <tr style="background:#111827; transition:all 0.2s ease"><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle; border-radius:10px 0 0 10px" valign="middle"><span class="step-num" style='font-family:"JetBrains Mono", monospace; font-size:0.75rem; color:#64748b; background:rgba(255, 255, 255, 0.04); width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px' width="28" height="28">2</span></td><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle" valign="middle">患者IDコピー→電子カルテ展開</td><td class="time-val" style='font-family:"JetBrains Mono", monospace; font-weight:600; font-size:0.88rem; padding:0.85rem 1rem; vertical-align:middle' valign="middle">1分</td><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle; border-radius:0 10px 10px 0" valign="middle"><span class="tag tag-dup" style="display:inline-block; padding:0.2rem 0.7rem; border-radius:100px; font-size:0.7rem; font-weight:600; background:rgba(251, 113, 133, 0.15); color:#fb7185">二重操作</span></td></tr>
+      <tr style="background:#111827; transition:all 0.2s ease"><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle; border-radius:10px 0 0 10px" valign="middle"><span class="step-num" style='font-family:"JetBrains Mono", monospace; font-size:0.75rem; color:#64748b; background:rgba(255, 255, 255, 0.04); width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px' width="28" height="28">3</span></td><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle" valign="middle">棚へ紹介状を取りに行く</td><td class="time-val" style='font-family:"JetBrains Mono", monospace; font-weight:600; font-size:0.88rem; padding:0.85rem 1rem; vertical-align:middle' valign="middle">2分</td><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle; border-radius:0 10px 10px 0" valign="middle"><span class="tag tag-move" style="display:inline-block; padding:0.2rem 0.7rem; border-radius:100px; font-size:0.7rem; font-weight:600; background:rgba(244, 114, 182, 0.15); color:#f472b6">物理移動</span></td></tr>
+      <tr style="background:#111827; transition:all 0.2s ease"><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle; border-radius:10px 0 0 10px" valign="middle"><span class="step-num" style='font-family:"JetBrains Mono", monospace; font-size:0.75rem; color:#64748b; background:rgba(255, 255, 255, 0.04); width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px' width="28" height="28">4</span></td><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle" valign="middle">紹介状読解</td><td class="time-val" style='font-family:"JetBrains Mono", monospace; font-weight:600; font-size:0.88rem; padding:0.85rem 1rem; vertical-align:middle' valign="middle">3分</td><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle; border-radius:0 10px 10px 0" valign="middle"><span class="tag tag-cognitive" style="display:inline-block; padding:0.2rem 0.7rem; border-radius:100px; font-size:0.7rem; font-weight:600; background:rgba(129, 140, 248, 0.15); color:#818cf8">認知作業</span></td></tr>
+      <tr style="background:#111827; transition:all 0.2s ease"><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle; border-radius:10px 0 0 10px" valign="middle"><span class="step-num" style='font-family:"JetBrains Mono", monospace; font-size:0.75rem; color:#64748b; background:rgba(255, 255, 255, 0.04); width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px' width="28" height="28">5</span></td><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle" valign="middle">病名登録</td><td class="time-val" style='font-family:"JetBrains Mono", monospace; font-weight:600; font-size:0.88rem; padding:0.85rem 1rem; vertical-align:middle' valign="middle">2分</td><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle; border-radius:0 10px 10px 0" valign="middle"><span class="tag tag-dup" style="display:inline-block; padding:0.2rem 0.7rem; border-radius:100px; font-size:0.7rem; font-weight:600; background:rgba(251, 113, 133, 0.15); color:#fb7185">転記</span></td></tr>
+      <tr style="background:#111827; transition:all 0.2s ease"><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle; border-radius:10px 0 0 10px" valign="middle"><span class="step-num" style='font-family:"JetBrains Mono", monospace; font-size:0.75rem; color:#64748b; background:rgba(255, 255, 255, 0.04); width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px' width="28" height="28">6</span></td><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle" valign="middle">返書作成</td><td class="time-val" style='font-family:"JetBrains Mono", monospace; font-weight:600; font-size:0.88rem; padding:0.85rem 1rem; vertical-align:middle' valign="middle">3分</td><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle; border-radius:0 10px 10px 0" valign="middle"><span class="tag tag-doc" style="display:inline-block; padding:0.2rem 0.7rem; border-radius:100px; font-size:0.7rem; font-weight:600; background:rgba(56, 189, 248, 0.12); color:#38bdf8">文書作成</span></td></tr>
+      <tr style="background:#111827; transition:all 0.2s ease"><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle; border-radius:10px 0 0 10px" valign="middle"><span class="step-num" style='font-family:"JetBrains Mono", monospace; font-size:0.75rem; color:#64748b; background:rgba(255, 255, 255, 0.04); width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px' width="28" height="28">7</span></td><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle" valign="middle">返書印刷</td><td class="time-val" style='font-family:"JetBrains Mono", monospace; font-weight:600; font-size:0.88rem; padding:0.85rem 1rem; vertical-align:middle' valign="middle">1分</td><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle; border-radius:0 10px 10px 0" valign="middle"><span class="tag tag-paper" style="display:inline-block; padding:0.2rem 0.7rem; border-radius:100px; font-size:0.7rem; font-weight:600; background:rgba(251, 113, 133, 0.12); color:#fb7185">紙工程</span></td></tr>
+      <tr style="background:#111827; transition:all 0.2s ease"><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle; border-radius:10px 0 0 10px" valign="middle"><span class="step-num" style='font-family:"JetBrains Mono", monospace; font-size:0.75rem; color:#64748b; background:rgba(255, 255, 255, 0.04); width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px' width="28" height="28">8</span></td><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle" valign="middle">依頼目的手入力</td><td class="time-val" style='font-family:"JetBrains Mono", monospace; font-weight:600; font-size:0.88rem; padding:0.85rem 1rem; vertical-align:middle' valign="middle">2分</td><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle; border-radius:0 10px 10px 0" valign="middle"><span class="tag tag-dup" style="display:inline-block; padding:0.2rem 0.7rem; border-radius:100px; font-size:0.7rem; font-weight:600; background:rgba(251, 113, 133, 0.15); color:#fb7185">二重入力</span></td></tr>
+      <tr style="background:#111827; transition:all 0.2s ease"><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle; border-radius:10px 0 0 10px" valign="middle"><span class="step-num" style='font-family:"JetBrains Mono", monospace; font-size:0.75rem; color:#64748b; background:rgba(255, 255, 255, 0.04); width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px' width="28" height="28">9</span></td><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle" valign="middle">読影・所見作成</td><td class="time-val" style='font-family:"JetBrains Mono", monospace; font-weight:600; font-size:0.88rem; padding:0.85rem 1rem; vertical-align:middle' valign="middle">5分</td><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle; border-radius:0 10px 10px 0" valign="middle"><span class="tag tag-core" style="display:inline-block; padding:0.2rem 0.7rem; border-radius:100px; font-size:0.7rem; font-weight:600; background:rgba(52, 211, 153, 0.15); color:#34d399">本質業務</span></td></tr>
+      <tr style="background:#111827; transition:all 0.2s ease"><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle; border-radius:10px 0 0 10px" valign="middle"><span class="step-num" style='font-family:"JetBrains Mono", monospace; font-size:0.75rem; color:#64748b; background:rgba(255, 255, 255, 0.04); width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px' width="28" height="28">10</span></td><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle" valign="middle">レポート印刷</td><td class="time-val" style='font-family:"JetBrains Mono", monospace; font-weight:600; font-size:0.88rem; padding:0.85rem 1rem; vertical-align:middle' valign="middle">1分</td><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle; border-radius:0 10px 10px 0" valign="middle"><span class="tag tag-paper" style="display:inline-block; padding:0.2rem 0.7rem; border-radius:100px; font-size:0.7rem; font-weight:600; background:rgba(251, 113, 133, 0.12); color:#fb7185">紙工程</span></td></tr>
+      <tr style="background:#111827; transition:all 0.2s ease"><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle; border-radius:10px 0 0 10px" valign="middle"><span class="step-num" style='font-family:"JetBrains Mono", monospace; font-size:0.75rem; color:#64748b; background:rgba(255, 255, 255, 0.04); width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px' width="28" height="28">11</span></td><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle" valign="middle">書類まとめて棚へ</td><td class="time-val" style='font-family:"JetBrains Mono", monospace; font-weight:600; font-size:0.88rem; padding:0.85rem 1rem; vertical-align:middle' valign="middle">1分</td><td style="padding:0.85rem 1rem; font-size:0.88rem; vertical-align:middle; border-radius:0 10px 10px 0" valign="middle"><span class="tag tag-move" style="display:inline-block; padding:0.2rem 0.7rem; border-radius:100px; font-size:0.7rem; font-weight:600; background:rgba(244, 114, 182, 0.15); color:#f472b6">物理整理</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="total-row" style="margin-top:1.5rem; display:flex; gap:2rem; flex-wrap:wrap">
+  <div class="total-item" style="background:#111827; border:1px solid #1e2d44; border-radius:12px; padding:1.25rem 1.75rem; flex:1; min-width:200px">
+    <div class="label" style="font-size:0.7rem; color:#64748b; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.4rem">合計所要時間（1件）</div>
+    <div class="value" style='font-family:"JetBrains Mono", monospace; font-size:1.6rem; font-weight:600; color:#38bdf8'>約20分</div>
+  </div>
+  <div class="total-item" style="background:#111827; border:1px solid #1e2d44; border-radius:12px; padding:1.25rem 1.75rem; flex:1; min-width:200px">
+    <div class="label" style="font-size:0.7rem; color:#64748b; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.4rem">1日あたり（約5件）</div>
+    <div class="value" style='font-family:"JetBrains Mono", monospace; font-size:1.6rem; font-weight:600; color:#38bdf8'>約100分</div>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ===== SECTION 3: 構造分析 ===== -->
+
+<section id="sec3" style="padding:5rem 0; opacity:1; transform:none">
+  <div class="container" style="max-width:1100px; margin:0 auto; padding:0 1.5rem">
+    <div class="section-num" style='font-family:"JetBrains Mono", monospace; font-size:0.7rem; letter-spacing:0.2em; color:#38bdf8; text-transform:uppercase; margin-bottom:0.5rem'>Section 03</div>
+    <h2 class="section-title" style="font-size:clamp(1.5rem, 3vw, 2.2rem); font-weight:900; letter-spacing:-0.02em; margin-bottom:0.75rem">工程分類（構造分析）</h2>
+    <p class="section-desc" style="color:#94a3b8; font-size:0.95rem; margin-bottom:2.5rem; max-width:650px">各工程を「本質業務」「付随業務」「非本質業務」に分類し、時間配分を可視化します。</p>
+
+```
+<div class="bar-chart" id="barChart" style="margin:2rem 0">
+  <div class="bar-row" style="display:flex; align-items:center; margin-bottom:0.75rem; gap:1rem">
+    <div class="bar-label" style="width:180px; font-size:0.82rem; color:#94a3b8; flex-shrink:0; text-align:right" width="180" align="right">本質業務<br><span style="font-size:0.7rem;color:#64748b">読影・所見作成</span></div>
+    <div class="bar-track" style="flex:1; height:32px; background:rgba(255, 255, 255, 0.03); border-radius:8px; overflow:hidden; position:relative" height="32">
+      <div class="bar-fill core" data-width="25%" style='height:100%; border-radius:8px; display:flex; align-items:center; padding-left:0.75rem; font-family:"JetBrains Mono", monospace; font-size:0.75rem; font-weight:600; color:#f8fafc; width:25%; transition:width 1.2s cubic-bezier(0.16, 1, 0.3, 1); background:linear-gradient(90deg, #34d399, #10b981)' height="100%">5分</div>
+    </div>
+  </div>
+  <div class="bar-row" style="display:flex; align-items:center; margin-bottom:0.75rem; gap:1rem">
+    <div class="bar-label" style="width:180px; font-size:0.82rem; color:#94a3b8; flex-shrink:0; text-align:right" width="180" align="right">付随業務<br><span style="font-size:0.7rem;color:#64748b">紹介状読解・返書</span></div>
+    <div class="bar-track" style="flex:1; height:32px; background:rgba(255, 255, 255, 0.03); border-radius:8px; overflow:hidden; position:relative" height="32">
+      <div class="bar-fill sub" data-width="30%" style='height:100%; border-radius:8px; display:flex; align-items:center; padding-left:0.75rem; font-family:"JetBrains Mono", monospace; font-size:0.75rem; font-weight:600; color:#f8fafc; width:30%; transition:width 1.2s cubic-bezier(0.16, 1, 0.3, 1); background:linear-gradient(90deg, #818cf8, #6366f1)' height="100%">6分</div>
+    </div>
+  </div>
+  <div class="bar-row" style="display:flex; align-items:center; margin-bottom:0.75rem; gap:1rem">
+    <div class="bar-label" style="width:180px; font-size:0.82rem; color:#94a3b8; flex-shrink:0; text-align:right" width="180" align="right">非本質業務<br><span style="font-size:0.7rem;color:#64748b">移動・印刷・手入力等</span></div>
+    <div class="bar-track" style="flex:1; height:32px; background:rgba(255, 255, 255, 0.03); border-radius:8px; overflow:hidden; position:relative" height="32">
+      <div class="bar-fill non" data-width="50%" style='height:100%; border-radius:8px; display:flex; align-items:center; padding-left:0.75rem; font-family:"JetBrains Mono", monospace; font-size:0.75rem; font-weight:600; color:#f8fafc; width:50%; transition:width 1.2s cubic-bezier(0.16, 1, 0.3, 1); background:linear-gradient(90deg, #fb7185, #e11d48)' height="100%">10分+</div>
+    </div>
+  </div>
+</div>
+
+<div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem;">
+  <div style="background:#111827;border:1px solid #1e2d44;border-radius:12px;padding:1.25rem 1.75rem;flex:1;min-width:200px;text-align:center;">
+    <div style="font-size:0.7rem;color:#64748b;letter-spacing:0.1em;text-transform:uppercase;">本質業務</div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:600;color:#34d399;margin-top:0.25rem;">約5分</div>
+    <div style="font-size:0.75rem;color:#64748b;">全体の25%</div>
+  </div>
+  <div style="background:#111827;border:1px solid #1e2d44;border-radius:12px;padding:1.25rem 1.75rem;flex:1;min-width:200px;text-align:center;">
+    <div style="font-size:0.7rem;color:#64748b;letter-spacing:0.1em;text-transform:uppercase;">非本質業務</div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:600;color:#fb7185;margin-top:0.25rem;">10分以上</div>
+    <div style="font-size:0.75rem;color:#64748b;">全体の50%超</div>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ===== SECTION 4: ボトルネック ===== -->
+
+<section id="sec4" style="padding:5rem 0; opacity:1; transform:none">
+  <div class="container" style="max-width:1100px; margin:0 auto; padding:0 1.5rem">
+    <div class="section-num" style='font-family:"JetBrains Mono", monospace; font-size:0.7rem; letter-spacing:0.2em; color:#38bdf8; text-transform:uppercase; margin-bottom:0.5rem'>Section 04</div>
+    <h2 class="section-title" style="font-size:clamp(1.5rem, 3vw, 2.2rem); font-weight:900; letter-spacing:-0.02em; margin-bottom:0.75rem">ボトルネック構造</h2>
+    <p class="section-desc" style="color:#94a3b8; font-size:0.95rem; margin-bottom:2.5rem; max-width:650px">業務遅延・負荷増大の構造的な原因を3つの類型で整理します。</p>
+
+```
+<div class="bottleneck-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:1.25rem">
+  <div class="bottleneck-card red" style="background:#111827; border:1px solid #1e2d44; border-radius:16px; padding:1.75rem; position:relative; overflow:hidden">
+    <h4 style="font-size:1rem; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem">🔄 二重入力</h4>
+    <ul style="list-style:none; padding:0">
+      <li style="padding:0.4rem 0; padding-left:1.25rem; position:relative; font-size:0.88rem; color:#94a3b8">紹介状内容 → 依頼目的手入力</li>
+      <li style="padding:0.4rem 0; padding-left:1.25rem; position:relative; font-size:0.88rem; color:#94a3b8">紹介状 → 病名登録</li>
+      <li style="padding:0.4rem 0; padding-left:1.25rem; position:relative; font-size:0.88rem; color:#94a3b8">IDコピー操作</li>
+    </ul>
+  </div>
+  <div class="bottleneck-card orange" style="background:#111827; border:1px solid #1e2d44; border-radius:16px; padding:1.75rem; position:relative; overflow:hidden">
+    <h4 style="font-size:1rem; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem">📄 紙依存工程</h4>
+    <ul style="list-style:none; padding:0">
+      <li style="padding:0.4rem 0; padding-left:1.25rem; position:relative; font-size:0.88rem; color:#94a3b8">紹介状取得（物理移動）</li>
+      <li style="padding:0.4rem 0; padding-left:1.25rem; position:relative; font-size:0.88rem; color:#94a3b8">返書印刷</li>
+      <li style="padding:0.4rem 0; padding-left:1.25rem; position:relative; font-size:0.88rem; color:#94a3b8">所見レポート印刷</li>
+      <li style="padding:0.4rem 0; padding-left:1.25rem; position:relative; font-size:0.88rem; color:#94a3b8">書類ファイリング</li>
+    </ul>
+  </div>
+  <div class="bottleneck-card yellow" style="background:#111827; border:1px solid #1e2d44; border-radius:16px; padding:1.75rem; position:relative; overflow:hidden">
+    <h4 style="font-size:1rem; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem">🧠 属人判断</h4>
+    <ul style="list-style:none; padding:0">
+      <li style="padding:0.4rem 0; padding-left:1.25rem; position:relative; font-size:0.88rem; color:#94a3b8">検査目的の解釈</li>
+      <li style="padding:0.4rem 0; padding-left:1.25rem; position:relative; font-size:0.88rem; color:#94a3b8">所見の記載粒度</li>
+      <li style="padding:0.4rem 0; padding-left:1.25rem; position:relative; font-size:0.88rem; color:#94a3b8">病名付け判断</li>
+    </ul>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ===== SECTION 5: 年間負荷 ===== -->
+
+<section id="sec5" style="padding:5rem 0; opacity:1; transform:none">
+  <div class="container" style="max-width:1100px; margin:0 auto; padding:0 1.5rem">
+    <div class="section-num" style='font-family:"JetBrains Mono", monospace; font-size:0.7rem; letter-spacing:0.2em; color:#38bdf8; text-transform:uppercase; margin-bottom:0.5rem'>Section 05</div>
+    <h2 class="section-title" style="font-size:clamp(1.5rem, 3vw, 2.2rem); font-weight:900; letter-spacing:-0.02em; margin-bottom:0.75rem">年間負荷推計</h2>
+    <p class="section-desc" style="color:#94a3b8; font-size:0.95rem; margin-bottom:2.5rem; max-width:650px">100分/日 × 250日から算出した年間負荷の全体像です。</p>
+
+```
+<div class="annual-highlight" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:1.25rem; margin:2rem 0">
+  <div class="annual-card" style="background:#111827; border:1px solid #1e2d44; border-radius:16px; padding:2rem; text-align:center" align="center">
+    <div class="big-num blue" style='font-family:"JetBrains Mono", monospace; font-size:2.5rem; font-weight:600; line-height:1.2; color:#38bdf8'>25,000<span style="font-size:0.5em">分</span></div>
+    <div class="unit" style="font-size:0.85rem; color:#94a3b8; margin-top:0.5rem">年間総作業時間</div>
+    <div class="sub" style="font-size:0.75rem; color:#64748b; margin-top:0.25rem">≒ 約417時間/年</div>
+  </div>
+  <div class="annual-card" style="background:#111827; border:1px solid #1e2d44; border-radius:16px; padding:2rem; text-align:center" align="center">
+    <div class="big-num red" style='font-family:"JetBrains Mono", monospace; font-size:2.5rem; font-weight:600; line-height:1.2; color:#fb7185'>200<span style="font-size:0.5em">h+</span></div>
+    <div class="unit" style="font-size:0.85rem; color:#94a3b8; margin-top:0.5rem">非本質業務</div>
+    <div class="sub" style="font-size:0.75rem; color:#64748b; margin-top:0.25rem">全体の約半数を占める</div>
+  </div>
+  <div class="annual-card" style="background:#111827; border:1px solid #1e2d44; border-radius:16px; padding:2rem; text-align:center" align="center">
+    <div class="big-num purple" style='font-family:"JetBrains Mono", monospace; font-size:2.5rem; font-weight:600; line-height:1.2; color:#818cf8'>80〜100<span style="font-size:0.5em">h</span></div>
+    <div class="unit" style="font-size:0.85rem; color:#94a3b8; margin-top:0.5rem">紙関連工程</div>
+    <div class="sub" style="font-size:0.75rem; color:#64748b; margin-top:0.25rem">デジタル化で削減可能</div>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ===== SECTION 6: 影響範囲 ===== -->
+
+<section id="sec6" style="padding:5rem 0; opacity:1; transform:none">
+  <div class="container" style="max-width:1100px; margin:0 auto; padding:0 1.5rem">
+    <div class="section-num" style='font-family:"JetBrains Mono", monospace; font-size:0.7rem; letter-spacing:0.2em; color:#38bdf8; text-transform:uppercase; margin-bottom:0.5rem'>Section 06</div>
+    <h2 class="section-title" style="font-size:clamp(1.5rem, 3vw, 2.2rem); font-weight:900; letter-spacing:-0.02em; margin-bottom:0.75rem">次工程への影響</h2>
+    <p class="section-desc" style="color:#94a3b8; font-size:0.95rem; margin-bottom:2.5rem; max-width:650px">この業務の質は、以下の領域に直接的な影響を及ぼします。</p>
+
+```
+<div class="impact-list" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; margin:1.5rem 0">
+  <div class="impact-item" style="background:#111827; border:1px solid #1e2d44; border-radius:14px; padding:1.5rem; text-align:center; transition:all 0.3s ease" align="center">
+    <div class="icon" style="font-size:1.8rem; margin-bottom:0.75rem">🏥</div>
+    <h4 style="font-size:0.9rem; font-weight:700">紹介元の治療方針決定</h4>
+  </div>
+  <div class="impact-item" style="background:#111827; border:1px solid #1e2d44; border-radius:14px; padding:1.5rem; text-align:center; transition:all 0.3s ease" align="center">
+    <div class="icon" style="font-size:1.8rem; margin-bottom:0.75rem">🔍</div>
+    <h4 style="font-size:0.9rem; font-weight:700">再検査判断</h4>
+  </div>
+  <div class="impact-item" style="background:#111827; border:1px solid #1e2d44; border-radius:14px; padding:1.5rem; text-align:center; transition:all 0.3s ease" align="center">
+    <div class="icon" style="font-size:1.8rem; margin-bottom:0.75rem">🤝</div>
+    <h4 style="font-size:0.9rem; font-weight:700">地域連携信頼度</h4>
+  </div>
+  <div class="impact-item" style="background:#111827; border:1px solid #1e2d44; border-radius:14px; padding:1.5rem; text-align:center; transition:all 0.3s ease" align="center">
+    <div class="icon" style="font-size:1.8rem; margin-bottom:0.75rem">🛡️</div>
+    <h4 style="font-size:0.9rem; font-weight:700">医療安全</h4>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ===== SECTION 7: 再設計 ===== -->
+
+<section id="sec7" style="padding:5rem 0; opacity:1; transform:none">
+  <div class="container" style="max-width:1100px; margin:0 auto; padding:0 1.5rem">
+    <div class="section-num" style='font-family:"JetBrains Mono", monospace; font-size:0.7rem; letter-spacing:0.2em; color:#38bdf8; text-transform:uppercase; margin-bottom:0.5rem'>Section 07</div>
+    <h2 class="section-title" style="font-size:clamp(1.5rem, 3vw, 2.2rem); font-weight:900; letter-spacing:-0.02em; margin-bottom:0.75rem">再設計の方向性（To-Be概念案）</h2>
+    <p class="section-desc" style="color:#94a3b8; font-size:0.95rem; margin-bottom:2.5rem; max-width:650px">廃止・自動化・集中すべき業務の3軸で整理します。</p>
+
+```
+<div class="tobe-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:1.25rem">
+  <div class="tobe-card remove" style="background:#111827; border:1px solid #1e2d44; border-radius:16px; padding:1.75rem">
+    <h4 style="font-size:1rem; font-weight:700; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem">🚫 廃止可能工程</h4>
+    <ul style="list-style:none; padding:0">
+      <li style="padding:0.5rem 0; padding-left:1.5rem; position:relative; font-size:0.88rem; color:#94a3b8">紹介状物理移動</li>
+      <li style="padding:0.5rem 0; padding-left:1.5rem; position:relative; font-size:0.88rem; color:#94a3b8">印刷工程</li>
+      <li style="padding:0.5rem 0; padding-left:1.5rem; position:relative; font-size:0.88rem; color:#94a3b8">手入力依頼目的</li>
+    </ul>
+  </div>
+  <div class="tobe-card auto" style="background:#111827; border:1px solid #1e2d44; border-radius:16px; padding:1.75rem">
+    <h4 style="font-size:1rem; font-weight:700; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem">⚡ 自動化候補</h4>
+    <ul style="list-style:none; padding:0">
+      <li style="padding:0.5rem 0; padding-left:1.5rem; position:relative; font-size:0.88rem; color:#94a3b8">紹介状OCR化</li>
+      <li style="padding:0.5rem 0; padding-left:1.5rem; position:relative; font-size:0.88rem; color:#94a3b8">依頼目的自動抽出</li>
+      <li style="padding:0.5rem 0; padding-left:1.5rem; position:relative; font-size:0.88rem; color:#94a3b8">返書ドラフト自動生成</li>
+      <li style="padding:0.5rem 0; padding-left:1.5rem; position:relative; font-size:0.88rem; color:#94a3b8">ID連携自動起動</li>
+    </ul>
+  </div>
+  <div class="tobe-card focus" style="background:#111827; border:1px solid #1e2d44; border-radius:16px; padding:1.75rem">
+    <h4 style="font-size:1rem; font-weight:700; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem">🎯 読影医が集中すべき業務</h4>
+    <ul style="list-style:none; padding:0">
+      <li style="padding:0.5rem 0; padding-left:1.5rem; position:relative; font-size:0.88rem; color:#94a3b8">画像解釈</li>
+      <li style="padding:0.5rem 0; padding-left:1.5rem; position:relative; font-size:0.88rem; color:#94a3b8">医学的判断</li>
+      <li style="padding:0.5rem 0; padding-left:1.5rem; position:relative; font-size:0.88rem; color:#94a3b8">臨床的示唆</li>
+    </ul>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ===== SECTION 8: 改善効果 ===== -->
+
+<section id="sec8" style="padding:5rem 0; opacity:1; transform:none">
+  <div class="container" style="max-width:1100px; margin:0 auto; padding:0 1.5rem">
+    <div class="section-num" style='font-family:"JetBrains Mono", monospace; font-size:0.7rem; letter-spacing:0.2em; color:#38bdf8; text-transform:uppercase; margin-bottom:0.5rem'>Section 08</div>
+    <h2 class="section-title" style="font-size:clamp(1.5rem, 3vw, 2.2rem); font-weight:900; letter-spacing:-0.02em; margin-bottom:0.75rem">改善効果試算</h2>
+    <p class="section-desc" style="color:#94a3b8; font-size:0.95rem; margin-bottom:2.5rem; max-width:650px">再設計により期待される定量的効果を試算します。</p>
+
+```
+<div class="improvement-box" style="background:linear-gradient(135deg, rgba(52, 211, 153, 0.08), rgba(56, 189, 248, 0.08)); border:1px solid rgba(52, 211, 153, 0.2); border-radius:20px; padding:3rem; text-align:center" align="center">
+  <div style="font-size:0.85rem;color:#94a3b8;margin-bottom:0.75rem;">1件あたり所要時間</div>
+  <div class="improvement-arrow" style="display:flex; align-items:center; justify-content:center; gap:1.5rem; margin:1.5rem 0; flex-wrap:wrap">
+    <div class="before" style='font-family:"JetBrains Mono", monospace; font-size:2.2rem; font-weight:600; color:#64748b; text-decoration:line-through; text-decoration-color:#fb7185'>20分</div>
+    <div class="arrow" style="font-size:1.5rem; color:#34d399">→</div>
+    <div class="after" style='font-family:"JetBrains Mono", monospace; font-size:2.5rem; font-weight:600; color:#34d399'>15分</div>
+  </div>
+  <div style="font-size:0.85rem;color:#94a3b8;margin:1.5rem 0 0.75rem;">年間負荷</div>
+  <div class="improvement-arrow" style="display:flex; align-items:center; justify-content:center; gap:1.5rem; margin:1.5rem 0; flex-wrap:wrap">
+    <div class="before" style='font-family:"JetBrains Mono", monospace; font-size:2.2rem; font-weight:600; color:#64748b; text-decoration:line-through; text-decoration-color:#fb7185'>417h</div>
+    <div class="arrow" style="font-size:1.5rem; color:#34d399">→</div>
+    <div class="after" style='font-family:"JetBrains Mono", monospace; font-size:2.5rem; font-weight:600; color:#34d399'>約312h</div>
+  </div>
+  <div class="saving-badge" style='display:inline-block; background:rgba(52, 211, 153, 0.15); border:1px solid rgba(52, 211, 153, 0.3); border-radius:100px; padding:0.5rem 1.5rem; font-family:"JetBrains Mono", monospace; font-size:1rem; font-weight:600; color:#34d399; margin-top:1rem'>▲ 年間100時間以上 削減可能</div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ===== SECTION 9: 確認依頼 ===== -->
+
+<section id="sec9" style="padding:5rem 0; opacity:1; transform:none">
+  <div class="container" style="max-width:1100px; margin:0 auto; padding:0 1.5rem">
+    <div class="section-num" style='font-family:"JetBrains Mono", monospace; font-size:0.7rem; letter-spacing:0.2em; color:#38bdf8; text-transform:uppercase; margin-bottom:0.5rem'>Section 09</div>
+    <h2 class="section-title" style="font-size:clamp(1.5rem, 3vw, 2.2rem); font-weight:900; letter-spacing:-0.02em; margin-bottom:0.75rem">確認依頼事項</h2>
+    <p class="section-desc" style="color:#94a3b8; font-size:0.95rem; margin-bottom:2.5rem; max-width:650px">以下について事実確認をお願いします。チェックボックスをクリックして確認状況を記録できます。</p>
+
+```
+<div class="confirm-section" style="background:linear-gradient(135deg, rgba(244, 114, 182, 0.06), rgba(129, 140, 248, 0.06)); border:1px solid rgba(244, 114, 182, 0.15); border-radius:20px; padding:2.5rem; margin-top:2rem">
+  <div class="confirm-list" id="confirmList" style="display:grid; gap:0.75rem; margin-top:1.5rem">
+    <div class="confirm-item" onclick="toggleCheck(this)" style="display:flex; align-items:center; gap:1rem; padding:1rem 1.25rem; background:rgba(255, 255, 255, 0.02); border:1px solid rgba(255, 255, 255, 0.05); border-radius:12px; transition:all 0.2s ease">
+      <div class="confirm-check" style="width:22px; height:22px; border:2px solid #64748b; border-radius:6px; flex-shrink:0; cursor:pointer; transition:all 0.2s ease; display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:transparent" width="22" height="22">✓</div>
+      <div class="confirm-text" style="font-size:0.92rem">所要時間の妥当性</div>
+    </div>
+    <div class="confirm-item" onclick="toggleCheck(this)" style="display:flex; align-items:center; gap:1rem; padding:1rem 1.25rem; background:rgba(255, 255, 255, 0.02); border:1px solid rgba(255, 255, 255, 0.05); border-radius:12px; transition:all 0.2s ease">
+      <div class="confirm-check" style="width:22px; height:22px; border:2px solid #64748b; border-radius:6px; flex-shrink:0; cursor:pointer; transition:all 0.2s ease; display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:transparent" width="22" height="22">✓</div>
+      <div class="confirm-text" style="font-size:0.92rem">工程抜け漏れの有無</div>
+    </div>
+    <div class="confirm-item" onclick="toggleCheck(this)" style="display:flex; align-items:center; gap:1rem; padding:1rem 1.25rem; background:rgba(255, 255, 255, 0.02); border:1px solid rgba(255, 255, 255, 0.05); border-radius:12px; transition:all 0.2s ease">
+      <div class="confirm-check" style="width:22px; height:22px; border:2px solid #64748b; border-radius:6px; flex-shrink:0; cursor:pointer; transition:all 0.2s ease; display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:transparent" width="22" height="22">✓</div>
+      <div class="confirm-text" style="font-size:0.92rem">本質業務の認識違いがないか</div>
+    </div>
+    <div class="confirm-item" onclick="toggleCheck(this)" style="display:flex; align-items:center; gap:1rem; padding:1rem 1.25rem; background:rgba(255, 255, 255, 0.02); border:1px solid rgba(255, 255, 255, 0.05); border-radius:12px; transition:all 0.2s ease">
+      <div class="confirm-check" style="width:22px; height:22px; border:2px solid #64748b; border-radius:6px; flex-shrink:0; cursor:pointer; transition:all 0.2s ease; display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:transparent" width="22" height="22">✓</div>
+      <div class="confirm-text" style="font-size:0.92rem">特に負担が大きい工程はどれか</div>
+    </div>
+    <div class="confirm-item" onclick="toggleCheck(this)" style="display:flex; align-items:center; gap:1rem; padding:1rem 1.25rem; background:rgba(255, 255, 255, 0.02); border:1px solid rgba(255, 255, 255, 0.05); border-radius:12px; transition:all 0.2s ease">
+      <div class="confirm-check" style="width:22px; height:22px; border:2px solid #64748b; border-radius:6px; flex-shrink:0; cursor:pointer; transition:all 0.2s ease; display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:transparent" width="22" height="22">✓</div>
+      <div class="confirm-text" style="font-size:0.92rem">自動化に抵抗がありそうな工程はどれか</div>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<div class="divider" style="width:60px; height:2px; background:linear-gradient(90deg, #38bdf8, #818cf8); margin:3rem auto; border-radius:1px" width="60" height="2"></div>
+
+<footer class="report-footer" style="text-align:center; padding:4rem 1.5rem 3rem; color:#64748b; font-size:0.8rem" align="center">
+  放射線科業務構造分析レポート（確認依頼版）<br>
+  <span style="color:#64748b;">Radiology Workflow Structure Analysis Report</span>
+</footer>
+
+</body>
+</html>
