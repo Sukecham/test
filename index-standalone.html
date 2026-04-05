@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Document List</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,
+       Helvetica,Arial,sans-serif;margin:0;background:#f6f8fa;color:#24292f}
+
+  header{padding:1.5rem 1rem;text-align:center;background:#24292f;color:#fff}
+  h1{margin:0;font-size:1.6rem}
+  .subtitle{margin:.4rem 0 0;font-size:.85rem;opacity:.7}
+
+  .search-wrap{max-width:900px;margin:1.5rem auto 0;padding:0 1rem}
+  #search{width:100%;padding:.6rem .8rem;font-size:1rem;border:1px solid #d0d7de;
+          border-radius:6px;outline:none}
+  #search:focus{border-color:#0969da;box-shadow:0 0 0 3px rgba(9,105,218,.15)}
+
+  .count{max-width:900px;margin:.8rem auto .2rem;padding:0 1rem;
+         font-size:.85rem;color:#57606a}
+
+  main{max-width:900px;margin:1rem auto 2rem;padding:0 1rem}
+  ul{list-style:none;padding:0;margin:0;display:grid;gap:1rem;
+     grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+  li{background:#fff;border:1px solid #d0d7de;border-radius:6px;
+     padding:1rem;box-shadow:0 1px 3px rgba(140,149,159,.15);
+     transition:.15s transform}
+  li:hover{transform:translateY(-4px)}
+  li.hidden{display:none}
+  a{color:#0969da;text-decoration:none;font-weight:600;font-size:1.05rem;
+    display:block;word-break:break-word}
+  a:hover{text-decoration:underline}
+  .badge{display:inline-block;margin-top:.4rem;font-size:.7rem;font-weight:400;
+         padding:.15rem .45rem;border-radius:3px}
+
+  .empty{text-align:center;padding:3rem 1rem;color:#57606a;font-size:1.1rem}
+  .loading{text-align:center;padding:3rem 1rem;color:#57606a}
+</style>
+</head>
+<body>
+
+<header>
+  <h1 id="title">📄 Document List</h1>
+  <p class="subtitle" id="subtitle"></p>
+</header>
+
+<div class="search-wrap">
+  <input type="search" id="search" placeholder="ファイル名で検索…" autocomplete="off">
+</div>
+<div class="count" id="count"></div>
+
+<main>
+  <ul id="file-list"></ul>
+  <p class="loading" id="loading">読み込み中…</p>
+  <p class="empty" id="empty" style="display:none">一致するファイルがありません</p>
+</main>
+
+<script>
+(function(){
+  // ╔══════════════════════════════════════════════════════════╗
+  // ║  設定: 自分のリポジトリに合わせて変更してください          ║
+  // ╚══════════════════════════════════════════════════════════╝
+  var CONFIG = {
+    // GitHub のオーナー/リポジトリ名
+    owner: 'sukecham',
+    repo:  'test',
+    // 対象ブランチ (GitHub Pages のソースブランチ)
+    branch: 'main',
+    // 一覧に含めるファイル拡張子と表示設定
+    fileTypes: {
+      '.html': { label: 'HTML',     bg: '#ddf4ff', color: '#0969da' },
+      '.pdf':  { label: 'PDF',      bg: '#fff8c5', color: '#9a6700' },
+      '.md':   { label: 'Markdown', bg: '#dafbe1', color: '#1a7f37' }
+    },
+    // 除外するファイル名 (小文字で指定)
+    exclude: ['index.html', 'index-template.html', 'index-standalone.html', 'readme.md', '404.html'],
+    // ページタイトル
+    title: '📄 Document List'
+  };
+
+  // ── DOM 参照 ──
+  var listEl    = document.getElementById('file-list');
+  var loadingEl = document.getElementById('loading');
+  var emptyEl   = document.getElementById('empty');
+  var countEl   = document.getElementById('count');
+  var searchEl  = document.getElementById('search');
+  var titleEl   = document.getElementById('title');
+
+  titleEl.textContent = CONFIG.title;
+
+  // ── GitHub API でファイル一覧を取得 ──
+  var apiUrl = 'https://api.github.com/repos/' +
+               CONFIG.owner + '/' + CONFIG.repo +
+               '/git/trees/' + CONFIG.branch + '?recursive=1';
+
+  fetch(apiUrl)
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      loadingEl.style.display = 'none';
+      if (!data.tree) {
+        emptyEl.textContent = 'ファイルの取得に失敗しました';
+        emptyEl.style.display = '';
+        return;
+      }
+
+      var files = data.tree.filter(function(item){
+        if (item.type !== 'blob') return false;
+        var name = item.path.split('/').pop();
+        var ext  = name.lastIndexOf('.') !== -1
+                 ? name.substring(name.lastIndexOf('.')).toLowerCase() : '';
+        if (!CONFIG.fileTypes[ext]) return false;
+        if (CONFIG.exclude.indexOf(name.toLowerCase()) !== -1) return false;
+        return true;
+      });
+
+      files.sort(function(a, b){ return a.path.localeCompare(b.path); });
+
+      files.forEach(function(file){
+        var name = file.path.split('/').pop();
+        var ext  = name.lastIndexOf('.') !== -1
+                 ? name.substring(name.lastIndexOf('.')).toLowerCase() : '';
+        var ft   = CONFIG.fileTypes[ext] || {};
+
+        var li = document.createElement('li');
+        li.setAttribute('data-name', name.toLowerCase());
+
+        var a = document.createElement('a');
+        // GitHub Pages URL: オーナー.github.io/リポジトリ名/パス
+        a.href = file.path;
+        a.textContent = name;
+        li.appendChild(a);
+
+        if (ft.label) {
+          var badge = document.createElement('span');
+          badge.className = 'badge';
+          badge.style.background = ft.bg;
+          badge.style.color = ft.color;
+          badge.textContent = ft.label;
+          li.appendChild(badge);
+        }
+        listEl.appendChild(li);
+      });
+
+      updateSearch();
+    })
+    .catch(function(){
+      loadingEl.style.display = 'none';
+      emptyEl.textContent = 'ファイルの取得に失敗しました';
+      emptyEl.style.display = '';
+    });
+
+  // ── 検索 ──
+  function updateSearch(){
+    var items = listEl.querySelectorAll('li');
+    var q = searchEl.value.toLowerCase();
+    var visible = 0;
+    items.forEach(function(li){
+      var match = li.getAttribute('data-name').indexOf(q) !== -1;
+      li.classList.toggle('hidden', !match);
+      if (match) visible++;
+    });
+    countEl.textContent = visible + ' / ' + items.length + ' 件';
+    emptyEl.style.display = visible === 0 ? '' : 'none';
+  }
+
+  searchEl.addEventListener('input', updateSearch);
+})();
+</script>
+</body>
+</html>

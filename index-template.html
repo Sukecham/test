@@ -1,0 +1,113 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>{{ site.title | default: site.github.repository_name | default: "Document List" }}</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,
+       Helvetica,Arial,sans-serif;margin:0;background:#f6f8fa;color:#24292f}
+
+  /* ── ヘッダー ── */
+  header{padding:1.5rem 1rem;text-align:center;background:#24292f;color:#fff}
+  h1{margin:0;font-size:1.6rem}
+  .subtitle{margin:.4rem 0 0;font-size:.85rem;opacity:.7}
+
+  /* ── 検索 ── */
+  .search-wrap{max-width:900px;margin:1.5rem auto 0;padding:0 1rem}
+  #search{width:100%;padding:.6rem .8rem;font-size:1rem;border:1px solid #d0d7de;
+          border-radius:6px;outline:none}
+  #search:focus{border-color:#0969da;box-shadow:0 0 0 3px rgba(9,105,218,.15)}
+
+  /* ── カウンター ── */
+  .count{max-width:900px;margin:.8rem auto .2rem;padding:0 1rem;
+         font-size:.85rem;color:#57606a}
+
+  /* ── グリッド ── */
+  main{max-width:900px;margin:1rem auto 2rem;padding:0 1rem}
+  ul{list-style:none;padding:0;margin:0;display:grid;gap:1rem;
+     grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+  li{background:#fff;border:1px solid #d0d7de;border-radius:6px;
+     padding:1rem;box-shadow:0 1px 3px rgba(140,149,159,.15);
+     transition:.15s transform}
+  li:hover{transform:translateY(-4px)}
+  li.hidden{display:none}
+  a{color:#0969da;text-decoration:none;font-weight:600;font-size:1.05rem;
+    display:block;word-break:break-word}
+  a:hover{text-decoration:underline}
+  .badge{display:inline-block;margin-top:.4rem;font-size:.7rem;font-weight:400;
+         padding:.15rem .45rem;border-radius:3px;background:#ddf4ff;color:#0969da}
+
+  /* ── 空状態 ── */
+  .empty{text-align:center;padding:3rem 1rem;color:#57606a;font-size:1.1rem}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📄 {{ site.title | default: site.github.repository_name | default: "Document List" }}</h1>
+  <p class="subtitle">{{ site.description | default: site.github.project_tagline | default: "" }}</p>
+</header>
+
+<!-- ── 検索ボックス ── -->
+<div class="search-wrap">
+  <input type="search" id="search" placeholder="ファイル名で検索…" autocomplete="off">
+</div>
+<div class="count" id="count"></div>
+
+<main>
+  <ul id="file-list">
+  {% for file in site.static_files %}
+    {% assign ext = file.extname | downcase %}
+    {% if ext == ".html" and file.path != "/index.html" and file.path != "/index-template.html" %}
+      <li data-name="{{ file.name | downcase }}">
+        <a href="{{ file.path | remove_first: '/' }}">{{ file.name }}</a>
+        <span class="badge">HTML</span>
+      </li>
+    {% endif %}
+    {% if ext == ".pdf" %}
+      <li data-name="{{ file.name | downcase }}">
+        <a href="{{ file.path | remove_first: '/' }}">{{ file.name }}</a>
+        <span class="badge" style="background:#fff8c5;color:#9a6700">PDF</span>
+      </li>
+    {% endif %}
+    {% if ext == ".md" and file.path != "/README.md" %}
+      <li data-name="{{ file.name | downcase }}">
+        <a href="{{ file.path | remove_first: '/' }}">{{ file.name }}</a>
+        <span class="badge" style="background:#dafbe1;color:#1a7f37">Markdown</span>
+      </li>
+    {% endif %}
+  {% endfor %}
+  </ul>
+  <p class="empty" id="empty" style="display:none">一致するファイルがありません</p>
+</main>
+
+<script>
+(function(){
+  var input=document.getElementById('search');
+  var items=document.querySelectorAll('#file-list li');
+  var countEl=document.getElementById('count');
+  var emptyEl=document.getElementById('empty');
+
+  function update(){
+    var q=input.value.toLowerCase();
+    var visible=0;
+    items.forEach(function(li){
+      var match=li.getAttribute('data-name').indexOf(q)!==-1;
+      li.classList.toggle('hidden',!match);
+      if(match) visible++;
+    });
+    countEl.textContent=visible+' / '+items.length+' 件';
+    emptyEl.style.display=visible===0?'':'none';
+  }
+
+  input.addEventListener('input',update);
+  update();
+})();
+</script>
+</body>
+</html>
