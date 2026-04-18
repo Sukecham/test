@@ -4,6 +4,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>myGEMS ― 医療機関のための生成AIコンサルティング</title>
 <meta name="description" content="myGEMSは、医療機関向けに生成AIの導入・活用を支援するコンサルティングパートナーです。医療安全、臨床倫理、離島医療のDXを現場起点で実装します。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,7 +25,6 @@
     --rose-pale: #f7e5ec;
     --azure: #5fa3cf;
     --azure-deep: #2f6b99;
-    --azure-soft: #bfdbee;
     --azure-pale: #e6f1f8;
     --line: #e5dfd5;
   }
@@ -30,8 +32,8 @@
   html{scroll-behavior:smooth;}
   body{
     font-family:"Noto Sans JP", sans-serif;
-    color:var(--ink);
-    background:var(--paper);
+    color:#1a2238;
+    background:#fbfaf7;
     line-height:1.85;
     font-weight:400;
     -webkit-font-smoothing:antialiased;
@@ -39,7 +41,7 @@
   }
 
 /* ========== NAV ========== */
-nav{
+.site-nav{
 position:fixed; top:0; left:0; right:0; z-index:100;
 padding:1.1rem 2.5rem;
 display:flex; justify-content:space-between; align-items:center;
@@ -49,29 +51,31 @@ backdrop-filter:blur(12px);
 border-bottom:1px solid rgba(229,223,213,0.6);
 }
 .nav-logo{
-font-family:“Fraunces”, serif;
-font-weight:500; font-size:1.35rem;
+font-family:“Fraunces”, Georgia, serif;
+font-weight:500;
+font-size:1.35rem;
 letter-spacing:0.02em;
+color:#1a2238;
 }
-.nav-logo .my{color:var(–rose);}
-.nav-logo .gems{color:var(–azure-deep);}
+.nav-logo .my{color:#c4628a !important;}
+.nav-logo .gems{color:#2f6b99 !important;}
 .nav-links{display:flex; gap:2.2rem; list-style:none;}
 .nav-links a{
-color:var(–ink-soft); text-decoration:none;
+color:#4a5170; text-decoration:none;
 font-size:0.88rem; font-weight:500;
 letter-spacing:0.04em;
 transition:color .25s;
 position:relative;
 }
-.nav-links a:hover{color:var(–rose);}
+.nav-links a:hover{color:#c4628a;}
 .nav-links a::after{
 content:””; position:absolute; left:0; bottom:-4px;
-width:0; height:1px; background:var(–rose);
+width:0; height:1px; background:#c4628a;
 transition:width .3s ease;
 }
 .nav-links a:hover::after{width:100%;}
 @media(max-width:720px){
-nav{padding:1rem 1.2rem;}
+.site-nav{padding:1rem 1.2rem;}
 .nav-links{display:none;}
 }
 
@@ -105,35 +109,31 @@ z-index:0;
 display:inline-flex; align-items:center; gap:0.6rem;
 font-size:0.78rem; font-weight:500;
 letter-spacing:0.22em; text-transform:uppercase;
-color:var(–rose); margin-bottom:1.8rem;
+color:#c4628a;
+margin-bottom:1.8rem;
 }
 .eyebrow::before{
-content:””; width:28px; height:1px; background:var(–rose);
+content:””; width:28px; height:1px; background:#c4628a;
 }
-h1.hero-title{
-font-family:“Shippori Mincho”, serif;
+.hero-title{
+font-family:“Shippori Mincho”, “Hiragino Mincho ProN”, “Yu Mincho”, serif;
 font-size:clamp(2.2rem, 4.4vw, 3.8rem);
-line-height:1.55;
+line-height:1.6;
 font-weight:500;
-color:var(–ink);
+color:#1a2238;
 margin-bottom:1.8rem;
 letter-spacing:0.01em;
 }
-h1.hero-title em{
-font-style:normal;
-color:var(–rose-deep);
+.hero-title .accent{
+color:#a84870 !important;
 position:relative;
 display:inline-block;
-}
-h1.hero-title em::after{
-content:””; position:absolute;
-left:0; bottom:0.08em;
-width:100%; height:0.32em;
-background:var(–rose-pale);
-z-index:-1;
+background-image:linear-gradient(transparent 70%, #f7e5ec 70%);
+background-repeat:no-repeat;
+padding:0 0.08em;
 }
 .hero-sub{
-font-size:1.02rem; color:var(–ink-soft);
+font-size:1.02rem; color:#4a5170;
 max-width:32em; margin-bottom:2.5rem;
 line-height:2;
 }
@@ -148,23 +148,21 @@ transition:all .3s ease;
 cursor:pointer;
 border:none;
 }
-.btn-primary{
-background:var(–ink); color:var(–paper);
-}
+.btn-primary{background:#1a2238; color:#fbfaf7;}
 .btn-primary:hover{
-background:var(–rose);
+background:#c4628a;
 transform:translateY(-2px);
 box-shadow:0 10px 30px rgba(196,98,138,0.25);
 }
 .btn-ghost{
-background:transparent; color:var(–ink);
-border:1px solid var(–line);
+background:transparent; color:#1a2238;
+border:1px solid #e5dfd5;
 }
 .btn-ghost:hover{
-border-color:var(–azure-deep);
-color:var(–azure-deep);
+border-color:#2f6b99;
+color:#2f6b99;
 }
-.btn .arrow{transition:transform .3s;}
+.btn .arrow{transition:transform .3s; display:inline-block;}
 .btn:hover .arrow{transform:translateX(4px);}
 
 .hero-visual{
@@ -197,10 +195,10 @@ border-radius:50%;
 opacity:0.55;
 z-index:2;
 }
-.deco-dot.d1{top:8%; left:12%; width:8px; height:8px; background:var(–rose);}
-.deco-dot.d2{top:20%; right:6%; width:5px; height:5px; background:var(–azure-deep);}
-.deco-dot.d3{bottom:18%; left:5%; width:6px; height:6px; background:var(–azure);}
-.deco-dot.d4{bottom:8%; right:14%; width:10px; height:10px; background:var(–rose-soft);}
+.deco-dot.d1{top:8%; left:12%; width:8px; height:8px; background:#c4628a;}
+.deco-dot.d2{top:20%; right:6%; width:5px; height:5px; background:#2f6b99;}
+.deco-dot.d3{bottom:18%; left:5%; width:6px; height:6px; background:#5fa3cf;}
+.deco-dot.d4{bottom:8%; right:14%; width:10px; height:10px; background:#e9b8cd;}
 
 @keyframes float{
 0%,100%{transform:translateY(0);}
@@ -226,51 +224,52 @@ gap:2.5rem;
 }
 
 /* ========== SECTIONS COMMON ========== */
-section{padding:7rem 5rem; position:relative;}
-@media(max-width:720px){section{padding:5rem 1.5rem;}}
+.page-section{padding:7rem 5rem; position:relative;}
+@media(max-width:720px){.page-section{padding:5rem 1.5rem;}}
 .section-head{
 margin-bottom:4rem;
 max-width:800px;
 }
 .section-label{
-font-family:“Fraunces”, serif;
+font-family:“Fraunces”, Georgia, serif;
 font-style:italic; font-weight:400;
-color:var(–rose);
+color:#c4628a;
 font-size:1rem;
 margin-bottom:0.8rem;
 display:block;
 }
 .section-title{
-font-family:“Shippori Mincho”, serif;
+font-family:“Shippori Mincho”, “Hiragino Mincho ProN”, “Yu Mincho”, serif;
 font-size:clamp(1.8rem, 3.2vw, 2.6rem);
 font-weight:500;
-line-height:1.65;
+line-height:1.7;
 letter-spacing:0.01em;
-color:var(–ink);
+color:#1a2238;
 }
 .section-title .mark{
-background:linear-gradient(transparent 60%, var(–rose-pale) 60%);
+background-image:linear-gradient(transparent 60%, #f7e5ec 60%);
+background-repeat:no-repeat;
 padding:0 0.1em;
 }
 
 /* ========== ABOUT ========== */
 .about{
-background:var(–paper-warm);
-border-top:1px solid var(–line);
-border-bottom:1px solid var(–line);
+background:#f4efe8;
+border-top:1px solid #e5dfd5;
+border-bottom:1px solid #e5dfd5;
 }
 .about-grid{
 display:grid; grid-template-columns:1fr 1fr;
 gap:5rem; align-items:start;
 }
 .about-lead{
-font-family:“Shippori Mincho”, serif;
+font-family:“Shippori Mincho”, “Hiragino Mincho ProN”, “Yu Mincho”, serif;
 font-size:1.45rem; line-height:2.1;
-color:var(–ink);
+color:#1a2238;
 font-weight:400;
 }
 .about-body p{
-color:var(–ink-soft); font-size:0.98rem;
+color:#4a5170; font-size:0.98rem;
 margin-bottom:1.4rem; line-height:2;
 }
 .about-body p:last-child{margin-bottom:0;}
@@ -286,8 +285,8 @@ grid-template-columns:repeat(3, 1fr);
 gap:1.5rem;
 }
 .service-card{
-background:var(–paper);
-border:1px solid var(–line);
+background:#fbfaf7;
+border:1px solid #e5dfd5;
 padding:2.5rem 2rem;
 position:relative;
 transition:all .4s ease;
@@ -296,7 +295,7 @@ overflow:hidden;
 .service-card::before{
 content:””; position:absolute; left:0; top:0;
 width:100%; height:3px;
-background:linear-gradient(92deg, var(–rose) 0%, var(–azure) 100%);
+background:linear-gradient(92deg, #c4628a 0%, #5fa3cf 100%);
 transform:scaleX(0); transform-origin:left;
 transition:transform .5s ease;
 }
@@ -307,31 +306,31 @@ border-color:transparent;
 }
 .service-card:hover::before{transform:scaleX(1);}
 .service-num{
-font-family:“Fraunces”, serif;
+font-family:“Fraunces”, Georgia, serif;
 font-style:italic;
 font-size:1.1rem;
-color:var(–rose);
+color:#c4628a;
 margin-bottom:1.2rem;
 display:block;
 }
 .service-title{
-font-family:“Shippori Mincho”, serif;
+font-family:“Shippori Mincho”, “Hiragino Mincho ProN”, “Yu Mincho”, serif;
 font-size:1.35rem;
 font-weight:500;
 margin-bottom:0.6rem;
 line-height:1.5;
-color:var(–ink);
+color:#1a2238;
 }
 .service-en{
-font-family:“Fraunces”, serif;
+font-family:“Fraunces”, Georgia, serif;
 font-style:italic;
 font-size:0.85rem;
-color:var(–azure-deep);
+color:#2f6b99;
 margin-bottom:1.4rem;
 letter-spacing:0.03em;
 }
 .service-body{
-color:var(–ink-soft);
+color:#4a5170;
 font-size:0.93rem;
 line-height:1.95;
 }
@@ -341,7 +340,7 @@ line-height:1.95;
 
 /* ========== APPROACH ========== */
 .approach{
-background:linear-gradient(180deg, var(–paper) 0%, var(–azure-pale) 100%);
+background:linear-gradient(180deg, #fbfaf7 0%, #e6f1f8 100%);
 }
 .approach-list{
 display:grid; grid-template-columns:1fr 1fr; gap:2rem 4rem;
@@ -353,23 +352,23 @@ padding-bottom:1.5rem;
 border-bottom:1px solid rgba(47,107,153,0.15);
 }
 .approach-mark{
-font-family:“Fraunces”, serif;
+font-family:“Fraunces”, Georgia, serif;
 font-style:italic;
 font-size:1.4rem;
-color:var(–azure-deep);
+color:#2f6b99;
 min-width:2rem;
 padding-top:0.2rem;
 }
 .approach-text strong{
 display:block;
-font-family:“Shippori Mincho”, serif;
+font-family:“Shippori Mincho”, “Hiragino Mincho ProN”, “Yu Mincho”, serif;
 font-size:1.1rem;
 font-weight:500;
 margin-bottom:0.4rem;
-color:var(–ink);
+color:#1a2238;
 }
 .approach-text p{
-color:var(–ink-soft);
+color:#4a5170;
 font-size:0.9rem;
 line-height:1.85;
 }
@@ -383,28 +382,28 @@ display:flex; flex-wrap:wrap; gap:2rem 3rem;
 padding-top:1rem;
 }
 .partner-item{
-font-family:“Shippori Mincho”, serif;
+font-family:“Shippori Mincho”, “Hiragino Mincho ProN”, “Yu Mincho”, serif;
 font-size:1.1rem;
-color:var(–ink);
+color:#1a2238;
 padding:0.8rem 0;
-border-bottom:1px solid var(–line);
+border-bottom:1px solid #e5dfd5;
 min-width:260px;
 flex:1;
 }
 .partner-item span{
 display:block;
-font-family:“Fraunces”, serif;
+font-family:“Fraunces”, Georgia, serif;
 font-style:italic;
 font-size:0.78rem;
-color:var(–ink-mute);
+color:#8b91a8;
 margin-top:0.2rem;
 letter-spacing:0.04em;
 }
 
 /* ========== CONTACT ========== */
 .contact{
-background:var(–ink);
-color:var(–paper);
+background:#1a2238;
+color:#fbfaf7;
 position:relative;
 overflow:hidden;
 }
@@ -424,8 +423,8 @@ background:radial-gradient(ellipse, rgba(95,163,207,0.12) 0%, transparent 60%);
 position:relative; z-index:1;
 max-width:780px;
 }
-.contact .section-label{color:var(–rose-soft);}
-.contact .section-title{color:var(–paper);}
+.contact .section-label{color:#e9b8cd;}
+.contact .section-title{color:#fbfaf7;}
 .contact-text{
 color:#c8cde0;
 font-size:1rem;
@@ -443,32 +442,32 @@ grid-template-columns:1fr 1fr;
 gap:1.5rem 2.5rem;
 }
 .contact-card dt{
-font-family:“Fraunces”, serif;
+font-family:“Fraunces”, Georgia, serif;
 font-style:italic;
 font-size:0.82rem;
-color:var(–rose-soft);
+color:#e9b8cd;
 letter-spacing:0.08em;
 margin-bottom:0.4rem;
 }
 .contact-card dd{
 font-size:1rem;
-color:var(–paper);
+color:#fbfaf7;
 font-weight:500;
 }
 .contact-card dd a{
-color:var(–paper);
+color:#fbfaf7;
 text-decoration:none;
 border-bottom:1px solid rgba(255,255,255,0.3);
 transition:border-color .25s;
 }
-.contact-card dd a:hover{border-color:var(–rose-soft);}
+.contact-card dd a:hover{border-color:#e9b8cd;}
 @media(max-width:640px){
 .contact-card{grid-template-columns:1fr; padding:1.8rem;}
 }
 
 /* ========== FOOTER ========== */
-footer{
-background:var(–ink);
+.site-footer{
+background:#1a2238;
 color:#8990a8;
 padding:2rem 5rem;
 border-top:1px solid rgba(255,255,255,0.08);
@@ -476,18 +475,18 @@ display:flex; justify-content:space-between; align-items:center;
 font-size:0.82rem;
 flex-wrap:wrap; gap:1rem;
 }
-footer .brand{
-font-family:“Fraunces”, serif;
+.site-footer .brand{
+font-family:“Fraunces”, Georgia, serif;
 font-style:italic;
-color:var(–paper);
+color:#fbfaf7;
 }
-@media(max-width:720px){footer{padding:2rem 1.5rem;}}
+@media(max-width:720px){.site-footer{padding:2rem 1.5rem;}}
 </style>
 
 </head>
 <body>
 
-<nav>
+<nav class="site-nav">
   <div class="nav-logo"><span class="my">my</span><span class="gems">GEMS</span></div>
   <ul class="nav-links">
     <li><a href="#about">私たちについて</a></li>
@@ -504,7 +503,7 @@ color:var(–paper);
     <span class="eyebrow">Generative AI for Healthcare</span>
     <h1 class="hero-title">
       医療の現場に、<br>
-      <em>やさしく、たしかな</em><br>
+      <span class="accent">やさしく、たしかな</span><br>
       生成AIを。
     </h1>
     <p class="hero-sub">
@@ -521,14 +520,14 @@ color:var(–paper);
       <span class="deco-dot d2"></span>
       <span class="deco-dot d3"></span>
       <span class="deco-dot d4"></span>
-      <img src="mygems-logo.png" alt="myGEMSロゴ">
+      <img src="mygems-logo.png?v=3" alt="myGEMSロゴ">
     </div>
   </div>
 </section>
 
 <!-- ABOUT -->
 
-<section class="about" id="about">
+<section class="page-section about" id="about">
   <div class="section-head">
     <span class="section-label">About us</span>
     <h2 class="section-title">
@@ -553,7 +552,7 @@ color:var(–paper);
 
 <!-- SERVICES -->
 
-<section id="services">
+<section class="page-section" id="services">
   <div class="section-head">
     <span class="section-label">Services</span>
     <h2 class="section-title">
@@ -591,7 +590,7 @@ color:var(–paper);
 
 <!-- APPROACH -->
 
-<section class="approach" id="approach">
+<section class="page-section approach" id="approach">
   <div class="section-head">
     <span class="section-label">Our approach</span>
     <h2 class="section-title">
@@ -633,7 +632,7 @@ color:var(–paper);
 
 <!-- PARTNERS -->
 
-<section>
+<section class="page-section">
   <div class="section-head">
     <span class="section-label">Partners</span>
     <h2 class="section-title">
@@ -658,7 +657,7 @@ color:var(–paper);
 
 <!-- CONTACT -->
 
-<section class="contact" id="contact">
+<section class="page-section contact" id="contact">
   <div class="contact-inner">
     <span class="section-label">Contact</span>
     <h2 class="section-title">
@@ -689,7 +688,7 @@ color:var(–paper);
   </div>
 </section>
 
-<footer>
+<footer class="site-footer">
   <div>© 2026 <span class="brand">myGEMS</span>. All rights reserved.</div>
   <div>Generative AI Consulting for Healthcare</div>
 </footer>
