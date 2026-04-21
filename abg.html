@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABG Reader — 酸塩基平衡・臨床読影トレーナー</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   ABG Reader — Clinical Modernism
+   ============================================ */
+:root {
+  --bg-0:      #07111c;
+  --bg-1:      #0c1a2a;
+  --bg-2:      #12263a;
+  --bg-3:      #1a3349;
+  --line:      #1f3b54;
+  --line-2:    #2a4a66;
+  --ink:       #e8f0f7;
+  --ink-2:     #a7bdd1;
+  --ink-3:     #6e869d;
+  --teal:      #4fd1c5;
+  --teal-dim:  #2a8a82;
+  --amber:     #f0b852;
+  --amber-dim: #8a6a2f;
+  --rose:      #e85a7a;
+  --rose-dim:  #8a3550;
+  --violet:    #8a7fe8;
+  --grid:      rgba(79, 209, 197, 0.05);
+}
+
+- { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+background: var(–bg-0);
+color: var(–ink);
+font-family: ‘Noto Sans JP’, sans-serif;
+font-weight: 400;
+line-height: 1.7;
+min-height: 100vh;
+-webkit-font-smoothing: antialiased;
+}
+
+body {
+background:
+radial-gradient(ellipse at 20% 0%, rgba(79, 209, 197, 0.08) 0%, transparent 50%),
+radial-gradient(ellipse at 80% 100%, rgba(240, 184, 82, 0.04) 0%, transparent 50%),
+linear-gradient(180deg, var(–bg-0) 0%, #050b12 100%);
+background-attachment: fixed;
+position: relative;
+}
+body::before {
+content: ‘’;
+position: fixed;
+inset: 0;
+background-image:
+linear-gradient(var(–grid) 1px, transparent 1px),
+linear-gradient(90deg, var(–grid) 1px, transparent 1px);
+background-size: 48px 48px;
+pointer-events: none;
+z-index: 0;
+}
+
+.app {
+position: relative;
+z-index: 1;
+max-width: 1120px;
+margin: 0 auto;
+padding: 24px 20px 80px;
+}
+
+/* Typography */
+.display { font-family: ‘Fraunces’, serif; font-weight: 500; letter-spacing: -0.01em; }
+.mono    { font-family: ‘JetBrains Mono’, monospace; }
+
+/* ============================================
+Header
+============================================ */
+header.topbar {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 12px 0 28px;
+border-bottom: 1px solid var(–line);
+margin-bottom: 32px;
+}
+.brand {
+display: flex;
+align-items: center;
+gap: 12px;
+}
+.brand-mark {
+width: 36px; height: 36px;
+border: 1px solid var(–teal);
+border-radius: 6px;
+display: grid; place-items: center;
+background: rgba(79, 209, 197, 0.08);
+}
+.brand-mark svg { width: 20px; height: 20px; }
+.brand-text { line-height: 1.1; }
+.brand-title {
+font-family: ‘Fraunces’, serif;
+font-size: 17px;
+font-weight: 600;
+letter-spacing: 0.02em;
+}
+.brand-sub {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+color: var(–ink-3);
+letter-spacing: 0.15em;
+text-transform: uppercase;
+margin-top: 2px;
+}
+.topbar-status {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+color: var(–ink-3);
+letter-spacing: 0.15em;
+text-transform: uppercase;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+.status-dot {
+width: 6px; height: 6px;
+border-radius: 50%;
+background: var(–teal);
+box-shadow: 0 0 8px var(–teal);
+animation: pulse 2s infinite;
+}
+@keyframes pulse {
+0%, 100% { opacity: 1; }
+50% { opacity: 0.4; }
+}
+
+/* ============================================
+Mode switcher
+============================================ */
+.mode-nav {
+display: flex;
+gap: 4px;
+padding: 4px;
+background: var(–bg-1);
+border: 1px solid var(–line);
+border-radius: 8px;
+margin-bottom: 28px;
+width: fit-content;
+}
+.mode-btn {
+font-family: ‘Noto Sans JP’, sans-serif;
+font-size: 13px;
+font-weight: 500;
+background: transparent;
+border: none;
+color: var(–ink-2);
+padding: 8px 16px;
+border-radius: 5px;
+cursor: pointer;
+transition: all 0.2s;
+}
+.mode-btn:hover { color: var(–ink); }
+.mode-btn.active {
+background: var(–bg-3);
+color: var(–teal);
+}
+
+/* ============================================
+Hero / Intro
+============================================ */
+.hero {
+margin-bottom: 40px;
+}
+.hero-eyebrow {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 11px;
+color: var(–teal);
+letter-spacing: 0.2em;
+text-transform: uppercase;
+margin-bottom: 12px;
+}
+.hero-title {
+font-family: ‘Fraunces’, serif;
+font-size: clamp(28px, 4.5vw, 44px);
+font-weight: 500;
+line-height: 1.15;
+letter-spacing: -0.015em;
+margin-bottom: 16px;
+}
+.hero-title em {
+font-style: italic;
+color: var(–teal);
+font-weight: 400;
+}
+.hero-lead {
+font-size: 15px;
+color: var(–ink-2);
+max-width: 640px;
+line-height: 1.75;
+}
+
+/* ============================================
+Case list
+============================================ */
+.section-label {
+display: flex;
+align-items: center;
+gap: 12px;
+margin: 36px 0 16px;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 11px;
+color: var(–ink-3);
+letter-spacing: 0.2em;
+text-transform: uppercase;
+}
+.section-label::after {
+content: ‘’;
+flex: 1;
+height: 1px;
+background: var(–line);
+}
+
+.case-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+gap: 14px;
+}
+.case-card {
+background: var(–bg-1);
+border: 1px solid var(–line);
+border-radius: 10px;
+padding: 18px 18px 16px;
+cursor: pointer;
+transition: all 0.25s;
+position: relative;
+overflow: hidden;
+}
+.case-card:hover {
+border-color: var(–teal-dim);
+transform: translateY(-2px);
+background: var(–bg-2);
+}
+.case-card::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0;
+width: 100%; height: 2px;
+background: linear-gradient(90deg, var(–teal), transparent);
+opacity: 0;
+transition: opacity 0.3s;
+}
+.case-card:hover::before { opacity: 1; }
+
+.case-head {
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+gap: 8px;
+margin-bottom: 10px;
+}
+.case-id {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+color: var(–ink-3);
+letter-spacing: 0.15em;
+}
+.case-difficulty {
+display: flex;
+gap: 3px;
+}
+.case-difficulty span {
+width: 6px; height: 6px;
+border-radius: 50%;
+background: var(–line-2);
+}
+.case-difficulty span.on { background: var(–amber); }
+
+.case-title {
+font-family: ‘Fraunces’, serif;
+font-size: 18px;
+font-weight: 500;
+line-height: 1.3;
+margin-bottom: 8px;
+}
+.case-summary {
+font-size: 13px;
+color: var(–ink-2);
+line-height: 1.6;
+}
+.case-tag {
+display: inline-block;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+color: var(–teal);
+background: rgba(79, 209, 197, 0.08);
+border: 1px solid var(–teal-dim);
+padding: 2px 8px;
+border-radius: 3px;
+margin-top: 12px;
+letter-spacing: 0.05em;
+}
+
+/* ============================================
+Case screen
+============================================ */
+.back-btn {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 11px;
+background: transparent;
+border: 1px solid var(–line);
+color: var(–ink-2);
+padding: 6px 12px;
+border-radius: 4px;
+cursor: pointer;
+letter-spacing: 0.1em;
+margin-bottom: 20px;
+transition: all 0.2s;
+}
+.back-btn:hover {
+border-color: var(–teal-dim);
+color: var(–teal);
+}
+
+.case-header {
+margin-bottom: 24px;
+}
+.case-header .case-id {
+margin-bottom: 6px;
+}
+.case-header h2 {
+font-family: ‘Fraunces’, serif;
+font-size: 26px;
+font-weight: 500;
+line-height: 1.2;
+margin-bottom: 12px;
+}
+.case-vignette {
+font-size: 14px;
+color: var(–ink-2);
+line-height: 1.75;
+padding: 14px 16px;
+background: var(–bg-1);
+border-left: 2px solid var(–amber);
+border-radius: 0 6px 6px 0;
+}
+
+/* ABG printout */
+.abg-report {
+background:
+linear-gradient(180deg, var(–bg-2) 0%, var(–bg-1) 100%);
+border: 1px solid var(–line-2);
+border-radius: 10px;
+padding: 20px;
+margin: 24px 0;
+position: relative;
+}
+.abg-report::before {
+content: ‘BLOOD GAS ANALYZER · AUTO PRINT’;
+position: absolute;
+top: 10px; right: 14px;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 9px;
+color: var(–ink-3);
+letter-spacing: 0.2em;
+}
+.abg-report-title {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 11px;
+color: var(–teal);
+letter-spacing: 0.2em;
+text-transform: uppercase;
+margin-bottom: 14px;
+padding-bottom: 10px;
+border-bottom: 1px dashed var(–line);
+}
+.abg-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+gap: 4px 18px;
+}
+.abg-item {
+padding: 10px 0;
+border-bottom: 1px dotted var(–line);
+display: flex;
+justify-content: space-between;
+align-items: baseline;
+}
+.abg-label {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 11px;
+color: var(–ink-3);
+letter-spacing: 0.05em;
+}
+.abg-value {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 16px;
+font-weight: 500;
+color: var(–ink);
+}
+.abg-value.flag-high { color: var(–amber); }
+.abg-value.flag-low  { color: var(–rose); }
+.abg-value .unit {
+font-size: 10px;
+color: var(–ink-3);
+margin-left: 4px;
+font-weight: 400;
+}
+.abg-value .arrow {
+font-size: 10px;
+margin-left: 4px;
+}
+
+/* ============================================
+Steps
+============================================ */
+.step-progress {
+display: flex;
+gap: 6px;
+margin: 28px 0 18px;
+}
+.step-progress-item {
+flex: 1;
+height: 3px;
+background: var(–line);
+border-radius: 2px;
+position: relative;
+overflow: hidden;
+}
+.step-progress-item.done {
+background: var(–teal-dim);
+}
+.step-progress-item.current {
+background: var(–line);
+}
+.step-progress-item.current::after {
+content: ‘’;
+position: absolute;
+inset: 0;
+background: var(–teal);
+animation: fill 0.8s ease-out forwards;
+}
+@keyframes fill {
+from { transform: translateX(-100%); }
+to   { transform: translateX(0); }
+}
+
+.step-panel {
+background: var(–bg-1);
+border: 1px solid var(–line);
+border-radius: 12px;
+padding: 24px;
+margin-bottom: 16px;
+animation: slideIn 0.4s ease-out;
+}
+@keyframes slideIn {
+from { opacity: 0; transform: translateY(8px); }
+to   { opacity: 1; transform: translateY(0); }
+}
+
+.step-head {
+display: flex;
+align-items: baseline;
+gap: 14px;
+margin-bottom: 8px;
+}
+.step-num {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 11px;
+color: var(–teal);
+letter-spacing: 0.2em;
+}
+.step-title {
+font-family: ‘Fraunces’, serif;
+font-size: 22px;
+font-weight: 500;
+line-height: 1.3;
+}
+.step-lead {
+color: var(–ink-2);
+font-size: 14px;
+margin-bottom: 20px;
+line-height: 1.7;
+}
+
+/* Translation choice cards */
+.choice-block { margin-bottom: 20px; }
+.choice-block-label {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 12px;
+color: var(–ink-2);
+margin-bottom: 8px;
+letter-spacing: 0.05em;
+}
+.choice-block-value {
+font-family: ‘JetBrains Mono’, monospace;
+color: var(–teal);
+font-size: 14px;
+font-weight: 500;
+}
+.choices {
+display: grid;
+gap: 8px;
+}
+.choice {
+background: var(–bg-2);
+border: 1px solid var(–line);
+border-radius: 6px;
+padding: 12px 14px;
+cursor: pointer;
+font-size: 13.5px;
+color: var(–ink);
+text-align: left;
+font-family: inherit;
+line-height: 1.5;
+transition: all 0.2s;
+display: flex;
+align-items: flex-start;
+gap: 10px;
+}
+.choice:hover {
+border-color: var(–teal-dim);
+background: var(–bg-3);
+}
+.choice.selected {
+border-color: var(–teal);
+background: rgba(79, 209, 197, 0.06);
+}
+.choice.correct {
+border-color: var(–teal);
+background: rgba(79, 209, 197, 0.1);
+}
+.choice.wrong {
+border-color: var(–rose);
+background: rgba(232, 90, 122, 0.08);
+opacity: 0.6;
+}
+.choice-icon {
+width: 16px; height: 16px;
+border: 1px solid var(–line-2);
+border-radius: 3px;
+flex-shrink: 0;
+margin-top: 2px;
+display: grid;
+place-items: center;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+color: var(–ink-3);
+}
+.choice.correct .choice-icon {
+background: var(–teal);
+border-color: var(–teal);
+color: var(–bg-0);
+}
+.choice.wrong .choice-icon {
+background: var(–rose);
+border-color: var(–rose);
+color: var(–bg-0);
+}
+
+/* Calculation entry */
+.calc-box {
+background: var(–bg-2);
+border: 1px solid var(–line);
+border-radius: 8px;
+padding: 16px;
+margin-bottom: 16px;
+}
+.calc-formula {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 13px;
+color: var(–teal);
+margin-bottom: 12px;
+padding: 8px 12px;
+background: var(–bg-0);
+border-radius: 4px;
+border: 1px solid var(–line);
+}
+.calc-input-row {
+display: flex;
+align-items: center;
+gap: 12px;
+flex-wrap: wrap;
+}
+.calc-input-label {
+font-size: 13px;
+color: var(–ink-2);
+}
+.calc-input {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 18px;
+font-weight: 500;
+background: var(–bg-0);
+border: 1px solid var(–line-2);
+color: var(–ink);
+padding: 8px 12px;
+border-radius: 4px;
+width: 100px;
+text-align: center;
+-moz-appearance: textfield;
+}
+.calc-input::-webkit-outer-spin-button,
+.calc-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.calc-input:focus {
+outline: none;
+border-color: var(–teal);
+box-shadow: 0 0 0 2px rgba(79, 209, 197, 0.1);
+}
+
+/* Feedback */
+.feedback {
+margin-top: 16px;
+padding: 14px 16px;
+border-radius: 6px;
+font-size: 13.5px;
+line-height: 1.7;
+animation: slideIn 0.3s;
+}
+.feedback.correct {
+background: rgba(79, 209, 197, 0.08);
+border-left: 2px solid var(–teal);
+color: var(–ink);
+}
+.feedback.wrong {
+background: rgba(232, 90, 122, 0.06);
+border-left: 2px solid var(–rose);
+color: var(–ink);
+}
+.feedback .feedback-head {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 11px;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+margin-bottom: 6px;
+}
+.feedback.correct .feedback-head { color: var(–teal); }
+.feedback.wrong .feedback-head { color: var(–rose); }
+.feedback strong { color: var(–teal); font-weight: 500; }
+
+/* Action button */
+.actions {
+display: flex;
+justify-content: flex-end;
+gap: 10px;
+margin-top: 20px;
+}
+.btn {
+font-family: ‘Noto Sans JP’, sans-serif;
+font-size: 13px;
+font-weight: 500;
+padding: 10px 20px;
+border-radius: 5px;
+cursor: pointer;
+border: 1px solid transparent;
+transition: all 0.2s;
+}
+.btn-primary {
+background: var(–teal);
+color: var(–bg-0);
+}
+.btn-primary:hover {
+background: #5eded2;
+transform: translateY(-1px);
+box-shadow: 0 4px 12px rgba(79, 209, 197, 0.2);
+}
+.btn-primary:disabled {
+background: var(–line-2);
+color: var(–ink-3);
+cursor: not-allowed;
+transform: none;
+box-shadow: none;
+}
+.btn-ghost {
+background: transparent;
+border-color: var(–line);
+color: var(–ink-2);
+}
+.btn-ghost:hover {
+border-color: var(–teal-dim);
+color: var(–teal);
+}
+
+/* Summary screen */
+.summary {
+background: linear-gradient(180deg, var(–bg-2), var(–bg-1));
+border: 1px solid var(–teal-dim);
+border-radius: 12px;
+padding: 28px;
+margin-bottom: 20px;
+position: relative;
+overflow: hidden;
+}
+.summary::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0;
+width: 100%; height: 2px;
+background: linear-gradient(90deg, transparent, var(–teal), transparent);
+}
+.summary-label {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 11px;
+color: var(–teal);
+letter-spacing: 0.2em;
+text-transform: uppercase;
+margin-bottom: 10px;
+}
+.summary-title {
+font-family: ‘Fraunces’, serif;
+font-size: 24px;
+font-weight: 500;
+margin-bottom: 16px;
+line-height: 1.3;
+}
+.diagnosis-list {
+list-style: none;
+padding: 0;
+}
+.diagnosis-list li {
+padding: 10px 0 10px 24px;
+border-bottom: 1px solid var(–line);
+font-size: 14px;
+position: relative;
+color: var(–ink);
+}
+.diagnosis-list li:last-child { border: none; }
+.diagnosis-list li::before {
+content: ‘→’;
+position: absolute;
+left: 0;
+color: var(–teal);
+font-family: ‘JetBrains Mono’, monospace;
+}
+.narrative {
+margin-top: 18px;
+padding: 16px;
+background: var(–bg-0);
+border-radius: 6px;
+font-size: 14px;
+color: var(–ink-2);
+line-height: 1.8;
+border-left: 2px solid var(–teal);
+}
+
+/* Reference mode (Dictionary) */
+.dict-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+gap: 14px;
+}
+.dict-card {
+background: var(–bg-1);
+border: 1px solid var(–line);
+border-radius: 10px;
+padding: 18px;
+}
+.dict-card h3 {
+font-family: ‘Fraunces’, serif;
+font-size: 18px;
+font-weight: 500;
+margin-bottom: 4px;
+color: var(–teal);
+}
+.dict-card .dict-sub {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+color: var(–ink-3);
+letter-spacing: 0.15em;
+text-transform: uppercase;
+margin-bottom: 14px;
+}
+.dict-card dl { font-size: 13.5px; }
+.dict-card dt {
+font-family: ‘JetBrains Mono’, monospace;
+color: var(–amber);
+font-size: 12px;
+margin-top: 10px;
+margin-bottom: 4px;
+}
+.dict-card dt:first-child { margin-top: 0; }
+.dict-card dd {
+color: var(–ink-2);
+margin-left: 0;
+line-height: 1.65;
+}
+
+.principles {
+background: var(–bg-1);
+border: 1px solid var(–line);
+border-radius: 10px;
+padding: 24px;
+margin-top: 24px;
+}
+.principles h3 {
+font-family: ‘Fraunces’, serif;
+font-size: 18px;
+font-weight: 500;
+margin-bottom: 14px;
+color: var(–ink);
+}
+.principles ol {
+padding-left: 0;
+list-style: none;
+counter-reset: p;
+}
+.principles ol li {
+counter-increment: p;
+padding: 12px 0 12px 42px;
+border-bottom: 1px solid var(–line);
+position: relative;
+font-size: 13.5px;
+color: var(–ink-2);
+line-height: 1.7;
+}
+.principles ol li:last-child { border: none; }
+.principles ol li::before {
+content: counter(p, decimal-leading-zero);
+position: absolute;
+left: 0; top: 12px;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 11px;
+color: var(–teal);
+letter-spacing: 0.1em;
+}
+.principles strong { color: var(–ink); font-weight: 500; }
+
+/* Mobile refinement */
+@media (max-width: 640px) {
+.app { padding: 16px 14px 60px; }
+header.topbar { padding: 8px 0 20px; margin-bottom: 24px; }
+.brand-title { font-size: 15px; }
+.topbar-status { display: none; }
+.hero-title { font-size: 26px; }
+.abg-grid { grid-template-columns: repeat(2, 1fr); gap: 4px 12px; }
+.abg-report { padding: 16px; }
+.abg-report::before { display: none; }
+.step-panel { padding: 18px; }
+.step-title { font-size: 19px; }
+.calc-input-row { gap: 8px; }
+.calc-input { width: 80px; font-size: 16px; }
+.summary { padding: 20px; }
+.summary-title { font-size: 20px; }
+.mode-nav { width: 100%; }
+.mode-btn { flex: 1; font-size: 12px; padding: 8px 10px; }
+}
+
+/* Hidden sections */
+.hidden { display: none !important; }
+</style>
+
+</head>
+<body>
+<div class="app" id="app">
+  <!-- Header -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--teal);">
+          <path d="M12 2v20M2 12h20" stroke-linecap="round"/>
+          <circle cx="12" cy="12" r="8" opacity="0.4"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="brand-title">ABG Reader</div>
+        <div class="brand-sub">Acid-Base Interpretation Trainer</div>
+      </div>
+    </div>
+    <div class="topbar-status">
+      <span class="status-dot"></span>
+      <span>Clinical Mode</span>
+    </div>
+  </header>
+
+  <!-- Mode Navigation -->
+
+  <nav class="mode-nav">
+    <button class="mode-btn active" data-mode="cases">症例トレーニング</button>
+    <button class="mode-btn" data-mode="dict">翻訳辞書</button>
+    <button class="mode-btn" data-mode="principles">指導原則</button>
+  </nav>
+
+  <!-- Section: Cases list -->
+
+  <section id="section-cases">
+    <div class="hero">
+      <div class="hero-eyebrow">// Session 01 — Interpret with reasoning</div>
+      <h1 class="hero-title">pHで判断しない、<br><em>4つの力を分解する</em>読み方。</h1>
+      <p class="hero-lead">
+        pHは病態の出発点ではなく結果です。HCO3⁻・PaCO2・AG・Clという4つの力を言葉に翻訳し、
+        Step1〜6で統合する——臨床現場のABG読影を、そのままトレーニングに落とし込みました。
+      </p>
+    </div>
+
+```
+<div class="section-label">症例リスト</div>
+<div class="case-grid" id="case-grid"></div>
+```
+
+  </section>
+
+  <!-- Section: Case interpretation -->
+
+  <section id="section-case-detail" class="hidden"></section>
+
+  <!-- Section: Dictionary -->
+
+  <section id="section-dict" class="hidden">
+    <div class="hero">
+      <div class="hero-eyebrow">// Reference — Translate values into meaning</div>
+      <h1 class="hero-title">数値を<em>意味</em>に翻訳する辞書</h1>
+      <p class="hero-lead">各パラメータは単なる数字ではなく「体の状態の言葉」です。症例中にも随時参照できます。</p>
+    </div>
+    <div class="dict-grid" id="dict-grid"></div>
+  </section>
+
+  <!-- Section: Principles -->
+
+  <section id="section-principles" class="hidden">
+    <div class="hero">
+      <div class="hero-eyebrow">// Teaching Principles</div>
+      <h1 class="hero-title">看護師への<em>指導の核</em></h1>
+      <p class="hero-lead">酸塩基平衡を読むうえで最も重要な4つの指導ポイント。現場でそのまま使える原則です。</p>
+    </div>
+    <div class="principles">
+      <h3>指導の4原則</h3>
+      <ol id="principles-list"></ol>
+    </div>
+    <div class="principles" style="margin-top: 16px;">
+      <h3>本質</h3>
+      <ol>
+        <li><strong>従来の方法：</strong>pH → 分類 → 補正（結果から入る）</li>
+        <li><strong>この方法：</strong>各要素を分解 → 意味に変換 → 再構成（力の分析から入る）</li>
+        <li>酸塩基平衡は「pHを当てる問題」ではなく、<strong>HCO3⁻・PaCO2・AG・Clという4つの力を分解して再構成する問題</strong>である。</li>
+      </ol>
+    </div>
+  </section>
+</div>
+
+<script>
+// ================================================
+// ABG Reader — Clinical Interpretation Trainer
+// ================================================
+
+// ------- データ: 翻訳辞書 -------
+const DICTIONARY = [
+  {
+    title: 'pH',
+    sub: 'Overall acid-base state',
+    entries: [
+      { k: 'pH < 7.35', v: 'アシデミア：全体として酸性に押されている' },
+      { k: 'pH > 7.45', v: 'アルカレミア：全体としてアルカリ性に押されている' },
+      { k: 'pH 正常',   v: '異常なしとは限らない。複数の異常が打ち消し合っている可能性' }
+    ]
+  },
+  {
+    title: 'HCO3⁻',
+    sub: 'Metabolic component',
+    entries: [
+      { k: 'HCO3⁻ 低い', v: '酸を打ち消す力が減っている → 酸が増えて消費された or HCO3⁻を失った' },
+      { k: 'HCO3⁻ 高い', v: '酸を打ち消す力が増えている → 酸を失った(嘔吐) or 腎がHCO3⁻を溜めている' }
+    ]
+  },
+  {
+    title: 'PaCO2',
+    sub: 'Respiratory component',
+    entries: [
+      { k: 'PaCO2 高い', v: '換気不足でCO2(酸)が体にたまっている' },
+      { k: 'PaCO2 低い', v: '過換気でCO2(酸)を外に捨てている' }
+    ]
+  },
+  {
+    title: 'Cl⁻',
+    sub: 'Chloride shift',
+    entries: [
+      { k: 'Cl⁻ 低い', v: '胃酸喪失(嘔吐)や体液収縮を疑う → 代謝性アルカローシス方向' },
+      { k: 'Cl⁻ 高い', v: 'HCO3⁻を失ってClで埋めている → 正常AG代謝性アシドーシス' }
+    ]
+  },
+  {
+    title: 'AG (アニオンギャップ)',
+    sub: 'AG = Na − (Cl + HCO3⁻)',
+    entries: [
+      { k: 'AG 高い(>12)', v: '測定していない酸(乳酸・ケトンなど)が増えている' },
+      { k: 'AG 正常',       v: '見えない酸は増えていない。HCO3⁻低下があれば「失っている」方向' }
+    ]
+  },
+  {
+    title: 'Winter\'s Formula',
+    sub: '代謝性アシドーシスの呼吸代償',
+    entries: [
+      { k: '予測式', v: '予測PaCO2 = 1.5 × HCO3⁻ + 8 ± 2' },
+      { k: '実測≈予測',   v: '呼吸は適切に代償している' },
+      { k: '実測 > 予測', v: '呼吸性アシドーシス合併(換気不足)' },
+      { k: '実測 < 予測', v: '呼吸性アルカローシス合併(過換気)' }
+    ]
+  },
+  {
+    title: 'ΔAG（補正HCO3⁻法）',
+    sub: 'AGが開大しているとき',
+    entries: [
+      { k: '計算', v: 'ΔAG = AG − 12　補正HCO3⁻ = 実測HCO3⁻ + ΔAG' },
+      { k: '補正HCO3⁻ ≈ 24', v: '純粋なAG開大性代謝性アシドーシス' },
+      { k: '補正HCO3⁻ > 24', v: '代謝性アルカローシス合併' },
+      { k: '補正HCO3⁻ < 24', v: '正常AG代謝性アシドーシス合併' }
+    ]
+  }
+];
+
+// ------- データ: 指導の4原則 -------
+const PRINCIPLES = [
+  { t: 'pHで判断しない', d: '<strong>pHは最後の結果</strong>であり、最初の判断材料ではない。正常pHでも複数の異常が相殺されているだけの可能性がある。' },
+  { t: '各パラメータを必ず言葉に変える', d: '数値を見るのではなく、<strong>HCO3⁻→代謝／PaCO2→呼吸／AG→見えない酸／Cl→胃酸・HCO3バランス</strong>として理解する。' },
+  { t: '混合性を前提に考える', d: '「1つだけの異常」と思わない。代謝と呼吸、AG開大と正常AG、これらは<strong>同時に存在しうる</strong>。' },
+  { t: '最後にまとめて文章にする', d: '例：「見えない酸が増えている代謝性アシドーシスがあり、嘔吐による代謝性アルカローシスが合併し、さらに換気不足により呼吸性アシドーシスもある」。' }
+];
+
+// ------- データ: 症例 -------
+// 各症例はStep1〜6のデータを保持
+const CASES = [
+  {
+    id: 'CASE-01',
+    title: '糖尿病性ケトアシドーシス',
+    difficulty: 2,
+    tag: 'AG開大性アシドーシス',
+    summary: '1型DM・インスリン中断。意識低下とKussmaul呼吸。',
+    vignette: '30歳男性、1型糖尿病。数日前よりインスリン注射を自己中断。口渇、多尿、悪心のため救急搬送。意識レベルはJCS I-2、呼気にアセトン臭、Kussmaul呼吸を認める。血糖 480 mg/dL、尿ケトン 3+。',
+    labs: { pH: 7.15, PaCO2: 20, HCO3: 8, Na: 140, Cl: 104 },
+    flags: { pH: 'low', PaCO2: 'low', HCO3: 'low', Na: 'normal', Cl: 'normal' },
+    translations: [
+      { param: 'pH', value: '7.15', question: 'pHは何を示している？', choices: [
+        { text: 'アシデミア（酸性に傾いている）', correct: true, why: 'pH < 7.35 なのでアシデミア。' },
+        { text: 'アルカレミア（アルカリ性に傾いている）', correct: false },
+        { text: '正常範囲', correct: false }
+      ]},
+      { param: 'HCO3⁻', value: '8 mEq/L', question: 'HCO3⁻の翻訳は？', choices: [
+        { text: '酸を打ち消す力が大きく減っている → 酸が増えて消費されたか失われた', correct: true },
+        { text: '酸を打ち消す力が増えている', correct: false },
+        { text: '正常範囲で異常なし', correct: false }
+      ]},
+      { param: 'PaCO2', value: '20 Torr', question: 'PaCO2の翻訳は？', choices: [
+        { text: '過換気でCO2（酸）を外に捨てている', correct: true, why: 'Kussmaul呼吸による代償性過換気。' },
+        { text: '換気不足でCO2が体にたまっている', correct: false },
+        { text: '正常で異常なし', correct: false }
+      ]}
+    ],
+    agCalc: { formula: 'AG = Na − (Cl + HCO3⁻) = 140 − (104 + 8)', answer: 28 },
+    metabolic: { question: '代謝性異常のパターンは？', choices: [
+      { text: 'AG開大性代謝性アシドーシス', correct: true, why: 'HCO3⁻低下 + AG開大（28）。見えない酸（ケトン体）が増えている。' },
+      { text: '正常AG代謝性アシドーシス', correct: false },
+      { text: '代謝性アルカローシス', correct: false },
+      { text: '代謝性異常なし', correct: false }
+    ]},
+    winter: { applicable: true, hcO3: 8, predicted: 20, range: [18, 22], actual: 20,
+      verdict: '実測PaCO2(20) は予測範囲(18〜22) 内。<strong>呼吸は適切に代償している</strong>。' },
+    gapgap: { applicable: true, ag: 28, deltaAG: 16, correctedHCO3: 24,
+      verdict: '補正HCO3⁻ = 24 ≈ 24 → <strong>純粋なAG開大性代謝性アシドーシス</strong>（他の代謝異常の合併なし）。' },
+    diagnosis: {
+      question: '最終診断として正しいものを全て選択してください',
+      choices: [
+        { text: 'AG開大性代謝性アシドーシス', correct: true },
+        { text: '正常AG代謝性アシドーシス合併', correct: false },
+        { text: '代謝性アルカローシス合併', correct: false },
+        { text: '呼吸性アシドーシス合併', correct: false },
+        { text: '呼吸性アルカローシス合併', correct: false },
+        { text: '適切な呼吸代償あり', correct: true }
+      ],
+      narrative: 'ケトン体という「見えない酸」が増え、AG開大性代謝性アシドーシスを呈しています。呼吸は適切にCO2を排出（Kussmaul呼吸）して代償しており、ΔAG比はほぼ1で純粋型です。治療は原疾患(DKA)への介入——インスリン・補液・電解質補正が中心です。'
+    }
+  },
+
+  {
+    id: 'CASE-02',
+    title: '感染性胃腸炎による大量下痢',
+    difficulty: 1,
+    tag: '正常AG代謝性アシドーシス',
+    summary: '3日間の水様性下痢、脱水。頻脈・皮膚ツルゴール低下。',
+    vignette: '22歳女性、3日前からの水様性下痢（1日10回以上）。食事摂取不良、尿量も減少。来院時、口腔粘膜乾燥、皮膚ツルゴール低下、HR 110、血圧正常下限。炎症反応軽度上昇。',
+    labs: { pH: 7.28, PaCO2: 30, HCO3: 14, Na: 138, Cl: 114 },
+    flags: { pH: 'low', PaCO2: 'low', HCO3: 'low', Na: 'normal', Cl: 'high' },
+    translations: [
+      { param: 'HCO3⁻', value: '14 mEq/L', question: 'HCO3⁻の翻訳は？', choices: [
+        { text: '酸を打ち消す力が減っている（失ったor消費された）', correct: true },
+        { text: '酸を打ち消す力が増えている', correct: false },
+        { text: '正常範囲', correct: false }
+      ]},
+      { param: 'Cl⁻', value: '114 mEq/L', question: 'Cl⁻の翻訳は？', choices: [
+        { text: 'HCO3⁻を失ってClで埋められている → 正常AG代謝性アシドーシスのヒント', correct: true, why: '下痢で腸液からHCO3⁻を失い、Clが相対的に増えます。' },
+        { text: '胃酸喪失を疑う → アルカローシス方向', correct: false },
+        { text: '正常で意味を持たない', correct: false }
+      ]},
+      { param: 'PaCO2', value: '30 Torr', question: 'PaCO2の翻訳は？', choices: [
+        { text: '過換気でCO2を捨てている（代償性）', correct: true },
+        { text: '換気不足でCO2が溜まっている', correct: false },
+        { text: '正常', correct: false }
+      ]}
+    ],
+    agCalc: { formula: 'AG = 138 − (114 + 14)', answer: 10 },
+    metabolic: { question: '代謝性異常のパターンは？', choices: [
+      { text: 'AG開大性代謝性アシドーシス', correct: false },
+      { text: '正常AG代謝性アシドーシス', correct: true, why: 'HCO3⁻低下 + AG正常 + Cl高値。下痢でHCO3⁻を直接失った典型例。' },
+      { text: '代謝性アルカローシス', correct: false },
+      { text: '代謝性異常なし', correct: false }
+    ]},
+    winter: { applicable: true, hcO3: 14, predicted: 29, range: [27, 31], actual: 30,
+      verdict: '実測PaCO2(30) は予測範囲(27〜31) 内。<strong>呼吸は適切に代償している</strong>。' },
+    gapgap: { applicable: false },
+    diagnosis: {
+      question: '最終診断として正しいものを全て選択してください',
+      choices: [
+        { text: 'AG開大性代謝性アシドーシス', correct: false },
+        { text: '正常AG代謝性アシドーシス', correct: true },
+        { text: '代謝性アルカローシス合併', correct: false },
+        { text: '呼吸性アシドーシス合併', correct: false },
+        { text: '呼吸性アルカローシス合併', correct: false },
+        { text: '適切な呼吸代償あり', correct: true }
+      ],
+      narrative: '下痢により腸液（HCO3⁻を多く含む）を直接喪失したためAGは正常のまま代謝性アシドーシスが生じ、Clで埋め合わされています（高Cl性アシドーシス）。呼吸は適切に代償。治療は補液とK補正が基本です。'
+    }
+  },
+
+  {
+    id: 'CASE-03',
+    title: '幽門狭窄による反復嘔吐',
+    difficulty: 1,
+    tag: '代謝性アルカローシス',
+    summary: '十二指腸潰瘍瘢痕による通過障害。3日間の嘔吐反復。',
+    vignette: '58歳男性、既往に十二指腸潰瘍。1週間前より食後の嘔吐が出現し、3日前から水分も受け付けなくなった。体重減少、脱水所見、代謝性アルカローシスに伴う浅表呼吸を認める。',
+    labs: { pH: 7.52, PaCO2: 48, HCO3: 38, Na: 140, Cl: 90 },
+    flags: { pH: 'high', PaCO2: 'high', HCO3: 'high', Na: 'normal', Cl: 'low' },
+    translations: [
+      { param: 'pH', value: '7.52', question: 'pHの翻訳は？', choices: [
+        { text: 'アルカレミア（アルカリ性に傾いている）', correct: true },
+        { text: 'アシデミア（酸性に傾いている）', correct: false },
+        { text: '正常', correct: false }
+      ]},
+      { param: 'HCO3⁻', value: '38 mEq/L', question: 'HCO3⁻の翻訳は？', choices: [
+        { text: '酸を打ち消す力が増えている（酸を失ったor HCO3⁻を溜めている）', correct: true },
+        { text: '酸を打ち消す力が減っている', correct: false },
+        { text: '正常', correct: false }
+      ]},
+      { param: 'Cl⁻', value: '90 mEq/L', question: 'Cl⁻の翻訳は？', choices: [
+        { text: '胃酸（HCl）を大量に失った結果 → 代謝性アルカローシス方向', correct: true, why: '嘔吐では胃酸（H⁺とCl⁻）を喪失し低Cl血症になります。' },
+        { text: 'HCO3⁻を失ってClで埋めている', correct: false },
+        { text: '正常', correct: false }
+      ]},
+      { param: 'PaCO2', value: '48 Torr', question: 'PaCO2の翻訳は？', choices: [
+        { text: '換気抑制でCO2を溜めている（代償）', correct: true, why: 'アルカローシスでは呼吸中枢が抑制され、浅表呼吸でCO2を貯留して代償します。' },
+        { text: '過換気でCO2を捨てている', correct: false },
+        { text: '正常', correct: false }
+      ]}
+    ],
+    agCalc: { formula: 'AG = 140 − (90 + 38)', answer: 12 },
+    metabolic: { question: '代謝性異常のパターンは？', choices: [
+      { text: 'AG開大性代謝性アシドーシス', correct: false },
+      { text: '正常AG代謝性アシドーシス', correct: false },
+      { text: '代謝性アルカローシス', correct: true, why: 'HCO3⁻高値 + Cl低値。嘔吐による典型例。' },
+      { text: '代謝性異常なし', correct: false }
+    ]},
+    winter: { applicable: false },
+    gapgap: { applicable: false },
+    diagnosis: {
+      question: '最終診断として正しいものを全て選択してください',
+      choices: [
+        { text: 'AG開大性代謝性アシドーシス', correct: false },
+        { text: '正常AG代謝性アシドーシス', correct: false },
+        { text: '代謝性アルカローシス', correct: true },
+        { text: '呼吸性アシドーシス合併', correct: false },
+        { text: '呼吸性アルカローシス合併', correct: false },
+        { text: '呼吸代償あり', correct: true }
+      ],
+      narrative: '嘔吐で胃酸（HCl）を喪失 → H⁺とCl⁻が失われ、HCO3⁻が相対的に増えて代謝性アルカローシスが成立。呼吸は換気抑制でCO2を貯留し代償しています。治療は生理食塩水による容量・Cl⁻補充（"saline-responsive"）が基本です。'
+    }
+  },
+
+  {
+    id: 'CASE-04',
+    title: 'COPD急性増悪',
+    difficulty: 2,
+    tag: '呼吸性アシドーシス',
+    summary: '慢性II型呼吸不全の急性悪化。感染契機で意識低下。',
+    vignette: '72歳男性、COPD・在宅酸素療法中。2日前から喀痰増加・呼吸困難悪化。来院時、眠気・flapping tremor・チアノーゼあり。SpO2 88%（室内気）。CXRで右下肺野に浸潤影。',
+    labs: { pH: 7.28, PaCO2: 72, HCO3: 32, Na: 140, Cl: 98 },
+    flags: { pH: 'low', PaCO2: 'high', HCO3: 'high', Na: 'normal', Cl: 'normal' },
+    translations: [
+      { param: 'pH', value: '7.28', question: 'pHの翻訳は？', choices: [
+        { text: 'アシデミア', correct: true },
+        { text: 'アルカレミア', correct: false },
+        { text: '正常', correct: false }
+      ]},
+      { param: 'PaCO2', value: '72 Torr', question: 'PaCO2の翻訳は？', choices: [
+        { text: '換気不足でCO2（酸）が体にたまっている', correct: true, why: 'CO2ナルコーシスに至る水準。' },
+        { text: '過換気でCO2を捨てている', correct: false },
+        { text: '正常', correct: false }
+      ]},
+      { param: 'HCO3⁻', value: '32 mEq/L', question: 'HCO3⁻の翻訳は？', choices: [
+        { text: '腎が慢性的にHCO3⁻を溜めて代償している', correct: true, why: '慢性呼吸性アシドーシスでは腎代償が働きHCO3⁻が上昇します。' },
+        { text: '代謝性アシドーシスで低下', correct: false },
+        { text: '嘔吐で上昇', correct: false }
+      ]}
+    ],
+    agCalc: { formula: 'AG = 140 − (98 + 32)', answer: 10 },
+    metabolic: { question: '代謝性異常のパターンは？', choices: [
+      { text: 'AG開大性代謝性アシドーシス', correct: false },
+      { text: '正常AG代謝性アシドーシス', correct: false },
+      { text: '代謝性アルカローシス（原発性）', correct: false },
+      { text: '原発性の代謝性異常なし（腎代償のみ）', correct: true, why: 'HCO3⁻上昇は呼吸性アシドーシスに対する腎代償。原発性の代謝性異常ではない。' }
+    ]},
+    winter: { applicable: false },
+    gapgap: { applicable: false },
+    diagnosis: {
+      question: '最終診断として正しいものを全て選択してください',
+      choices: [
+        { text: 'AG開大性代謝性アシドーシス', correct: false },
+        { text: '正常AG代謝性アシドーシス', correct: false },
+        { text: '代謝性アルカローシス', correct: false },
+        { text: '呼吸性アシドーシス（慢性）', correct: true },
+        { text: '呼吸性アシドーシスの急性増悪', correct: true },
+        { text: '腎によるHCO3⁻代償あり', correct: true }
+      ],
+      narrative: '換気不全によるCO2貯留が主病態。HCO3⁻上昇は腎による慢性代償です。pHが7.28と低いことから、慢性呼吸性アシドーシスに急性悪化が重なっている（代償が追いついていない）と判断します。酸素は低流量から開始しCO2ナルコーシスに注意、NPPVの適応を検討します。'
+    }
+  },
+
+  {
+    id: 'CASE-05',
+    title: 'パニック発作による過換気',
+    difficulty: 1,
+    tag: '呼吸性アルカローシス',
+    summary: '20代女性、急性の呼吸困難と手指のしびれ。',
+    vignette: '24歳女性。電車内で突然の強い不安感、動悸、呼吸困難。手指のしびれとテタニー様症状を訴える。救急搬入時、RR 32、SpO2 100%、身体所見に異常所見乏しい。',
+    labs: { pH: 7.52, PaCO2: 24, HCO3: 19, Na: 140, Cl: 107 },
+    flags: { pH: 'high', PaCO2: 'low', HCO3: 'low', Na: 'normal', Cl: 'normal' },
+    translations: [
+      { param: 'pH', value: '7.52', question: 'pHの翻訳は？', choices: [
+        { text: 'アルカレミア', correct: true },
+        { text: 'アシデミア', correct: false },
+        { text: '正常', correct: false }
+      ]},
+      { param: 'PaCO2', value: '24 Torr', question: 'PaCO2の翻訳は？', choices: [
+        { text: '過換気でCO2（酸）を大量に外に捨てている', correct: true },
+        { text: '換気不足でCO2が溜まっている', correct: false },
+        { text: '正常', correct: false }
+      ]},
+      { param: 'HCO3⁻', value: '19 mEq/L', question: 'HCO3⁻の翻訳は？', choices: [
+        { text: '急性呼吸性アルカローシスに伴う細胞内緩衝の影響でわずかに低下', correct: true, why: '急性期は代償が限定的で、HCO3⁻はあまり下がりません。' },
+        { text: '代謝性アシドーシスで大きく低下', correct: false },
+        { text: '腎代償で大きく低下', correct: false }
+      ]}
+    ],
+    agCalc: { formula: 'AG = 140 − (107 + 19)', answer: 14 },
+    metabolic: { question: '代謝性異常のパターンは？', choices: [
+      { text: 'AG開大性代謝性アシドーシス', correct: false },
+      { text: '正常AG代謝性アシドーシス', correct: false },
+      { text: '代謝性アルカローシス', correct: false },
+      { text: '原発性の代謝性異常なし', correct: true, why: 'HCO3⁻のわずかな低下は急性呼吸性アルカローシスの緩衝による変化。' }
+    ]},
+    winter: { applicable: false },
+    gapgap: { applicable: false },
+    diagnosis: {
+      question: '最終診断として正しいものを全て選択してください',
+      choices: [
+        { text: 'AG開大性代謝性アシドーシス', correct: false },
+        { text: '正常AG代謝性アシドーシス', correct: false },
+        { text: '代謝性アルカローシス', correct: false },
+        { text: '呼吸性アシドーシス', correct: false },
+        { text: '急性呼吸性アルカローシス', correct: true },
+        { text: '緩徐な細胞内緩衝による軽度HCO3⁻低下', correct: true }
+      ],
+      narrative: '過換気でCO2を大量に排出し呼吸性アルカローシスが成立。急性期なので腎代償はまだ働かず、HCO3⁻の低下はわずか（細胞内緩衝による）。テタニー様症状はアルカローシス性低Ca²⁺血症の現れです。まず精神的落ち着かせとゆっくり呼吸の誘導を行います（ペーパーバッグ法は低酸素リスクのため非推奨）。'
+    }
+  },
+
+  {
+    id: 'CASE-06',
+    title: 'DKA＋持続する嘔吐',
+    difficulty: 3,
+    tag: '混合性障害',
+    summary: 'DKA発症中に食思不振から嘔吐反復。pHは意外と高く見える。',
+    vignette: '45歳女性、2型糖尿病。感染契機でDKA発症、3日前から嘔吐が持続し水分摂取もほぼ不能。救急搬入時は意識朦朧、血糖 520 mg/dL、尿ケトン 2+。SpO2正常。',
+    labs: { pH: 7.35, PaCO2: 28, HCO3: 15, Na: 140, Cl: 90 },
+    flags: { pH: 'low', PaCO2: 'low', HCO3: 'low', Na: 'normal', Cl: 'low' },
+    translations: [
+      { param: 'pH', value: '7.35', question: 'pHの翻訳は？', choices: [
+        { text: '正常下限。ただし「異常なし」と結論してはいけない', correct: true, why: 'pHが正常でも、複数の異常が打ち消し合っている可能性があります。' },
+        { text: '明らかなアシデミア', correct: false },
+        { text: '完全に正常で介入不要', correct: false }
+      ]},
+      { param: 'HCO3⁻', value: '15 mEq/L', question: 'HCO3⁻の翻訳は？', choices: [
+        { text: '酸を打ち消す力が減っている', correct: true },
+        { text: '酸を打ち消す力が増えている', correct: false },
+        { text: '正常', correct: false }
+      ]},
+      { param: 'Cl⁻', value: '90 mEq/L', question: 'Cl⁻の翻訳は？（ヒント：嘔吐の病歴）', choices: [
+        { text: '嘔吐で胃酸（Cl⁻）を失った → アルカローシス要素の示唆', correct: true, why: 'AG開大性アシドーシスだけなら低Cl⁻にはなりません。嘔吐の影響が隠れている可能性。' },
+        { text: '正常AG代謝性アシドーシスでClが代償的に増加', correct: false },
+        { text: '意味を持たない', correct: false }
+      ]}
+    ],
+    agCalc: { formula: 'AG = 140 − (90 + 15)', answer: 35 },
+    metabolic: { question: '代謝性異常のパターンは？（最も適切なもの）', choices: [
+      { text: 'AG開大性代謝性アシドーシス', correct: true, why: 'AG = 35と高度開大。ケトン体による「見えない酸」の蓄積。ただしこれだけでは説明できない所見がある（→Step5へ）。' },
+      { text: '正常AG代謝性アシドーシス', correct: false },
+      { text: '代謝性アルカローシスのみ', correct: false },
+      { text: '代謝性異常なし', correct: false }
+    ]},
+    winter: { applicable: true, hcO3: 15, predicted: 30.5, range: [28.5, 32.5], actual: 28,
+      verdict: '実測PaCO2(28) は予測(28.5〜32.5) よりわずかに低いが、ほぼ範囲内〜境界。<strong>呼吸代償はほぼ適切</strong>と判断。' },
+    gapgap: { applicable: true, ag: 35, deltaAG: 23, correctedHCO3: 38,
+      verdict: '補正HCO3⁻ = 15 + 23 = 38 > 24 → <strong>代謝性アルカローシスが合併</strong>している（嘔吐による）。' },
+    diagnosis: {
+      question: '最終診断として正しいものを全て選択してください',
+      choices: [
+        { text: 'AG開大性代謝性アシドーシス', correct: true },
+        { text: '正常AG代謝性アシドーシス合併', correct: false },
+        { text: '代謝性アルカローシス合併', correct: true },
+        { text: '呼吸性アシドーシス合併', correct: false },
+        { text: '呼吸性アルカローシス合併', correct: false },
+        { text: '適切な呼吸代償', correct: true }
+      ],
+      narrative: 'pHが7.35と一見正常に近いため見逃しやすい混合性障害。ケトン体によるAG開大性アシドーシスが存在する一方、嘔吐による胃酸喪失から代謝性アルカローシスも合併しており、両者が打ち消し合ってpHが中間値に見えています。Cl⁻の低下とΔAG法が混合性を炙り出した好例。治療はDKAへの対応に加えて容量・Cl⁻補充（生食）が必要です。'
+    }
+  },
+
+  {
+    id: 'CASE-07',
+    title: '敗血症性ショック＋呼吸疲労',
+    difficulty: 3,
+    tag: '混合性障害',
+    summary: '重症敗血症で乳酸アシドーシス。呼吸筋疲労でPaCO2が上がってきた。',
+    vignette: '68歳男性、尿路感染症から敗血症性ショックに進展。ICU入室後、血圧低下と乳酸値上昇が持続。当初は代償性過換気を認めたが、数時間後から呼吸は浅く遅くなり、意識レベルも低下してきた。',
+    labs: { pH: 7.10, PaCO2: 45, HCO3: 14, Na: 140, Cl: 104 },
+    flags: { pH: 'low', PaCO2: 'high', HCO3: 'low', Na: 'normal', Cl: 'normal' },
+    translations: [
+      { param: 'pH', value: '7.10', question: 'pHの翻訳は？', choices: [
+        { text: '高度アシデミア', correct: true },
+        { text: '軽度アルカレミア', correct: false },
+        { text: '正常', correct: false }
+      ]},
+      { param: 'HCO3⁻', value: '14 mEq/L', question: 'HCO3⁻の翻訳は？', choices: [
+        { text: '酸を打ち消す力が減っている', correct: true },
+        { text: '増えている', correct: false },
+        { text: '正常', correct: false }
+      ]},
+      { param: 'PaCO2', value: '45 Torr', question: 'PaCO2の翻訳は？（ヒント：代謝性アシドーシスでこの値は？）', choices: [
+        { text: '代謝性アシドーシスに対する代償としては高すぎる → 換気不足も存在', correct: true, why: '代謝性アシドーシスでは通常PaCO2は下がる（代償性過換気）。それが「下がっていない」または「上がっている」のは異常。' },
+        { text: '代償として妥当な値', correct: false },
+        { text: '過換気を示している', correct: false }
+      ]}
+    ],
+    agCalc: { formula: 'AG = 140 − (104 + 14)', answer: 22 },
+    metabolic: { question: '代謝性異常のパターンは？', choices: [
+      { text: 'AG開大性代謝性アシドーシス', correct: true, why: 'HCO3⁻低下 + AG = 22 と開大。敗血症では乳酸が蓄積。' },
+      { text: '正常AG代謝性アシドーシス', correct: false },
+      { text: '代謝性アルカローシス', correct: false },
+      { text: '代謝性異常なし', correct: false }
+    ]},
+    winter: { applicable: true, hcO3: 14, predicted: 29, range: [27, 31], actual: 45,
+      verdict: '実測PaCO2(45) は予測(27〜31) を大きく超えている。<strong>呼吸性アシドーシスが合併</strong>しており、呼吸筋疲労による換気不足を示唆。' },
+    gapgap: { applicable: true, ag: 22, deltaAG: 10, correctedHCO3: 24,
+      verdict: '補正HCO3⁻ = 14 + 10 = 24 ≈ 24 → <strong>純粋なAG開大性代謝性アシドーシス</strong>（代謝性の合併なし）。異常は呼吸側。' },
+    diagnosis: {
+      question: '最終診断として正しいものを全て選択してください',
+      choices: [
+        { text: 'AG開大性代謝性アシドーシス（乳酸）', correct: true },
+        { text: '正常AG代謝性アシドーシス合併', correct: false },
+        { text: '代謝性アルカローシス合併', correct: false },
+        { text: '呼吸性アシドーシス合併', correct: true },
+        { text: '呼吸性アルカローシス合併', correct: false },
+        { text: '適切な呼吸代償', correct: false }
+      ],
+      narrative: '乳酸アシドーシス（AG開大）に、呼吸筋疲労による換気不足（呼吸性アシドーシス）が重なった二重障害です。代謝性アシドーシスなのにPaCO2が上がってきた時点で「代償ではなく合併」と読む必要があり、Winterの式がそれを定量的に示します。緊急に気管挿管・人工呼吸による換気補助を要する危機的状態です。'
+    }
+  }
+];
+
+// 難易度が同じときは元の順序を維持するため、インデックスを添えて安定ソート
+CASES
+  .map((c, i) => ({ c, i }))
+  .sort((a, b) => a.c.difficulty - b.c.difficulty || a.i - b.i)
+  .forEach((entry, idx) => {
+    entry.c.id = `CASE-${String(idx + 1).padStart(2, '0')}`;
+    entry.c._order = idx;
+  });
+CASES.sort((a, b) => a._order - b._order);
+
+// ------- ユーティリティ -------
+const $ = (sel, el = document) => el.querySelector(sel);
+const $$ = (sel, el = document) => [...el.querySelectorAll(sel)];
+
+function el(tag, cls, html) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (html !== undefined) e.innerHTML = html;
+  return e;
+}
+
+function flagClass(v) {
+  return v === 'high' ? 'flag-high' : v === 'low' ? 'flag-low' : '';
+}
+function flagArrow(v) {
+  return v === 'high' ? '↑' : v === 'low' ? '↓' : '';
+}
+
+// ------- モード切替 -------
+function initModeNav() {
+  $$('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mode = btn.dataset.mode;
+      $$('.mode-btn').forEach(b => b.classList.toggle('active', b === btn));
+      $('#section-cases').classList.toggle('hidden', mode !== 'cases');
+      $('#section-case-detail').classList.add('hidden');
+      $('#section-dict').classList.toggle('hidden', mode !== 'dict');
+      $('#section-principles').classList.toggle('hidden', mode !== 'principles');
+      if (mode === 'cases') $('#section-cases').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
+// ------- 症例リスト描画 -------
+function renderCaseList() {
+  const grid = $('#case-grid');
+  grid.innerHTML = '';
+  CASES.forEach(c => {
+    const card = el('div', 'case-card');
+    const dotsHtml = [1,2,3].map(i => `<span class="${i <= c.difficulty ? 'on' : ''}"></span>`).join('');
+    card.innerHTML = `
+      <div class="case-head">
+        <span class="case-id">${c.id}</span>
+        <div class="case-difficulty" title="難易度 ${c.difficulty}/3">${dotsHtml}</div>
+      </div>
+      <div class="case-title">${c.title}</div>
+      <div class="case-summary">${c.summary}</div>
+      <span class="case-tag">${c.tag}</span>
+    `;
+    card.addEventListener('click', () => openCase(c.id));
+    grid.appendChild(card);
+  });
+}
+
+// ------- 辞書描画 -------
+function renderDict() {
+  const grid = $('#dict-grid');
+  grid.innerHTML = '';
+  DICTIONARY.forEach(d => {
+    const card = el('div', 'dict-card');
+    const dl = d.entries.map(e => `<dt>${e.k}</dt><dd>${e.v}</dd>`).join('');
+    card.innerHTML = `
+      <h3>${d.title}</h3>
+      <div class="dict-sub">${d.sub}</div>
+      <dl>${dl}</dl>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// ------- 原則描画 -------
+function renderPrinciples() {
+  const list = $('#principles-list');
+  list.innerHTML = '';
+  PRINCIPLES.forEach(p => {
+    const li = el('li', '', `<strong>${p.t}</strong>：${p.d}`);
+    list.appendChild(li);
+  });
+}
+
+// ================================================
+// 症例画面（ステップ進行）
+// ================================================
+let currentCase = null;
+let stepIndex = 0;
+let stepOrder = [];
+
+function openCase(id) {
+  currentCase = CASES.find(c => c.id === id);
+  stepIndex = 0;
+  // 動的にステップを決定
+  stepOrder = ['intro', 'translate', 'ag', 'metabolic'];
+  if (currentCase.winter.applicable) stepOrder.push('winter');
+  if (currentCase.gapgap.applicable) stepOrder.push('gapgap');
+  stepOrder.push('diagnosis');
+  stepOrder.push('summary');
+
+  $('#section-cases').classList.add('hidden');
+  $('#section-dict').classList.add('hidden');
+  $('#section-principles').classList.add('hidden');
+  $('#section-case-detail').classList.remove('hidden');
+  renderCase();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function backToList() {
+  $('#section-case-detail').classList.add('hidden');
+  $('#section-cases').classList.remove('hidden');
+  $$('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === 'cases'));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderCase() {
+  const c = currentCase;
+  const root = $('#section-case-detail');
+  root.innerHTML = '';
+
+  // Back button
+  const back = el('button', 'back-btn', '← 症例一覧に戻る');
+  back.addEventListener('click', backToList);
+  root.appendChild(back);
+
+  // Case header
+  const header = el('div', 'case-header');
+  header.innerHTML = `
+    <div class="case-id">${c.id} · 難易度 ${'●'.repeat(c.difficulty)}${'○'.repeat(3 - c.difficulty)}</div>
+    <h2>${c.title}</h2>
+    <div class="case-vignette">${c.vignette}</div>
+  `;
+  root.appendChild(header);
+
+  // ABG report (always visible)
+  root.appendChild(buildABGReport(c));
+
+  // Step progress bar
+  const progress = el('div', 'step-progress');
+  const totalSteps = stepOrder.length - 1; // summary は進行度に含めない
+  for (let i = 0; i < totalSteps; i++) {
+    const p = el('div', 'step-progress-item');
+    if (i < stepIndex) p.classList.add('done');
+    else if (i === stepIndex) p.classList.add('current');
+    progress.appendChild(p);
+  }
+  root.appendChild(progress);
+
+  // Current step panel
+  const step = stepOrder[stepIndex];
+  const panel = el('div', 'step-panel');
+  panel.id = 'step-panel';
+
+  if (step === 'intro') renderIntro(panel, c);
+  else if (step === 'translate') renderTranslate(panel, c);
+  else if (step === 'ag') renderAG(panel, c);
+  else if (step === 'metabolic') renderMetabolic(panel, c);
+  else if (step === 'winter') renderWinter(panel, c);
+  else if (step === 'gapgap') renderGapGap(panel, c);
+  else if (step === 'diagnosis') renderDiagnosis(panel, c);
+  else if (step === 'summary') renderSummary(panel, c);
+
+  root.appendChild(panel);
+}
+
+// ------- ABGレポート -------
+function buildABGReport(c) {
+  const rep = el('div', 'abg-report');
+  const labs = c.labs, fl = c.flags;
+  const items = [
+    ['pH',    labs.pH.toFixed(2),    '',         fl.pH],
+    ['PaCO2', labs.PaCO2,            'Torr',     fl.PaCO2],
+    ['HCO3⁻', labs.HCO3,             'mEq/L',    fl.HCO3],
+    ['Na⁺',   labs.Na,               'mEq/L',    fl.Na],
+    ['Cl⁻',   labs.Cl,               'mEq/L',    fl.Cl]
+  ];
+  const itemsHtml = items.map(([k, v, u, f]) => `
+    <div class="abg-item">
+      <span class="abg-label">${k}</span>
+      <span class="abg-value ${flagClass(f)}">${v}<span class="unit">${u}</span><span class="arrow">${flagArrow(f)}</span></span>
+    </div>
+  `).join('');
+  rep.innerHTML = `
+    <div class="abg-report-title">Arterial Blood Gas · 動脈血液ガス結果</div>
+    <div class="abg-grid">${itemsHtml}</div>
+  `;
+  return rep;
+}
+
+// ------- Step: Intro -------
+function renderIntro(panel, c) {
+  panel.innerHTML = `
+    <div class="step-head"><span class="step-num">STEP 01</span><span class="step-title">すべての数値を同時に見る</span></div>
+    <div class="step-lead">
+      結論を急がず、まず上の血液ガス結果を眺めてください。赤字（↓）は低値、橙字（↑）は高値です。
+      <strong style="color: var(--amber);">pHで判断するのはまだ早い</strong>——4つの力（HCO3⁻・PaCO2・AG・Cl）を一つずつ言葉に変えていきます。
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" id="next-btn">値を翻訳していく →</button>
+    </div>
+  `;
+  $('#next-btn', panel).addEventListener('click', goNext);
+}
+
+// ------- Step: 翻訳 -------
+function renderTranslate(panel, c) {
+  panel.innerHTML = `
+    <div class="step-head"><span class="step-num">STEP 02</span><span class="step-title">数値を言葉に翻訳する</span></div>
+    <div class="step-lead">各値を「体の状態の言葉」に変換します。正しい翻訳を選んでください。</div>
+    <div id="translate-blocks"></div>
+    <div class="actions">
+      <button class="btn btn-primary" id="next-btn" disabled>次へ →</button>
+    </div>
+  `;
+  const container = $('#translate-blocks', panel);
+  const answered = new Array(c.translations.length).fill(false);
+
+  c.translations.forEach((t, idx) => {
+    const block = el('div', 'choice-block');
+    block.innerHTML = `
+      <div class="choice-block-label">${t.param} = <span class="choice-block-value">${t.value}</span> — ${t.question}</div>
+      <div class="choices"></div>
+      <div class="feedback-slot"></div>
+    `;
+    const choicesEl = $('.choices', block);
+    const feedbackSlot = $('.feedback-slot', block);
+
+    t.choices.forEach((ch, ci) => {
+      const btn = el('button', 'choice', `<span class="choice-icon">${String.fromCharCode(65 + ci)}</span><span>${ch.text}</span>`);
+      btn.addEventListener('click', () => {
+        if (answered[idx]) return;
+        answered[idx] = true;
+        if (ch.correct) btn.classList.add('correct');
+        else {
+          btn.classList.add('wrong');
+          // 正解を表示
+          [...choicesEl.children].forEach((other, oi) => {
+            if (t.choices[oi].correct) other.classList.add('correct');
+          });
+        }
+        // disable all
+        [...choicesEl.children].forEach(o => o.style.pointerEvents = 'none');
+        // feedback
+        const fb = el('div', 'feedback ' + (ch.correct ? 'correct' : 'wrong'));
+        const correctChoice = t.choices.find(x => x.correct);
+        const why = correctChoice.why || '';
+        fb.innerHTML = `
+          <div class="feedback-head">${ch.correct ? '✓ 正解' : '✗ 不正解'}</div>
+          ${ch.correct ? (why || 'そのとおりです。') : ('正解は「' + correctChoice.text + '」' + (why ? '。' + why : '。'))}
+        `;
+        feedbackSlot.appendChild(fb);
+        // 全ブロック回答済みなら次へ可能
+        if (answered.every(x => x)) $('#next-btn', panel).disabled = false;
+      });
+      choicesEl.appendChild(btn);
+    });
+    container.appendChild(block);
+  });
+
+  $('#next-btn', panel).addEventListener('click', goNext);
+}
+
+// ------- Step: AG計算 -------
+function renderAG(panel, c) {
+  panel.innerHTML = `
+    <div class="step-head"><span class="step-num">STEP 03a</span><span class="step-title">アニオンギャップを計算する</span></div>
+    <div class="step-lead">AGを計算して「見えない酸」の存在を確認します。</div>
+    <div class="calc-box">
+      <div class="calc-formula">${c.agCalc.formula} = ?</div>
+      <div class="calc-input-row">
+        <span class="calc-input-label">AG =</span>
+        <input type="number" class="calc-input" id="ag-input" placeholder="—" inputmode="numeric">
+        <span class="calc-input-label">mEq/L</span>
+        <button class="btn btn-ghost" id="ag-check">確認</button>
+      </div>
+      <div id="ag-feedback"></div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" id="next-btn" disabled>次へ →</button>
+    </div>
+  `;
+  const input = $('#ag-input', panel);
+  const check = $('#ag-check', panel);
+  const fb = $('#ag-feedback', panel);
+  let answered = false;
+
+  check.addEventListener('click', () => {
+    if (answered) return;
+    const val = parseInt(input.value);
+    if (isNaN(val)) return;
+    answered = true;
+    input.disabled = true;
+    check.disabled = true;
+    const correct = val === c.agCalc.answer;
+    const judgement = c.agCalc.answer > 12 ? `<strong>AG = ${c.agCalc.answer}</strong>（正常〜12）→ <strong>AG開大</strong>。測定していない酸（乳酸・ケトンなど）が増えている可能性。`
+      : `<strong>AG = ${c.agCalc.answer}</strong>（正常範囲）→ 見えない酸の蓄積は否定的。`;
+    const fbEl = el('div', 'feedback ' + (correct ? 'correct' : 'wrong'));
+    fbEl.innerHTML = `
+      <div class="feedback-head">${correct ? '✓ 正解' : '✗ 不正解'}</div>
+      ${correct ? '' : `正しくは <strong>${c.agCalc.answer}</strong> です。`}
+      ${judgement}
+    `;
+    fb.appendChild(fbEl);
+    $('#next-btn', panel).disabled = false;
+  });
+
+  $('#next-btn', panel).addEventListener('click', goNext);
+}
+
+// ------- Step: 代謝性異常パターン判定 -------
+function renderMetabolic(panel, c) {
+  panel.innerHTML = `
+    <div class="step-head"><span class="step-num">STEP 03b</span><span class="step-title">代謝性異常のパターンを決める</span></div>
+    <div class="step-lead">HCO3⁻・AG・Cl⁻の組み合わせから、代謝性の異常を一つ選びます。</div>
+    <div class="choices" id="metabolic-choices"></div>
+    <div id="metabolic-feedback"></div>
+    <div class="actions">
+      <button class="btn btn-primary" id="next-btn" disabled>次へ →</button>
+    </div>
+  `;
+  const ch = $('#metabolic-choices', panel);
+  const fbSlot = $('#metabolic-feedback', panel);
+  let answered = false;
+
+  c.metabolic.choices.forEach((item, i) => {
+    const btn = el('button', 'choice', `<span class="choice-icon">${String.fromCharCode(65+i)}</span><span>${item.text}</span>`);
+    btn.addEventListener('click', () => {
+      if (answered) return;
+      answered = true;
+      [...ch.children].forEach((o, oi) => {
+        o.style.pointerEvents = 'none';
+        if (c.metabolic.choices[oi].correct) o.classList.add('correct');
+      });
+      if (!item.correct) btn.classList.add('wrong');
+      const correctChoice = c.metabolic.choices.find(x => x.correct);
+      const fbEl = el('div', 'feedback ' + (item.correct ? 'correct' : 'wrong'));
+      fbEl.innerHTML = `
+        <div class="feedback-head">${item.correct ? '✓ 正解' : '✗ 不正解'}</div>
+        ${item.correct ? '' : `正解は「${correctChoice.text}」。`}
+        ${correctChoice.why || ''}
+      `;
+      fbSlot.appendChild(fbEl);
+      $('#next-btn', panel).disabled = false;
+    });
+    ch.appendChild(btn);
+  });
+
+  $('#next-btn', panel).addEventListener('click', goNext);
+}
+
+// ------- Step: Winter's formula -------
+function renderWinter(panel, c) {
+  const w = c.winter;
+  panel.innerHTML = `
+    <div class="step-head"><span class="step-num">STEP 04</span><span class="step-title">呼吸代償を評価する（Winterの式）</span></div>
+    <div class="step-lead">
+      代謝性アシドーシスでは呼吸が代償しているはず。予測PaCO2を計算して実測値と比べます。
+    </div>
+    <div class="calc-box">
+      <div class="calc-formula">予測PaCO2 = 1.5 × HCO3⁻ + 8 ± 2 = 1.5 × ${w.hcO3} + 8 = ?</div>
+      <div class="calc-input-row">
+        <span class="calc-input-label">予測PaCO2 =</span>
+        <input type="number" step="0.5" class="calc-input" id="winter-input" placeholder="—" inputmode="decimal">
+        <span class="calc-input-label">Torr (±2)</span>
+        <button class="btn btn-ghost" id="winter-check">確認</button>
+      </div>
+      <div id="winter-feedback"></div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" id="next-btn" disabled>次へ →</button>
+    </div>
+  `;
+  const input = $('#winter-input', panel);
+  const btn = $('#winter-check', panel);
+  const fb = $('#winter-feedback', panel);
+  let answered = false;
+
+  btn.addEventListener('click', () => {
+    if (answered) return;
+    const val = parseFloat(input.value);
+    if (isNaN(val)) return;
+    answered = true;
+    input.disabled = true;
+    btn.disabled = true;
+    const correct = Math.abs(val - w.predicted) <= 0.6;
+    const fbEl = el('div', 'feedback ' + (correct ? 'correct' : 'wrong'));
+    fbEl.innerHTML = `
+      <div class="feedback-head">${correct ? '✓ 正解' : '✗ 不正解'}</div>
+      ${correct ? '' : `正しくは <strong>${w.predicted}</strong> です。`}
+      <br>予測範囲 <strong>${w.range[0]}〜${w.range[1]} Torr</strong>、実測 <strong>${w.actual} Torr</strong>。<br>
+      ${w.verdict}
+    `;
+    fb.appendChild(fbEl);
+    $('#next-btn', panel).disabled = false;
+  });
+
+  $('#next-btn', panel).addEventListener('click', goNext);
+}
+
+// ------- Step: ΔAG -------
+function renderGapGap(panel, c) {
+  const g = c.gapgap;
+  panel.innerHTML = `
+    <div class="step-head"><span class="step-num">STEP 05</span><span class="step-title">ΔAG：他の代謝異常が隠れていないか</span></div>
+    <div class="step-lead">
+      AGが開大しているので、ΔAGと補正HCO3⁻を求めて代謝性アルカローシスや正常AGアシドーシスの合併がないか確認します。
+    </div>
+    <div class="calc-box">
+      <div class="calc-formula">ΔAG = AG − 12 = ${g.ag} − 12 = ?</div>
+      <div class="calc-input-row">
+        <span class="calc-input-label">ΔAG =</span>
+        <input type="number" class="calc-input" id="dag-input" placeholder="—" inputmode="numeric">
+        <button class="btn btn-ghost" id="dag-check">確認①</button>
+      </div>
+      <div id="dag-feedback"></div>
+    </div>
+    <div class="calc-box" id="corrected-box" style="display:none;">
+      <div class="calc-formula">補正HCO3⁻ = 実測HCO3⁻ + ΔAG = ? + ? = ?</div>
+      <div class="calc-input-row">
+        <span class="calc-input-label">補正HCO3⁻ =</span>
+        <input type="number" class="calc-input" id="corr-input" placeholder="—" inputmode="numeric">
+        <button class="btn btn-ghost" id="corr-check">確認②</button>
+      </div>
+      <div id="corr-feedback"></div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" id="next-btn" disabled>次へ →</button>
+    </div>
+  `;
+  const dagInput = $('#dag-input', panel);
+  const dagBtn = $('#dag-check', panel);
+  const dagFb = $('#dag-feedback', panel);
+  const corrBox = $('#corrected-box', panel);
+  const corrInput = $('#corr-input', panel);
+  const corrBtn = $('#corr-check', panel);
+  const corrFb = $('#corr-feedback', panel);
+  let step1Done = false, step2Done = false;
+
+  dagBtn.addEventListener('click', () => {
+    if (step1Done) return;
+    const v = parseInt(dagInput.value);
+    if (isNaN(v)) return;
+    step1Done = true;
+    dagInput.disabled = true;
+    dagBtn.disabled = true;
+    const correct = v === g.deltaAG;
+    const fbEl = el('div', 'feedback ' + (correct ? 'correct' : 'wrong'));
+    fbEl.innerHTML = `
+      <div class="feedback-head">${correct ? '✓ 正解' : '✗ 不正解'}</div>
+      ${correct ? `ΔAG = <strong>${g.deltaAG}</strong>` : `正しくは <strong>${g.deltaAG}</strong>`}
+    `;
+    dagFb.appendChild(fbEl);
+    corrBox.style.display = '';
+    corrBox.querySelector('.calc-formula').textContent = `補正HCO3⁻ = 実測HCO3⁻ + ΔAG = ${currentCase.labs.HCO3} + ${g.deltaAG} = ?`;
+  });
+
+  corrBtn.addEventListener('click', () => {
+    if (step2Done) return;
+    const v = parseInt(corrInput.value);
+    if (isNaN(v)) return;
+    step2Done = true;
+    corrInput.disabled = true;
+    corrBtn.disabled = true;
+    const correct = v === g.correctedHCO3;
+    const fbEl = el('div', 'feedback ' + (correct ? 'correct' : 'wrong'));
+    fbEl.innerHTML = `
+      <div class="feedback-head">${correct ? '✓ 正解' : '✗ 不正解'}</div>
+      ${correct ? '' : `正しくは <strong>${g.correctedHCO3}</strong>。`}
+      ${g.verdict}
+    `;
+    corrFb.appendChild(fbEl);
+    $('#next-btn', panel).disabled = false;
+  });
+
+  $('#next-btn', panel).addEventListener('click', goNext);
+}
+
+// ------- Step: 最終診断 -------
+function renderDiagnosis(panel, c) {
+  panel.innerHTML = `
+    <div class="step-head"><span class="step-num">STEP 06</span><span class="step-title">統合：最終診断を言葉にする</span></div>
+    <div class="step-lead">
+      ここまでの分析を統合し、存在する病態を<strong>全て</strong>選択してください（複数選択可）。
+    </div>
+    <div class="choices" id="dx-choices"></div>
+    <div id="dx-feedback"></div>
+    <div class="actions">
+      <button class="btn btn-ghost" id="dx-submit">この選択で確定</button>
+      <button class="btn btn-primary" id="next-btn" disabled>症例の総括へ →</button>
+    </div>
+  `;
+  const ch = $('#dx-choices', panel);
+  const fbSlot = $('#dx-feedback', panel);
+  const submitBtn = $('#dx-submit', panel);
+  const selected = new Set();
+  let submitted = false;
+
+  c.diagnosis.choices.forEach((item, i) => {
+    const btn = el('button', 'choice', `<span class="choice-icon">${String.fromCharCode(65+i)}</span><span>${item.text}</span>`);
+    btn.addEventListener('click', () => {
+      if (submitted) return;
+      if (selected.has(i)) {
+        selected.delete(i);
+        btn.classList.remove('selected');
+      } else {
+        selected.add(i);
+        btn.classList.add('selected');
+      }
+    });
+    ch.appendChild(btn);
+  });
+
+  submitBtn.addEventListener('click', () => {
+    if (submitted) return;
+    submitted = true;
+    let allCorrect = true;
+    [...ch.children].forEach((o, oi) => {
+      o.style.pointerEvents = 'none';
+      const item = c.diagnosis.choices[oi];
+      const picked = selected.has(oi);
+      if (item.correct && picked) o.classList.add('correct');
+      else if (item.correct && !picked) { o.classList.add('correct'); allCorrect = false; }
+      else if (!item.correct && picked) { o.classList.add('wrong'); allCorrect = false; }
+    });
+    const fbEl = el('div', 'feedback ' + (allCorrect ? 'correct' : 'wrong'));
+    fbEl.innerHTML = `
+      <div class="feedback-head">${allCorrect ? '✓ 完全正解' : '✗ 一部違います'}</div>
+      ${allCorrect ? '全ての病態を正しく抽出できました。' : '緑枠が正解、赤枠は誤選択です。症例の総括で全体像を確認しましょう。'}
+    `;
+    fbSlot.appendChild(fbEl);
+    submitBtn.disabled = true;
+    $('#next-btn', panel).disabled = false;
+  });
+
+  $('#next-btn', panel).addEventListener('click', goNext);
+}
+
+// ------- Step: 総括 -------
+function renderSummary(panel, c) {
+  const correctDx = c.diagnosis.choices.filter(x => x.correct).map(x => x.text);
+  panel.innerHTML = `
+    <div class="summary">
+      <div class="summary-label">// Diagnostic Synthesis</div>
+      <div class="summary-title">${c.title}</div>
+      <ul class="diagnosis-list">
+        ${correctDx.map(t => `<li>${t}</li>`).join('')}
+      </ul>
+      <div class="narrative">${c.diagnosis.narrative}</div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-ghost" id="retry-btn">もう一度この症例を解く</button>
+      <button class="btn btn-primary" id="back-list-btn">症例一覧へ戻る</button>
+    </div>
+  `;
+  $('#retry-btn', panel).addEventListener('click', () => openCase(c.id));
+  $('#back-list-btn', panel).addEventListener('click', backToList);
+}
+
+function goNext() {
+  stepIndex++;
+  renderCase();
+  // 次ステップのパネルへスクロール
+  setTimeout(() => {
+    const p = $('#step-panel');
+    if (p) p.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
+}
+
+// ================================================
+// 起動
+// ================================================
+document.addEventListener('DOMContentLoaded', () => {
+  initModeNav();
+  renderCaseList();
+  renderDict();
+  renderPrinciples();
+});
+
+</script>
+
+</body>
+</html>
