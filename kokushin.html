@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>無床診療所のための2026年度診療報酬改訂の傾向と対策 ─ 国診協若手の会 勉強会レポート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Zen+Kaku+Gothic+New:wght@300;400;500;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1a1814;
+  --paper:#f5f1e8;
+  --paper-2:#ebe4d2;
+  --paper-3:#e0d7bf;
+  --accent:#8b2635;
+  --accent-deep:#5a1621;
+  --gold:#a67c3a;
+  --sage:#4a5d3a;
+  --muted:#6b6556;
+  --line:#2a2620;
+  --hairline:#c8bfa5;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{
+  font-family:'Shippori Mincho','Noto Serif JP',serif;
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.85;
+  font-size:16px;
+  overflow-x:hidden;
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(166,124,58,0.04) 0%, transparent 40%),
+    radial-gradient(circle at 85% 70%, rgba(139,38,53,0.03) 0%, transparent 40%);
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.09 0 0 0 0 0.08 0 0 0 0.12 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:0.5;
+  pointer-events:none;
+  z-index:1;
+  mix-blend-mode:multiply;
+}
+
+/* ───────── Top Bar ───────── */
+.topbar{
+position:fixed;top:0;left:0;right:0;
+z-index:100;
+background:rgba(245,241,232,0.85);
+backdrop-filter:blur(10px);
+border-bottom:1px solid var(–hairline);
+padding:14px 32px;
+display:flex;justify-content:space-between;align-items:center;
+font-family:‘JetBrains Mono’,monospace;
+font-size:11px;letter-spacing:0.15em;text-transform:uppercase;
+}
+.topbar-left{display:flex;gap:24px;align-items:center}
+.topbar-mark{
+width:24px;height:24px;border:1.5px solid var(–ink);
+display:flex;align-items:center;justify-content:center;
+font-family:‘Cormorant Garamond’,serif;font-weight:700;font-size:14px;
+letter-spacing:0;
+}
+.topbar-right{color:var(–muted)}
+
+/* ───────── Hero ───────── */
+.hero{
+min-height:100vh;
+padding:120px 40px 80px;
+display:grid;
+grid-template-columns:1fr;
+gap:40px;
+position:relative;
+z-index:2;
+max-width:1400px;
+margin:0 auto;
+}
+.hero-meta{
+font-family:‘JetBrains Mono’,monospace;
+font-size:11px;
+letter-spacing:0.2em;
+text-transform:uppercase;
+color:var(–muted);
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+align-items:center;
+padding-bottom:24px;
+border-bottom:1px solid var(–hairline);
+}
+.hero-meta span{display:flex;align-items:center;gap:8px}
+.hero-meta .dot{width:4px;height:4px;background:var(–accent);border-radius:50%}
+.hero-eyebrow{
+font-family:‘Cormorant Garamond’,serif;
+font-style:italic;
+font-size:24px;
+color:var(–accent);
+margin-bottom:20px;
+letter-spacing:0.02em;
+}
+.hero h1{
+font-family:‘Shippori Mincho’,serif;
+font-weight:800;
+font-size:clamp(42px,7vw,92px);
+line-height:1.1;
+letter-spacing:-0.02em;
+margin-bottom:30px;
+color:var(–ink);
+}
+.hero h1 .stroke{
+-webkit-text-stroke:1.5px var(–ink);
+color:transparent;
+font-style:italic;
+font-family:‘Cormorant Garamond’,serif;
+font-weight:500;
+font-size:0.9em;
+}
+.hero-sub{
+font-size:20px;
+font-weight:500;
+color:var(–muted);
+max-width:720px;
+border-left:2px solid var(–accent);
+padding-left:24px;
+margin-bottom:40px;
+}
+.hero-info{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:30px;
+padding-top:32px;
+border-top:1px solid var(–hairline);
+max-width:960px;
+}
+.hero-info-item{
+display:flex;
+flex-direction:column;
+gap:6px;
+}
+.hero-info-label{
+font-family:‘JetBrains Mono’,monospace;
+font-size:10px;
+letter-spacing:0.2em;
+text-transform:uppercase;
+color:var(–muted);
+}
+.hero-info-val{
+font-family:‘Shippori Mincho’,serif;
+font-size:17px;
+font-weight:500;
+}
+
+/* 大きな飾り文字 */
+.hero-deco{
+position:absolute;
+right:-80px;
+top:180px;
+font-family:‘Cormorant Garamond’,serif;
+font-style:italic;
+font-size:480px;
+line-height:1;
+color:rgba(139,38,53,0.06);
+pointer-events:none;
+font-weight:400;
+z-index:1;
+}
+
+/* ───────── Alert Box ───────── */
+.alert-strip{
+max-width:1400px;
+margin:0 auto 80px;
+padding:0 40px;
+position:relative;
+z-index:2;
+}
+.alert-box{
+background:var(–ink);
+color:var(–paper);
+padding:40px 48px;
+border-left:8px solid var(–accent);
+display:grid;
+grid-template-columns:auto 1fr;
+gap:40px;
+align-items:center;
+position:relative;
+overflow:hidden;
+}
+.alert-box::before{
+content:’!’;
+position:absolute;
+right:40px;top:50%;transform:translateY(-50%);
+font-family:‘Cormorant Garamond’,serif;
+font-style:italic;
+font-size:180px;
+color:rgba(245,241,232,0.07);
+font-weight:700;
+line-height:1;
+}
+.alert-label{
+font-family:‘JetBrains Mono’,monospace;
+font-size:11px;
+letter-spacing:0.25em;
+text-transform:uppercase;
+writing-mode:vertical-rl;
+border-left:2px solid var(–accent);
+padding-left:16px;
+color:var(–accent);
+}
+.alert-content h3{
+font-family:‘Shippori Mincho’,serif;
+font-size:24px;
+font-weight:700;
+margin-bottom:16px;
+letter-spacing:0.02em;
+}
+.alert-content ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.alert-content li{
+display:grid;
+grid-template-columns:90px 1fr;
+gap:24px;
+font-size:15px;
+}
+.alert-content li .d{
+font-family:‘JetBrains Mono’,monospace;
+font-weight:700;
+color:var(–accent);
+font-size:13px;
+letter-spacing:0.05em;
+padding-top:3px;
+}
+
+/* ───────── Layout ───────── */
+.main-wrap{
+max-width:1400px;
+margin:0 auto;
+padding:0 40px 120px;
+position:relative;
+z-index:2;
+display:grid;
+grid-template-columns:240px 1fr;
+gap:80px;
+}
+
+/* TOC */
+.toc{
+position:sticky;
+top:80px;
+align-self:start;
+max-height:calc(100vh - 100px);
+overflow-y:auto;
+padding-top:20px;
+}
+.toc-title{
+font-family:‘JetBrains Mono’,monospace;
+font-size:10px;
+letter-spacing:0.25em;
+text-transform:uppercase;
+color:var(–muted);
+margin-bottom:20px;
+padding-bottom:12px;
+border-bottom:1px solid var(–hairline);
+}
+.toc ul{list-style:none}
+.toc a{
+display:block;
+font-family:‘Shippori Mincho’,serif;
+font-size:13px;
+color:var(–muted);
+text-decoration:none;
+padding:10px 0;
+border-bottom:1px dotted var(–hairline);
+transition:all 0.3s;
+position:relative;
+padding-left:18px;
+}
+.toc a::before{
+content:’’;
+position:absolute;
+left:0;top:50%;transform:translateY(-50%);
+width:6px;height:6px;
+border:1px solid var(–hairline);
+border-radius:50%;
+transition:all 0.3s;
+}
+.toc a:hover{color:var(–ink);padding-left:24px}
+.toc a:hover::before{background:var(–accent);border-color:var(–accent)}
+
+/* Article */
+article{max-width:820px}
+.intro{
+margin-bottom:100px;
+position:relative;
+}
+.dropcap{
+float:left;
+font-family:‘Cormorant Garamond’,serif;
+font-size:96px;
+line-height:0.85;
+padding:8px 14px 0 0;
+color:var(–accent);
+font-weight:700;
+font-style:italic;
+}
+.intro p{
+font-size:17px;
+margin-bottom:24px;
+text-align:justify;
+}
+.intro p.lead{
+font-size:22px;
+line-height:1.7;
+font-weight:500;
+color:var(–ink);
+margin-bottom:32px;
+}
+.pullquote{
+margin:50px 0;
+padding:40px 0 40px 40px;
+border-left:3px solid var(–accent);
+font-family:‘Shippori Mincho’,serif;
+font-size:22px;
+font-weight:500;
+line-height:1.6;
+font-style:italic;
+color:var(–accent-deep);
+position:relative;
+}
+.pullquote::before{
+content:’”’;
+position:absolute;
+font-family:‘Cormorant Garamond’,serif;
+font-size:100px;
+line-height:1;
+color:var(–accent);
+opacity:0.3;
+left:40px;top:-20px;
+}
+
+/* Section */
+section.chapter{
+margin-bottom:120px;
+scroll-margin-top:80px;
+}
+.chapter-header{
+display:flex;
+align-items:baseline;
+gap:24px;
+margin-bottom:50px;
+padding-bottom:24px;
+border-bottom:2px solid var(–ink);
+position:relative;
+}
+.chapter-num{
+font-family:‘Cormorant Garamond’,serif;
+font-style:italic;
+font-size:72px;
+font-weight:500;
+line-height:0.9;
+color:var(–accent);
+}
+.chapter-title{
+font-family:‘Shippori Mincho’,serif;
+font-size:38px;
+font-weight:700;
+letter-spacing:0.02em;
+line-height:1.2;
+}
+.chapter-en{
+font-family:‘Cormorant Garamond’,serif;
+font-style:italic;
+font-size:14px;
+color:var(–muted);
+display:block;
+margin-top:6px;
+font-weight:400;
+letter-spacing:0.1em;
+}
+
+h3.topic{
+font-family:‘Shippori Mincho’,serif;
+font-size:22px;
+font-weight:700;
+margin:50px 0 20px;
+padding-top:24px;
+border-top:1px solid var(–hairline);
+position:relative;
+scroll-margin-top:80px;
+}
+h3.topic::before{
+content:’’;
+position:absolute;
+top:-1px;left:0;
+width:50px;height:2px;
+background:var(–accent);
+}
+h3.topic .tag{
+display:inline-block;
+font-family:‘JetBrains Mono’,monospace;
+font-size:10px;
+font-weight:700;
+letter-spacing:0.15em;
+padding:4px 10px;
+margin-right:12px;
+vertical-align:2px;
+background:var(–ink);
+color:var(–paper);
+text-transform:uppercase;
+}
+h3.topic .tag.new{background:var(–accent)}
+h3.topic .tag.crit{background:var(–sage)}
+h3.topic .tag.alert{background:var(–accent-deep)}
+
+p{margin-bottom:18px;font-size:16px;text-align:justify}
+p strong{font-weight:700;color:var(–accent-deep);background:linear-gradient(180deg,transparent 60%,rgba(166,124,58,0.25) 60%)}
+article ul, article ol{padding-left:24px;margin-bottom:24px}
+article li{margin-bottom:8px;font-size:16px;line-height:1.8}
+article li::marker{color:var(–accent)}
+article strong{font-weight:700}
+
+/* Info Card */
+.info-card{
+background:var(–paper-2);
+border:1px solid var(–hairline);
+padding:32px 36px;
+margin:32px 0;
+position:relative;
+}
+.info-card::before{
+content:’’;
+position:absolute;top:0;left:0;
+width:4px;height:100%;
+background:var(–gold);
+}
+.info-card-label{
+font-family:‘JetBrains Mono’,monospace;
+font-size:10px;
+letter-spacing:0.2em;
+text-transform:uppercase;
+color:var(–gold);
+margin-bottom:14px;
+display:block;
+}
+.info-card h4{
+font-family:‘Shippori Mincho’,serif;
+font-size:18px;
+font-weight:700;
+margin-bottom:14px;
+}
+
+/* Critical Card */
+.crit-card{
+background:#2a2620;
+color:var(–paper);
+padding:32px 36px;
+margin:32px 0;
+position:relative;
+border-left:4px solid var(–accent);
+}
+.crit-card::before{
+content:‘重要’;
+position:absolute;
+top:-12px;left:20px;
+background:var(–accent);
+color:var(–paper);
+padding:4px 14px;
+font-family:‘Shippori Mincho’,serif;
+font-size:12px;
+font-weight:700;
+letter-spacing:0.15em;
+}
+.crit-card h4{
+font-family:‘Shippori Mincho’,serif;
+font-size:18px;
+font-weight:700;
+margin-bottom:14px;
+color:var(–paper-2);
+}
+.crit-card p{color:rgba(245,241,232,0.9);font-size:15px}
+.crit-card strong{color:var(–paper);background:linear-gradient(180deg,transparent 60%,rgba(139,38,53,0.5) 60%)}
+
+/* Tables */
+.table-wrap{
+margin:32px 0;
+overflow-x:auto;
+border:1px solid var(–hairline);
+}
+table{
+width:100%;
+border-collapse:collapse;
+background:var(–paper);
+font-size:14px;
+}
+thead{
+background:var(–ink);
+color:var(–paper);
+}
+th{
+padding:14px 16px;
+text-align:left;
+font-family:‘JetBrains Mono’,monospace;
+font-size:11px;
+letter-spacing:0.15em;
+text-transform:uppercase;
+font-weight:500;
+}
+td{
+padding:14px 16px;
+border-bottom:1px solid var(–hairline);
+vertical-align:top;
+line-height:1.6;
+}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(–paper-2)}
+td strong{color:var(–accent-deep)}
+
+/* Timeline */
+.timeline{
+margin:32px 0;
+background:var(–paper-2);
+padding:32px;
+border:1px solid var(–hairline);
+}
+.timeline-title{
+font-family:‘JetBrains Mono’,monospace;
+font-size:11px;
+letter-spacing:0.2em;
+text-transform:uppercase;
+color:var(–muted);
+margin-bottom:20px;
+}
+.timeline-item{
+display:grid;
+grid-template-columns:180px 1fr;
+gap:24px;
+padding:14px 0;
+border-bottom:1px dotted var(–hairline);
+align-items:baseline;
+}
+.timeline-item:last-child{border-bottom:none}
+.timeline-date{
+font-family:‘JetBrains Mono’,monospace;
+font-size:12px;
+font-weight:700;
+color:var(–accent);
+letter-spacing:0.05em;
+}
+.timeline-content{font-size:15px}
+
+/* Q&A */
+.qa-section{
+background:linear-gradient(180deg, var(–paper-2) 0%, var(–paper) 100%);
+padding:80px 40px;
+margin:100px -40px;
+border-top:1px solid var(–hairline);
+border-bottom:1px solid var(–hairline);
+scroll-margin-top:80px;
+}
+.qa-wrap{max-width:820px;margin:0 auto}
+.qa-item{
+margin-bottom:60px;
+position:relative;
+}
+.qa-num{
+font-family:‘Cormorant Garamond’,serif;
+font-style:italic;
+font-size:90px;
+line-height:1;
+color:var(–accent);
+opacity:0.3;
+position:absolute;
+left:-60px;top:-10px;
+font-weight:400;
+}
+.qa-question{
+background:var(–ink);
+color:var(–paper);
+padding:24px 32px;
+margin-bottom:24px;
+position:relative;
+font-family:‘Shippori Mincho’,serif;
+font-size:17px;
+line-height:1.7;
+font-style:italic;
+border-left:4px solid var(–gold);
+}
+.qa-question::before{
+content:‘Q’;
+font-family:‘Cormorant Garamond’,serif;
+font-style:italic;
+font-size:40px;
+font-weight:700;
+color:var(–gold);
+float:left;
+line-height:0.8;
+padding-right:16px;
+}
+.qa-answer{
+padding:0 0 0 32px;
+border-left:2px solid var(–accent);
+}
+.qa-answer::before{
+content:‘A’;
+font-family:‘Cormorant Garamond’,serif;
+font-style:italic;
+font-size:40px;
+font-weight:700;
+color:var(–accent);
+float:left;
+line-height:0.8;
+margin:4px 16px 0 -32px;
+background:var(–paper-2);
+width:30px;
+text-align:center;
+}
+
+/* Closing */
+.closing{
+margin:100px 0 60px;
+padding:60px 48px;
+background:var(–ink);
+color:var(–paper);
+position:relative;
+overflow:hidden;
+}
+.closing::before{
+content:’’;
+position:absolute;
+right:-100px;top:-100px;
+width:400px;height:400px;
+background:radial-gradient(circle, rgba(166,124,58,0.15) 0%, transparent 70%);
+}
+.closing h3{
+font-family:‘Shippori Mincho’,serif;
+font-size:28px;
+font-weight:700;
+margin-bottom:24px;
+color:var(–paper);
+}
+.closing p{color:rgba(245,241,232,0.85);font-size:16px;line-height:1.9}
+.closing strong{color:var(–gold);background:none}
+
+/* Footer */
+footer{
+max-width:1400px;
+margin:0 auto;
+padding:60px 40px 40px;
+border-top:1px solid var(–hairline);
+display:grid;
+grid-template-columns:1fr auto;
+gap:40px;
+align-items:center;
+position:relative;
+z-index:2;
+}
+.footer-note{
+font-size:12px;
+color:var(–muted);
+line-height:1.7;
+font-style:italic;
+max-width:600px;
+}
+.footer-mark{
+font-family:‘Cormorant Garamond’,serif;
+font-style:italic;
+font-size:20px;
+color:var(–muted);
+text-align:right;
+}
+.footer-mark span{display:block;font-family:‘JetBrains Mono’,monospace;font-style:normal;font-size:10px;letter-spacing:0.2em;margin-top:6px;color:var(–hairline)}
+
+/* responsive */
+@media(max-width:1024px){
+.main-wrap{grid-template-columns:1fr;gap:40px}
+.toc{position:static;max-height:none}
+.hero-deco{font-size:260px;right:-40px;top:100px}
+.alert-box{grid-template-columns:1fr;gap:20px}
+.alert-label{writing-mode:horizontal-tb;border-left:none;border-top:2px solid var(–accent);padding-left:0;padding-top:12px}
+.qa-num{display:none}
+.qa-section{padding:60px 24px;margin:80px -24px}
+.chapter-num{font-size:54px}
+.chapter-title{font-size:28px}
+}
+@media(max-width:640px){
+.hero{padding:100px 20px 60px}
+.alert-strip{padding:0 20px}
+.main-wrap{padding:0 20px 60px}
+.hero h1{font-size:42px}
+.alert-box{padding:28px 24px}
+.closing{padding:40px 28px;margin:60px -20px}
+.timeline-item{grid-template-columns:1fr;gap:6px}
+footer{padding:40px 20px;grid-template-columns:1fr;text-align:center}
+.footer-mark{text-align:center}
+}
+</style>
+
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-mark">報</div>
+    <span>Clinic Report / Vol.01</span>
+  </div>
+  <div class="topbar-right">2026.04.24 — Study Note</div>
+</div>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+
+<section class="hero">
+  <div class="hero-deco">医</div>
+
+  <div class="hero-meta">
+    <span><span class="dot"></span>国診協若手の会 勉強会レポート</span>
+    <span>2026.04.24 Thu 19:30</span>
+    <span>Session #03</span>
+  </div>
+
+  <div>
+    <div class="hero-eyebrow">A Concise Field Guide for Rural Clinics</div>
+    <h1>
+      無床診療所のための<br>
+      <span class="stroke">2026</span>年度<br>
+      診療報酬改訂の<br>
+      傾向と対策
+    </h1>
+  </div>
+
+  <p class="hero-sub">
+    6月の施行を目前に控えた改訂内容を、浜田市国保診療所連合体での実務整理をもとに、要点・算定ポイント・準備スケジュールに分解してお届けする現場のためのフィールドノート。
+  </p>
+
+  <div class="hero-info">
+    <div class="hero-info-item">
+      <span class="hero-info-label">Speaker</span>
+      <span class="hero-info-val">佐藤 誠 先生</span>
+      <span style="font-size:12px;color:var(--muted);margin-top:4px">浜田市国保診療所連合体 医療統括監<br>弥栄診療所 所長</span>
+    </div>
+    <div class="hero-info-item">
+      <span class="hero-info-label">Moderator</span>
+      <span class="hero-info-val">多田 先生</span>
+      <span style="font-size:12px;color:var(--muted);margin-top:4px">和歌山県立医科大学<br>地域医療支援センター</span>
+    </div>
+    <div class="hero-info-item">
+      <span class="hero-info-label">Date</span>
+      <span class="hero-info-val">2026年4月24日(金)</span>
+      <span style="font-size:12px;color:var(--muted);margin-top:4px">19:30 – 20:40 / オンライン</span>
+    </div>
+    <div class="hero-info-item">
+      <span class="hero-info-label">Scope</span>
+      <span class="hero-info-val">外来・在宅・検査・投薬</span>
+      <span style="font-size:12px;color:var(--muted);margin-top:4px">厚労省資料＋保険医協会資料より</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ ALERT ═══════════════ -->
+
+<div class="alert-strip">
+  <div class="alert-box">
+    <div class="alert-label">Key Deadlines</div>
+    <div class="alert-content">
+      <h3>今すぐ動くべき、二つの期限</h3>
+      <ul>
+        <li>
+          <span class="d">2026.05.20</span>
+          <span><strong>充実管理加算</strong>（旧外来データ提出加算）の様式7の10を提出。これを逃すと翌年度の実績算定に間に合わず、再来年度4月以降の30/20/10点コースに乗れない。</span>
+        </li>
+        <li>
+          <span class="d">2026.06.01</span>
+          <span><strong>在総管・施設総管</strong>の重症者割合要件を満たす届出。<em style="color:var(--accent);font-style:normal;font-weight:700">経過措置なし</em>。2〜4月実績で判定。月2回訪問で重症患者20%未満なら月1回点数に降格。</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+
+<div class="main-wrap">
+
+  <aside class="toc">
+    <div class="toc-title">— Contents</div>
+    <ul>
+      <li><a href="#intro">Prologue — はじめに</a></li>
+      <li><a href="#ch1">Ⅰ. 外来編</a></li>
+      <li><a href="#ch2">Ⅱ. 在宅診療編</a></li>
+      <li><a href="#ch3">Ⅲ. 検査編</a></li>
+      <li><a href="#ch4">Ⅳ. 投薬編</a></li>
+      <li><a href="#ch5">Ⅴ. その他</a></li>
+      <li><a href="#qa">Q&amp;A 質疑応答</a></li>
+      <li><a href="#closing">Epilogue — 全体総括</a></li>
+    </ul>
+  </aside>
+
+  <article>
+
+```
+<!-- ─── INTRO ─── -->
+<section class="intro" id="intro">
+  <p class="lead">6月の施行を目前に控えた2026年度診療報酬改訂。この勉強会は、その膨大な変更点を「現場で何をすべきか」に落とし込むことを目的に開催された。講師は、島根県・浜田で13年にわたり地域医療に従事する佐藤誠先生。</p>
+
+  <p><span class="dropcap">医</span>師21年目を迎える佐藤先生は、和歌山県立医大を卒業後、神奈川・岐阜・福岡・茨城・新潟と経験を積み、2013年から浜田市の診療所へ。現在は浜田市国保診療所連合体の医療統括監として、あさひ・波佐・弥栄・大麻の4診療所と浜田医療センター総合診療科が連携する体制を支えている。</p>
+
+  <p>浜田市国保診療所連合体では、毎回の改訂時に弥栄診療所で厚労省ビデオを集中的に視聴・分析し、その成果を他の診療所に展開することで各施設の負担を減らしている。今回の講演は、そのプロセスで作り込まれた連合体内部の勉強会資料を、ほぼそのまま国診協若手の会に共有してくださったものだ。</p>
+
+  <div class="pullquote">
+    13年前、初めて診療所長になったとき、頭の8割方が「お金のこと」で、ほとんど患者さんのことを考えられなかった。少しでも後に続く先生方の抵抗感を減らしたい。
+  </div>
+
+  <p>そう語る佐藤先生の基本スタンスは明快だ──<strong>「取れるものはきちんと取る」</strong>。患者負担が増える構造的な問題は制度側に起因するものであり、診療所側が点数を取りに行かないことで解決すべきではない。受診の困難は市町村が別途手当てすべき、という明確な哲学のもとで、今回の整理も行われている。</p>
+
+  <p>以下、外来・在宅・検査・投薬・その他の5カテゴリに分けて、本編をたどっていく。</p>
+</section>
+
+<!-- ═══════════ CH1 外来編 ═══════════ -->
+<section class="chapter" id="ch1">
+  <div class="chapter-header">
+    <div class="chapter-num">Ⅰ</div>
+    <div>
+      <div class="chapter-title">外来編</div>
+      <span class="chapter-en">Outpatient Care — Core Changes</span>
+    </div>
+  </div>
+
+  <h3 class="topic">健診と診察を同日に行う場合の注意点</h3>
+  <p>特定健診・生保健診・後期高齢者健診などを実施した当日に、健診項目と重複する疾患の診療を行うと、<strong>再診料・時間外対応加算・外来感染対策向上加算・連携強化加算などが算定できなくなる</strong>ケースが明確化された。</p>
+  <p>例えば、特定健診にはHbA1cが含まれるため、同日に糖尿病の診察をすると再診料すら取れない。高血圧・脂質異常症・糖尿病といったメタボ系疾患を持つ患者さんについては、<strong>健診と診察は別日に分けたほうが安全</strong>である。</p>
+  <p>一方、健診内容と直接関係ない疾患（湿疹、足関節捻挫、腰痛など）の診療であれば従来通り算定可能。予防接種については、インフルエンザ予防接種時にインフルエンザの診療を、帯状疱疹ワクチン時に帯状疱疹の診療をするケースはまずないため、基本的には問題なしと捉えて良い。</p>
+
+  <h3 class="topic"><span class="tag">改訂</span>機能強化加算に「BCP策定」が追加</h3>
+  <p>かかりつけ医機能を評価する機能強化加算（初診時80点）の算定要件に、<strong>業務継続計画（BCP）の策定</strong>が追加された。厚労省HPに「業務継続計画策定の手引き」があるが、80ページに及ぶ難物──佐藤先生は「見てパッと頭痛に襲われた」とのこと。保険医協会が簡単なひな形を用意しているので、これを活用するのが現実的だ。</p>
+
+  <h3 class="topic"><span class="tag new">新設</span>電子的診療情報連携体制整備加算</h3>
+  <p>従来の「医療DX推進体制整備加算」と「医療情報取得加算」が統合され、<strong>電子的診療情報連携体制整備加算</strong>として整理された。3段階構成で、国が電子処方箋の普及を強力に推し進めていることが明確なメッセージとして読み取れる。</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>区分</th><th>初診時</th><th>要件</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>加算1</strong></td><td>15点</td><td>要件(1)〜(10)の全て — 電子処方箋が必須</td></tr>
+        <tr><td><strong>加算2</strong></td><td>9点</td><td>要件(1)〜(7)＋(8)〜(10)のいずれか</td></tr>
+        <tr><td><strong>加算3</strong></td><td>4点</td><td>要件(1)〜(7)の全て</td></tr>
+        <tr><td>再診時</td><td>2点</td><td>月に1回</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>浜田の診療所では現状、電子処方箋未導入のため「加算2」を狙う方針。<strong>国が2回・3回と連続して言及する項目は必ず推進していく方向</strong>なので、電子処方箋は今後外せない要件になる見込み。補助金が出ているうちに導入しておくのが賢明だ。</p>
+
+  <h3 class="topic"><span class="tag">統合</span>地域包括診療加算 — 対象範囲が拡大</h3>
+  <p>認知症地域包括診療加算と地域包括診療加算が統合され、<strong>「認知症を有する患者等」の場合31点</strong>、<strong>その他の慢性疾患の場合21点</strong>に整理された。</p>
+
+  <div class="info-card">
+    <span class="info-card-label">— 隠れた重要ポイント</span>
+    <h4>「認知症を有する患者等」の定義</h4>
+    <p style="margin-bottom:12px">以下の全てを満たせば該当する。認知症がなくても該当するのがポイント。</p>
+    <ul style="padding-left:18px">
+      <li><strong>(イ)</strong> 認知症を有する <em>または</em> 介護給付・予防給付を受けている要介護被保険者等</li>
+      <li><strong>(ロ)</strong> 認知症以外の1以上の疾病を有する</li>
+      <li><strong>(ハ)</strong> 同月に当該医療機関で多剤処方を受けていない（内服5種超、向精神薬3種超が不可）</li>
+    </ul>
+    <p style="margin-top:14px;margin-bottom:0">つまり <strong>糖尿病＋変形性膝関節症で介護保険を受けていて薬が少ない患者</strong> は、認知症がなくても「31点コース」に該当する。</p>
+  </div>
+
+  <p>また、連携薬局要件も緩和され、<strong>解熱鎮痛消炎剤・血圧降下剤・気管支拡張剤を院内処方できる体制があれば、24時間対応薬局との連携は不要</strong>になった。</p>
+
+  <h3 class="topic">特定疾患療養管理料 — NSAIDs処方中は対象外</h3>
+  <p>胃潰瘍・十二指腸潰瘍を主病としている患者に、<strong>消化性潰瘍に禁忌のNSAIDsを投与している間は、特定疾患療養管理料が算定不可</strong>となった。</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>区分</th><th>該当薬剤</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong style="color:var(--accent)">禁忌</strong></td><td>ロキソプロフェンナトリウム、ジクロフェナク内服、<strong>ジクトルテープ</strong></td></tr>
+        <tr><td>慎重投与</td><td>アセトアミノフェン（カロナール）→ 胃潰瘍では慎重投与扱いで出せる</td></tr>
+        <tr><td>問題なし</td><td>ロキソプロフェンテープ、ケトプロフェンテープなど通常の湿布</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>ジクトルテープは内服NSAIDsと同等の全身作用があるため禁忌に該当。処方時には要注意。また算定要件に<strong>「28日以上の長期処方またはリフィル処方への対応が可能であることの院内掲示」</strong>が追加された（生活習慣病管理料を既に算定していれば該当済み）。</p>
+
+  <h3 class="topic"><span class="tag new">新設</span>難病外来指導管理料2（270点）</h3>
+  <p>小児科療養指導料の対象疾患だった患者が、小児科から他科（内科など）に移行した際、<strong>紹介を受けてから5年以内</strong>に限り算定可能な区分が新設された。ダウン症の成人患者さんなど、トランジション（成人移行）の場面で使える可能性がある。</p>
+
+  <h3 class="topic">生活習慣病管理料 — 主な変更点</h3>
+  <p>高血圧・糖尿病・脂質異常症のメタボ3疾患を主病とする場合はこちらが算定対象。「1（丸め）」「2（出来高に近い）」の2種類は変わらないが、いくつか実務的に重要な変更があった。</p>
+
+  <p><strong>① 糖尿病主病でも糖尿病関連以外の注射薬には在宅自己注射指導管理料が算定可能</strong><br>エピペンや抗リウマチ薬（エタネルセプトなど）の自己注射を指導している場合、従来は算定不可だったが、算定可能になった。</p>
+
+  <p><strong>② 眼科・歯科への紹介で連携強化加算が年1回算定可能（各60点）</strong><br>糖尿病主病の患者を眼科または歯科に紹介した場合、以下を満たせば60点×年1回が加算できる：</p>
+  <ul>
+    <li>自院の眼科・歯科ではなく、他の保険医療機関へ紹介すること</li>
+    <li>診療情報を示す文書を添付（糖尿病手帳のみでは不可、紹介状が必要）</li>
+    <li>患者と相談のうえ受診予定日を定める。予約までは不要だが「来週中に行くように指示」とカルテに記載</li>
+    <li>次回診察時に受診状況を確認しカルテに記載</li>
+  </ul>
+
+  <p><strong>③ 療養計画書の簡略化</strong><br>初回と継続の計画書が統一され、<strong>患者署名欄が削除</strong>された。血圧目標や服薬指導を書いてすぐ交付すればOK。概ね4月に1回以上の交付は維持される。</p>
+
+  <p><strong>④ 包括範囲から除外された医学管理料</strong><br>下肢創傷処置管理料、特定薬剤治療管理料、がん患者指導管理料、時間外・救急対応に関する医学管理、傷病手当金意見書交付料などが別途算定可能に。</p>
+
+  <h3 class="topic"><span class="tag new">新設</span>充実管理加算 — 外来データ提出の新スキーム</h3>
+  <p>従来の「外来データ提出加算」が<strong>充実管理加算</strong>に改称され、質の高い生活習慣病管理実績に応じて3段階の評価になった。</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>区分</th><th>点数</th><th>要件</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>加算1</strong></td><td>30点</td><td>実績値が上位20%</td></tr>
+        <tr><td><strong>加算2</strong></td><td>20点</td><td>上位50%</td></tr>
+        <tr><td><strong>加算3</strong></td><td>10点</td><td>参加全体（初期段階）</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="crit-card">
+    <h4>2026年6月から動かないと翌年度に間に合わない</h4>
+    <p>各疾患の指標（脂質異常症：継続投薬中の検査実施率／糖尿病：HbA1c検査率・眼科歯科連携加算算定率／高血圧：継続受診率）を国に提出し、上位ランクを目指す仕組み。</p>
+  </div>
+
+  <div class="timeline">
+    <div class="timeline-title">— 新規届出スケジュール（令和8年10月開始コース）</div>
+    <div class="timeline-item"><div class="timeline-date">2026.05.20</div><div class="timeline-content">様式7の10を提出</div></div>
+    <div class="timeline-item"><div class="timeline-date">2026.06 – 07</div><div class="timeline-content">試行データ作成</div></div>
+    <div class="timeline-item"><div class="timeline-date">2026.08</div><div class="timeline-content">試行データ提出</div></div>
+    <div class="timeline-item"><div class="timeline-date">2026.09</div><div class="timeline-content">様式届出</div></div>
+    <div class="timeline-item"><div class="timeline-date">2026.10 – 27.09</div><div class="timeline-content">継続的なデータ提出（この間は充実管理加算3 = 10点）</div></div>
+    <div class="timeline-item"><div class="timeline-date">2027.10 – 28.03</div><div class="timeline-content">実績値確定・医療機関へ通知</div></div>
+    <div class="timeline-item"><div class="timeline-date">2028.04 —</div><div class="timeline-content">実績に基づく加算算定開始（1/2/3の各区分）</div></div>
+  </div>
+
+  <p>ORCAを使っている施設はデータ抽出機能が使えるとのこと。<strong>国がビッグデータを集めにいっている流れ</strong>なので、食らいついていったほうがいい──というのが佐藤先生の明確な見解だ。</p>
+
+  <h3 class="topic">療養・就労両立支援指導料 — 対象疾患の制限撤廃</h3>
+  <p>従来は対象疾患が列挙されていたが、<strong>「疾患の増悪防止等のための反復継続した治療が必要な患者であって、就業の継続に配慮が必要なもの」</strong>という要件に変更され、<strong>うつ病など幅広い疾患が対象に</strong>なった。</p>
+  <p>点数も引き上げ（初回850点、2回目以降500点、相談支援加算400点）。スタートは産業医からの文書なので、<strong>産業医をされている先生が積極的に「両立支援カード」を作成すると、主治医の先生方に喜ばれる</strong>という使い方が推奨される。</p>
+
+  <h3 class="topic">病院との連携 — 新設・見直し</h3>
+  <p><strong>【新設】特定機能病院等紹介患者受入加算（60点）</strong><br>特定機能病院・地域医療支援病院・紹介受診重点医療機関・400床以上の病院から紹介を受けて初診を行った場合に算定可能。</p>
+  <p><strong>連携強化診療情報提供料の見直し</strong><br>病院の専門医と地域のかかりつけ医が連携して共同治療を行う際、リウマチ患者さんの共同管理ノートなどを介した情報提供でも算定可能に。算定回数は一律「患者1人につき3月に1回」に整理され、150点を算定できる。</p>
+
+  <h3 class="topic">オンライン診療 — D to P with D / D to P with N の拡大</h3>
+  <p><strong>遠隔連携診療料（D to P with D）</strong>の対象疾患が拡大され、外来・訪問・入院それぞれの場面で活用可能に。3月に1回算定可能。</p>
+  <p><strong>D to P with N（看護師同席のオンライン診療）</strong>は、医療機関の看護師や訪問看護ステーションの看護師が患家に訪問してオンライン診療を行う場合の評価が明確化された。</p>
+
+  <div class="info-card">
+    <span class="info-card-label">— ポイント</span>
+    <h4>D to P with N の算定区分け</h4>
+    <ul style="padding-left:18px">
+      <li><strong>定期訪問看護中のオンライン診療</strong> → 通常算定（訪問看護・指導料＋オンライン診療）</li>
+      <li><strong>緊急時のオンライン診療</strong> → 訪問看護遠隔診療補助料が算定可</li>
+      <li><strong>看護師同席下で検査・注射・処置を実施</strong> → 看護師等遠隔診療検査実施料／注射実施料／処置実施料（各100〜150点）が算定可能</li>
+    </ul>
+  </div>
+
+  <h3 class="topic">CPAP — 基準緩和と新しい縛り</h3>
+  <p><strong>適応基準の緩和：</strong></p>
+  <ul>
+    <li>簡易ポリグラフィーAHI 40以上 → <strong>30以上</strong></li>
+    <li>ポリソムノグラフィーAHI 20以上 → <strong>15以上</strong></li>
+  </ul>
+  <p><strong>一方で厳しい条件も追加：</strong></p>
+  <ul>
+    <li>3月連続で1日平均使用時間が1時間未満の場合、在宅持続陽圧呼吸療法指導管理料（240点）が算定不可</li>
+    <li>ただし在宅療養指導管理材料加算は引き続き算定可</li>
+    <li>導入初期3か月間はこの制限を適用しない</li>
+  </ul>
+
+  <div class="info-card">
+    <span class="info-card-label">— 新設</span>
+    <h4>持続陽圧呼吸療法充実管理体制加算（15点）</h4>
+    <p>届出必要。要件は「直近3か月の延べ管理月数のうち、<strong>1日使用時間4時間以上の日が20日以上ある月の割合が4割以上</strong>」。</p>
+    <p style="margin-bottom:0">シンプルに言えば、延べ30人月のうち12人月以上が「4時間×20日以上」を満たしていればOK。算定する場合は<strong>5月中に届出</strong>が必要なので、2〜4月の実績を計測しておく必要がある。</p>
+  </div>
+</section>
+
+<!-- ═══════════ CH2 在宅編 ═══════════ -->
+<section class="chapter" id="ch2">
+  <div class="chapter-header">
+    <div class="chapter-num">Ⅱ</div>
+    <div>
+      <div class="chapter-title">在宅診療編</div>
+      <span class="chapter-en">Home Medical Care — Critical Deadlines</span>
+    </div>
+  </div>
+
+  <h3 class="topic">強化型在宅療養支援診療所</h3>
+  <p>常勤医師3名以上・緊急往診10件以上などの要件は従来通り。今回、<strong>在宅データ提出加算の届出が必須</strong>となった（3月に2100回以上訪問診療を実施する場合）。</p>
+
+  <h3 class="topic"><span class="tag new">新設</span>在宅医療充実体制加算</h3>
+  <p>都市部の大規模在宅診療を念頭に置いたような加算が新設。常勤換算医師3名以上かつ常勤医師2名以上、過去1年間の緊急往診30件・看取り30件以上など、条件はかなりハードル高め。「うちは消えてるんですけど」と佐藤先生。ファストドクター型ではなく自前の大規模在宅診療に重点的に加算、という国のメッセージが読み取れる。</p>
+
+  <h3 class="topic"><span class="tag alert">最重要</span>在総管・施設総管の重症者割合要件</h3>
+  <p>今回の改訂で<strong>最も注意すべきポイント</strong>。月2回以上訪問診療を行っている場合、<strong>重症度の高い患者（別表第8の2）や包括的支援加算対象患者（別表第8の3）の割合が20%以上なければ、月1回の点数しか算定できなくなる</strong>。</p>
+
+  <p>対象となるのは<strong>直近3か月で月2回以上訪問診療を算定する患者の延べ月数が30月以上</strong>（＝月2回訪問の患者が10人以上いる場合）。</p>
+
+  <div class="crit-card">
+    <h4>2026年6月1日までに届出必須。経過措置なし。</h4>
+    <p>初回届出は<strong>2026年2〜4月の実績</strong>を用いる。訪問診療されている先生は必ず確認を。当該基準の該当可否は毎年2月、5月、8月、11月に確認し、変更があれば同月中に速やかに届出が必要。</p>
+  </div>
+
+  <h3 class="topic">「同一建物居住者」→「同一建物等居住者」</h3>
+  <p><strong>同じ敷地内なら別の建物でも同一建物として扱われる</strong>ようになった。市営住宅の棟違いなどがイメージされていそうだ。</p>
+
+  <h3 class="topic"><span class="tag new">新設</span>訪問診療薬剤師同時指導料</h3>
+  <p>医師と薬剤師が同時に訪問し、療養上必要な指導を行った場合、<strong>6月に1回</strong>算定可能。医師側300点、薬剤師側150点。</p>
+  <p>患者の同意が事前に必要（「来月はアザイン薬剤師さんと一緒に来るね」と予告するなど）。ポリファーマシー対策・残薬対策の推進が目的で、薬局経営が厳しい地域では薬剤師との連携強化にも使える。八坂でも6月と12月に行こうか、という話が始まっているとのこと。</p>
+
+  <h3 class="topic">在宅療養指導管理材料加算 — 3月に3回で統一</h3>
+  <p>従来「月1回」「2月に2回」などバラバラだった算定回数が、<strong>全て「3月に3回」</strong>に統一された。「今月あと1日入れないと」と無理に調整する必要がなくなった。例えば1月4日・1月31日・3月1日でも問題ない。</p>
+</section>
+
+<!-- ═══════════ CH3 検査編 ═══════════ -->
+<section class="chapter" id="ch3">
+  <div class="chapter-header">
+    <div class="chapter-num">Ⅲ</div>
+    <div>
+      <div class="chapter-title">検査編</div>
+      <span class="chapter-en">Lab &amp; Diagnostics</span>
+    </div>
+  </div>
+
+  <h3 class="topic">外来迅速検体検査加算 — アルブミンが対象外に</h3>
+  <p>院内で当日結果返却した場合に算定できる外来迅速検体検査加算の対象項目から、<strong>アルブミンが削除</strong>された。HbA1cなど他の項目をすぐ返却していれば、アルブミンを外注に出していても5項目までの加算は取れる。</p>
+
+  <h3 class="topic">SARS-CoV-2・インフル同時抗原検出 — 病名の付け方に注意</h3>
+  <p><strong>COVID-19疑いだけでなく、インフルエンザウィルス感染症疑いも併記が必要</strong>になった。熱もないのにインフルを疑った扱いにすると査定される可能性があるので、佐藤先生からは「<strong>流行期でなければコロナ単独検査のほうが無難</strong>」というアドバイスも。COVID-19とRS、COVID-19とRSとインフルの同時検出も同様の扱い。</p>
+
+  <h3 class="topic">骨塩定量検査 — 年1回が原則に</h3>
+  <p>従来「4月に1回」だったのが、原則<strong>年1回</strong>に。ただし以下に該当する場合は4月に1回可：</p>
+  <ul>
+    <li>骨粗鬆症治療開始から1年以内</li>
+    <li>新たに骨折した場合</li>
+    <li>骨折危険因子が新規に増えた場合</li>
+    <li>ビスホスホネート薬治療の中断を検討する場合</li>
+    <li>ステロイド・アロマターゼ阻害薬など骨減少/増加をきたす薬剤投与時</li>
+    <li>吸収不良・全身性炎症性疾患・長期不動・人工閉経など</li>
+  </ul>
+</section>
+
+<!-- ═══════════ CH4 投薬編 ═══════════ -->
+<section class="chapter" id="ch4">
+  <div class="chapter-header">
+    <div class="chapter-num">Ⅳ</div>
+    <div>
+      <div class="chapter-title">投薬編</div>
+      <span class="chapter-en">Prescription — Pharmacy Partnership</span>
+    </div>
+  </div>
+
+  <h3 class="topic">処方箋様式の変更 — 残薬調整コマンド</h3>
+  <p>処方箋の指示欄に、<strong>「調剤する薬剤を減量した上で、医療機関に情報提供する」</strong>というチェック項目が新設された。例えば30日分処方で残薬が3日分あった場合、薬局側で27日分に減量して調剤できる。薬局側には「調剤時残薬調整加算」が入るメリットも。地域の薬局を支える観点では有用な仕組みだ。</p>
+
+  <h3 class="topic">院内処方での後発品加算 — 名称変更</h3>
+  <p>「外来後発医薬品使用体制加算」→<strong>「地域支援・外来医薬品供給対応体制加算」</strong>に改称。院内処方の診療所で、ジェネリック使用率に応じて8/7/5点が算定可能。</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>区分</th><th>点数</th><th>ジェネリック使用率</th></tr></thead>
+      <tbody>
+        <tr><td>加算1</td><td>8点</td><td>90%以上</td></tr>
+        <tr><td>加算2</td><td>7点</td><td>85% 〜 90%未満</td></tr>
+        <tr><td>加算3</td><td>5点</td><td>75% 〜 85%未満</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><strong>届出が必要</strong>なので忘れずに。</p>
+
+  <h3 class="topic"><span class="tag alert">厳格化</span>栄養保持医薬品の適正化 — エンシュアなどが要注意</h3>
+  <p>エンシュア・ラコール・エネーボ・ツインライン・イノラスなどの栄養保持を目的とした医薬品は、<strong>以下の理由を処方箋とレセプトに記載しないと、調剤料・処方料・薬剤料・処方箋料・調剤技術基本料のすべてが算定できなくなる</strong>。</p>
+
+  <div class="info-card">
+    <span class="info-card-label">— 記載が必要な理由</span>
+    <h4>以下のいずれかに該当しない場合、全て持ち出し</h4>
+    <ol style="padding-left:18px">
+      <li>手術後の患者である場合 → <strong>その旨</strong></li>
+      <li>経管により栄養補給を行っている場合 → <strong>その旨</strong></li>
+      <li>食事による必要な栄養摂取が困難な患者 → <strong>その理由</strong></li>
+    </ol>
+  </div>
+
+  <p>「ご飯食べにくいのでお願いします」で出していたケースは、かなり慎重にならざるを得ない。体重が減ってしまいエンシュアで維持している患者、がんや嚥下障害、アルコール依存で食事摂取困難など、該当する理由を<strong>レセプトに必ず記載</strong>することが重要だ。薬局側の持ち出しも発生するため、連携上も配慮が欠かせない。</p>
+
+  <h3 class="topic">院内処方と院外処方の併用が明文化</h3>
+  <p>従来グレーだった部分が明確化された。以下の場合は院内・院外の混在が可能：</p>
+  <ul>
+    <li>患者の症状から緊急に投薬が必要で、臨時的に院内投薬を行った場合（例：頭痛時のトリプタン製剤）</li>
+    <li>常時院内投薬の患者に対して、常用していない薬剤を緊急かつ臨時的に院外処方した場合</li>
+  </ul>
+  <p>レセプトに<strong>実施日と理由を必ず記載</strong>すること。この場合、調剤料と処方料は算定せず、院内投薬に係る薬剤と処方箋料を算定する。</p>
+</section>
+
+<!-- ═══════════ CH5 その他 ═══════════ -->
+<section class="chapter" id="ch5">
+  <div class="chapter-header">
+    <div class="chapter-num">Ⅴ</div>
+    <div>
+      <div class="chapter-title">その他</div>
+      <span class="chapter-en">Miscellaneous — Inflation &amp; Base Pay</span>
+    </div>
+  </div>
+
+  <h3 class="topic">物価対応料（2026年6月から）</h3>
+  <p>物価高騰に対応するための新加算。R8年度とR9年度で倍額になる設計で、国際情勢を見ながら柔軟に対応できるよう、あえて予備的に制度化したものと推察される。</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>区分</th><th>R8年度</th><th>R9年度</th></tr></thead>
+      <tbody>
+        <tr><td>初診時</td><td>2点</td><td>4点</td></tr>
+        <tr><td>再診時等</td><td>2点</td><td>4点</td></tr>
+        <tr><td>訪問診療時</td><td>3点</td><td>6点</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="topic">ベースアップ加算</h3>
+  <p>浜田市国保診療所連合体では、算定した分がそのまま看護師の給与に反映される必要があるというルールに対応できず、現在は算定していないとのこと。「算定している先生方のお話を今後聞いてみたい」と佐藤先生。</p>
+</section>
+```
+
+  </article>
+</div>
+
+<!-- ═══════════════ Q&A ═══════════════ -->
+
+<section class="qa-section" id="qa">
+  <div class="qa-wrap">
+    <div class="chapter-header">
+      <div class="chapter-num">?</div>
+      <div>
+        <div class="chapter-title">質疑応答</div>
+        <span class="chapter-en">Q &amp; A — Field Realities</span>
+      </div>
+    </div>
+
+```
+<div class="qa-item">
+  <div class="qa-num">01</div>
+  <div class="qa-question">
+    地域包括診療加算の算定要件に、要介護認定者が追加されました。患者一人一人の介護認定状況をタイムリーに把握し、算定に紐付ける仕組みをどう構築するか検討中ですが、何か良い方法はありますか？
+  </div>
+  <div class="qa-answer">
+    <p>浜田では、自分で主治医意見書を書いたものが返ってくるので、その情報をカルテのプロフィール欄（名前の近く）に「要介護○、有効期限○年○月まで」と有効期限付きで記載するようにしている。</p>
+    <p>ただ、返事が来ない地域もあるようで、その場合は地域包括支援センターの事務局に問い合わせて大丈夫だと思う。<strong>主治医意見書を初回に書いたタイミングで新規・更新・変更のたびに拾うのが合理的</strong>。入院時に書かれたものについては「ちょっと見せて」と確認するくらいしか方法がないかもしれない。</p>
+    <p style="margin-bottom:0">完全な解決策ではないが、<strong>自分が書いたものは必ず知る権利がある</strong>──これがポイント。</p>
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-num">02</div>
+  <div class="qa-question">
+    在総管で院外処方対応している訪問患者さんが、発熱やラゲブリオなど緊急処方したいとき、院内で出せるということでしょうか？
+  </div>
+  <div class="qa-answer">
+    <p>院内処方と院外処方の混在に関する明文化された条文（<em>「患者の症状等から緊急投薬の必要性を認めて、臨時に院内投薬を行った場合」</em>）に該当する可能性が高い。頭痛時のトリプタン製剤やロキソニンなどは該当しやすい。</p>
+    <p>ラゲブリオについても、<strong>「院外薬局に在庫なく、コロナ治療の早期投与が必要」</strong>とレセプトに記載すれば通用するのではないか。</p>
+    <p style="margin-bottom:0">ただし、在宅患者に対しては処方箋料の扱い（処方箋不交付加算の30,000円以内の制限など）が絡んでくるため、ここは<strong>グレーゾーン</strong>。明確に「だめ」とは書かれていないものの、解釈に迷う場面ではある。</p>
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-num">03</div>
+  <div class="qa-question">
+    生活習慣病管理料と特定疾患療養管理料、両方とも該当しそうな場合、どちらを優先するのが良いでしょうか？
+  </div>
+  <div class="qa-answer">
+    <p><strong>特定疾患療養管理料のほうを優先</strong>している。理由は以下：</p>
+    <ul>
+      <li>特定疾患のほうが全体的に高く取れることが多い</li>
+      <li><strong>長期処方加算（28日以上処方時）</strong>が特定疾患にはあるが、生活習慣病管理料にはない</li>
+      <li>療養計画書を書かなくて済むので事務負担が軽い</li>
+    </ul>
+    <p>ただし、慢性胃炎を特定疾患として取ろうとしても、<strong>PPI・タケキャブ・モサプリドなどが処方されていないと算定不可</strong>というトラップがある。その場合は生活習慣病管理料のほうが高くなるので、個別の状況によって使い分ける必要がある。</p>
+    <p>運用としては「<strong>特定疾患が取れる人（該当薬を処方している人）は特定疾患</strong>、取れない人（前立腺肥大・うつ病・不眠症など特定疾患非該当の疾患のみ）は生活習慣病管理料」という方針。</p>
+    <p style="margin-bottom:0">なお、浜田では生活習慣病管理料「2」を選択。「1」は丸めで検査が包括、「2」は特定疾患に近い出来高型。一気に「1」に移行するのはハードルが高く「2」にしているとのこと。若い人で来院頻度が少ない場合は「1」のほうが有利かもしれない、という補足もあった。</p>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ═══════════════ CLOSING ═══════════════ -->
+
+<div class="main-wrap" style="grid-template-columns:1fr;padding-top:0">
+  <article style="max-width:960px;margin:0 auto">
+    <div class="closing" id="closing">
+      <h3>全体を通しての感想</h3>
+      <p>今回の講演は、情報量こそ膨大なものの、<strong>「どこを見てどう判断すればいいか」</strong>という実践的な視点で整理されており、国保診療所の現場感覚に根ざした非常に有益な内容だった。</p>
+      <p>特に重要な期限として押さえておきたいのは──</p>
+      <p>① <strong>在総管・施設総管の重症者割合要件</strong>：2026年6月1日までに届出、経過措置なし<br>② <strong>充実管理加算</strong>：2026年5月20日までに様式7の10を提出しないと翌年度加算に間に合わない</p>
+      <p>また、<strong>国がメッセージとして繰り返し打ち出している項目（電子処方箋、外来データ提出など）には、少し無理をしてでもついていったほうが、中長期的には得</strong>、という佐藤先生のスタンスは、診療所経営を考えるうえで大きな指針になる。</p>
+      <p>司会の多田先生からは「2年後もぜひお願いしたい」という言葉があり、2028年度改訂のレポートにも期待が高まる勉強会となった。</p>
+    </div>
+  </article>
+</div>
+
+<footer>
+  <div class="footer-note">
+    本レポートは講演の録音および配布資料をもとに、編集・整理したものです。算定要件の詳細については、必ず厚生労働省の告示・通知、および各都道府県の保険医協会の資料をご確認ください。内容は2026年4月時点の情報に基づきます。
+  </div>
+  <div class="footer-mark">
+    Clinic Report
+    <span>Vol.01 / 2026.04</span>
+  </div>
+</footer>
+
+</body>
+</html>
