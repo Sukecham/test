@@ -16,11 +16,12 @@
   --paper-3:#e0d7bf;
   --accent:#8b2635;
   --accent-deep:#5a1621;
-  --gold:#a67c3a;
-  --sage:#4a5d3a;
-  --muted:#6b6556;
+  --gold:#8a6020;
+  --sage:#3d4e2e;
+  --muted:#3a352a;
+  --muted-2:#55503e;
   --line:#2a2620;
-  --hairline:#c8bfa5;
+  --hairline:#b3a98a;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;scroll-padding-top:80px}
@@ -91,13 +92,15 @@ mix-blend-mode:multiply;
 .topbar{
 position:fixed;top:0;left:0;right:0;
 z-index:100;
-background:rgba(245,241,232,0.85);
+background:rgba(245,241,232,0.96);
 backdrop-filter:blur(10px);
 border-bottom:1px solid var(–hairline);
 padding:14px 32px;
 display:flex;justify-content:space-between;align-items:center;
 font-family:‘JetBrains Mono’,monospace;
 font-size:11px;letter-spacing:0.15em;text-transform:uppercase;
+color:var(–ink);
+font-weight:500;
 }
 .topbar-left{display:flex;gap:24px;align-items:center}
 .topbar-mark{
@@ -106,7 +109,7 @@ display:flex;align-items:center;justify-content:center;
 font-family:‘Cormorant Garamond’,serif;font-weight:700;font-size:14px;
 letter-spacing:0;
 }
-.topbar-right{color:var(–muted)}
+.topbar-right{color:var(–muted);font-weight:500}
 
 /* ───────── Hero ───────── */
 .hero{
@@ -132,16 +135,18 @@ flex-wrap:wrap;
 align-items:center;
 padding-bottom:24px;
 border-bottom:1px solid var(–hairline);
+font-weight:500;
 }
-.hero-meta span{display:flex;align-items:center;gap:8px}
-.hero-meta .dot{width:4px;height:4px;background:var(–accent);border-radius:50%}
+.hero-meta span{display:flex;align-items:center;gap:8px;color:var(–ink)}
+.hero-meta .dot{width:5px;height:5px;background:var(–accent);border-radius:50%}
 .hero-eyebrow{
 font-family:‘Cormorant Garamond’,serif;
 font-style:italic;
 font-size:24px;
-color:var(–accent);
+color:var(–accent-deep);
 margin-bottom:20px;
 letter-spacing:0.02em;
+font-weight:600;
 }
 .hero h1{
 font-family:‘Shippori Mincho’,serif;
@@ -163,7 +168,7 @@ font-size:0.9em;
 .hero-sub{
 font-size:18px;
 font-weight:500;
-color:var(–muted);
+color:var(–ink);
 max-width:640px;
 border-left:2px solid var(–accent);
 padding-left:22px;
@@ -188,7 +193,8 @@ font-family:‘JetBrains Mono’,monospace;
 font-size:10px;
 letter-spacing:0.2em;
 text-transform:uppercase;
-color:var(–muted);
+color:var(–accent);
+font-weight:700;
 }
 .hero-info-val{
 font-family:‘Shippori Mincho’,serif;
@@ -258,15 +264,18 @@ font-size:21px;
 font-weight:700;
 margin-bottom:14px;
 letter-spacing:0.02em;
+color:#fff;
 }
 .alert-content ul{list-style:none;display:flex;flex-direction:column;gap:10px}
 .alert-content li{
 display:grid;
 grid-template-columns:80px 1fr;
 gap:20px;
-font-size:14px;
-line-height:1.75;
+font-size:14.5px;
+line-height:1.8;
+color:#f5f1e8;
 }
+.alert-content li strong{color:#fff;background:none;font-weight:700}
 .alert-content li .d{
 font-family:‘JetBrains Mono’,monospace;
 font-weight:700;
@@ -339,7 +348,8 @@ font-family:‘JetBrains Mono’,monospace;
 font-size:10px;
 letter-spacing:0.25em;
 text-transform:uppercase;
-color:var(–muted);
+color:var(–accent);
+font-weight:700;
 margin-bottom:18px;
 padding-bottom:10px;
 border-bottom:1px solid var(–hairline);
@@ -348,7 +358,7 @@ border-bottom:1px solid var(–hairline);
 .toc a{
 display:block;
 font-family:‘Shippori Mincho’,serif;
-font-size:12.5px;
+font-size:13px;
 color:var(–muted);
 text-decoration:none;
 padding:9px 0;
@@ -357,6 +367,7 @@ transition:all 0.3s;
 position:relative;
 padding-left:16px;
 line-height:1.4;
+font-weight:500;
 }
 .toc a::before{
 content:’’;
@@ -401,6 +412,7 @@ font-size:15.5px;
 margin-bottom:20px;
 text-align:justify;
 line-height:1.9;
+color:var(–ink);
 }
 .intro p.lead{
 font-size:19px;
@@ -411,13 +423,13 @@ margin-bottom:28px;
 }
 .pullquote{
 margin:40px 0;
-padding:32px 0 32px 32px;
-border-left:3px solid var(–accent);
+padding:32px 32px 32px 36px;
+border-left:4px solid var(–accent);
+background:var(–paper-2);
 font-family:‘Shippori Mincho’,serif;
 font-size:19px;
-font-weight:500;
-line-height:1.7;
-font-style:italic;
+font-weight:600;
+line-height:1.75;
 color:var(–accent-deep);
 position:relative;
 }
@@ -428,8 +440,9 @@ font-family:‘Cormorant Garamond’,serif;
 font-size:80px;
 line-height:1;
 color:var(–accent);
-opacity:0.3;
-left:32px;top:-16px;
+opacity:0.5;
+left:28px;top:-16px;
+font-weight:700;
 }
 
 /* Section */
@@ -468,7 +481,7 @@ font-size:13px;
 color:var(–muted);
 display:block;
 margin-top:5px;
-font-weight:400;
+font-weight:500;
 letter-spacing:0.1em;
 }
 
@@ -508,16 +521,17 @@ h3.topic .tag.crit{background:var(–sage)}
 h3.topic .tag.alert{background:var(–accent-deep)}
 
 p{margin-bottom:16px;font-size:15.5px;text-align:justify;line-height:1.9}
-p strong{font-weight:700;color:var(–accent-deep);background:linear-gradient(180deg,transparent 60%,rgba(166,124,58,0.25) 60%)}
-article ul, article ol{padding-left:22px;margin-bottom:22px}
-article li{margin-bottom:7px;font-size:15.5px;line-height:1.85}
-article li::marker{color:var(–accent)}
+p strong{font-weight:700;color:var(–accent-deep);background:linear-gradient(180deg,transparent 62%,rgba(166,124,58,0.45) 62%)}
+article ul, article ol{padding-left:24px;margin-bottom:22px}
+article li{margin-bottom:8px;font-size:15.5px;line-height:1.85;color:var(–ink)}
+article li::marker{color:var(–accent);font-weight:700}
 article strong{font-weight:700}
+article p{color:var(–ink)}
 
 /* Info Card */
 .info-card{
 background:var(–paper-2);
-border:1px solid var(–hairline);
+border:1.5px solid var(–muted-2);
 padding:26px 30px;
 margin:28px 0;
 position:relative;
@@ -542,8 +556,9 @@ font-family:‘Shippori Mincho’,serif;
 font-size:17px;
 font-weight:700;
 margin-bottom:12px;
+color:var(–ink);
 }
-.info-card p, .info-card li{font-size:14.5px;line-height:1.85}
+.info-card p, .info-card li{font-size:14.5px;line-height:1.85;color:var(–ink)}
 
 /* Critical Card */
 .crit-card{
@@ -571,16 +586,16 @@ font-family:‘Shippori Mincho’,serif;
 font-size:17px;
 font-weight:700;
 margin-bottom:12px;
-color:var(–paper-2);
+color:#f5f1e8;
 }
-.crit-card p{color:rgba(245,241,232,0.9);font-size:14.5px;line-height:1.85}
-.crit-card strong{color:var(–paper);background:linear-gradient(180deg,transparent 60%,rgba(139,38,53,0.5) 60%)}
+.crit-card p{color:#f5f1e8;font-size:14.5px;line-height:1.85}
+.crit-card strong{color:#fff;background:rgba(139,38,53,0.6);padding:0 4px}
 
 /* Tables */
 .table-wrap{
 margin:28px 0;
 overflow-x:auto;
-border:1px solid var(–hairline);
+border:1.5px solid var(–muted-2);
 }
 table{
 width:100%;
@@ -590,7 +605,7 @@ font-size:13.5px;
 }
 thead{
 background:var(–ink);
-color:var(–paper);
+color:#f5f1e8;
 }
 th{
 padding:12px 14px;
@@ -599,13 +614,14 @@ font-family:‘JetBrains Mono’,monospace;
 font-size:10.5px;
 letter-spacing:0.15em;
 text-transform:uppercase;
-font-weight:500;
+font-weight:700;
 }
 td{
 padding:12px 14px;
 border-bottom:1px solid var(–hairline);
 vertical-align:top;
-line-height:1.6;
+line-height:1.7;
+color:var(–ink);
 }
 tr:last-child td{border-bottom:none}
 tr:hover td{background:var(–paper-2)}
@@ -616,14 +632,15 @@ td strong{color:var(–accent-deep)}
 margin:28px 0;
 background:var(–paper-2);
 padding:26px 30px;
-border:1px solid var(–hairline);
+border:1.5px solid var(–muted-2);
 }
 .timeline-title{
 font-family:‘JetBrains Mono’,monospace;
 font-size:10.5px;
 letter-spacing:0.2em;
 text-transform:uppercase;
-color:var(–muted);
+color:var(–accent);
+font-weight:700;
 margin-bottom:16px;
 }
 .timeline-item{
@@ -642,7 +659,7 @@ font-weight:700;
 color:var(–accent);
 letter-spacing:0.05em;
 }
-.timeline-content{font-size:14px;line-height:1.7}
+.timeline-content{font-size:14px;line-height:1.7;color:var(–ink)}
 
 /* Q&A */
 .qa-section{
@@ -671,15 +688,16 @@ font-weight:400;
 }
 .qa-question{
 background:var(–ink);
-color:var(–paper);
+color:#f5f1e8;
 padding:22px 28px;
 margin-bottom:20px;
 position:relative;
 font-family:‘Shippori Mincho’,serif;
 font-size:15.5px;
-line-height:1.75;
+line-height:1.8;
 font-style:italic;
 border-left:4px solid var(–gold);
+font-weight:500;
 }
 .qa-question::before{
 content:‘Q’;
@@ -710,8 +728,8 @@ background:var(–paper-2);
 width:28px;
 text-align:center;
 }
-.qa-answer p{font-size:14.5px;line-height:1.9}
-.qa-answer li{font-size:14.5px}
+.qa-answer p{font-size:15px;line-height:1.9;color:var(–ink)}
+.qa-answer li{font-size:15px;color:var(–ink)}
 
 /* Closing */
 .closing{
@@ -736,8 +754,8 @@ font-weight:700;
 margin-bottom:20px;
 color:var(–paper);
 }
-.closing p{color:rgba(245,241,232,0.88);font-size:15px;line-height:1.95}
-.closing strong{color:var(–gold);background:none}
+.closing p{color:#f5f1e8;font-size:15px;line-height:1.95}
+.closing strong{color:#d4a854;background:none;font-weight:700}
 
 /* Footer */
 footer{
@@ -753,11 +771,12 @@ position:relative;
 z-index:2;
 }
 .footer-note{
-font-size:12px;
+font-size:12.5px;
 color:var(–muted);
-line-height:1.7;
+line-height:1.8;
 font-style:italic;
 max-width:560px;
+font-weight:500;
 }
 .footer-mark{
 font-family:‘Cormorant Garamond’,serif;
@@ -765,8 +784,9 @@ font-style:italic;
 font-size:18px;
 color:var(–muted);
 text-align:right;
+font-weight:500;
 }
-.footer-mark span{display:block;font-family:‘JetBrains Mono’,monospace;font-style:normal;font-size:10px;letter-spacing:0.2em;margin-top:5px;color:var(–hairline)}
+.footer-mark span{display:block;font-family:‘JetBrains Mono’,monospace;font-style:normal;font-size:10px;letter-spacing:0.2em;margin-top:5px;color:var(–muted-2);font-weight:700}
 
 /* responsive */
 @media(max-width:960px){
@@ -840,22 +860,22 @@ footer{padding:36px 20px;grid-template-columns:1fr;text-align:center}
     <div class="hero-info-item">
       <span class="hero-info-label">Speaker</span>
       <span class="hero-info-val">佐藤 誠 先生</span>
-      <span style="font-size:12px;color:var(--muted);margin-top:4px">浜田市国保診療所連合体 医療統括監<br>弥栄診療所 所長</span>
+      <span style="font-size:13px;color:var(--muted-2);margin-top:4px;line-height:1.5">浜田市国保診療所連合体 医療統括監<br>弥栄診療所 所長</span>
     </div>
     <div class="hero-info-item">
       <span class="hero-info-label">Moderator</span>
       <span class="hero-info-val">多田 先生</span>
-      <span style="font-size:12px;color:var(--muted);margin-top:4px">和歌山県立医科大学<br>地域医療支援センター</span>
+      <span style="font-size:13px;color:var(--muted-2);margin-top:4px;line-height:1.5">和歌山県立医科大学<br>地域医療支援センター</span>
     </div>
     <div class="hero-info-item">
       <span class="hero-info-label">Date</span>
       <span class="hero-info-val">2026年4月24日(金)</span>
-      <span style="font-size:12px;color:var(--muted);margin-top:4px">19:30 – 20:40 / オンライン</span>
+      <span style="font-size:13px;color:var(--muted-2);margin-top:4px;line-height:1.5">19:30 – 20:40 / オンライン</span>
     </div>
     <div class="hero-info-item">
       <span class="hero-info-label">Scope</span>
       <span class="hero-info-val">外来・在宅・検査・投薬</span>
-      <span style="font-size:12px;color:var(--muted);margin-top:4px">厚労省資料＋保険医協会資料より</span>
+      <span style="font-size:13px;color:var(--muted-2);margin-top:4px;line-height:1.5">厚労省資料＋保険医協会資料より</span>
     </div>
   </div>
 </section>
