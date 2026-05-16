@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>パパの声でおしたく MVP</title>
+  <style>
+    :root {
+      --blue: #1558c8;
+      --deep-blue: #06327a;
+      --sky: #dff4ff;
+      --pink: #ffd8e6;
+      --pink-border: #f3a9c4;
+      --green: #dff8d7;
+      --yellow: #fff2b8;
+      --orange: #ffb33f;
+      --purple: #eadbff;
+      --red: #ef4444;
+      --shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+      background: #e5e7eb;
+      color: #172033;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 430px;
+      min-height: 100vh;
+      background: rgba(255,255,255,0.92);
+      position: relative;
+      overflow-x: hidden;
+      box-shadow: 0 0 40px rgba(0,0,0,0.18);
+      padding-bottom: 96px;
+    }
+
+    .header {
+      padding: calc(env(safe-area-inset-top) + 28px) 18px 22px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.35s ease, color 0.35s ease;
+    }
+
+    .header.morning {
+      background: linear-gradient(180deg, #bdeeff 0%, #ecfbff 100%);
+      color: #0b3d91;
+    }
+
+    .header.afternoon {
+      background: linear-gradient(180deg, #172554 0%, #312e81 52%, #111827 100%);
+      color: #fff;
+    }
+
+    .sky-icon {
+      position: absolute;
+      font-size: 42px;
+      opacity: 0.95;
+      pointer-events: none;
+    }
+
+    .sky-icon.left { left: 18px; top: 86px; }
+    .sky-icon.right { right: 12px; top: 118px; font-size: 34px; opacity: 0.75; }
+
+    .clock-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .time-block {
+      min-width: 0;
+      padding-top: 30px;
+    }
+
+    .period {
+      font-size: 36px;
+      line-height: 1;
+      font-weight: 1000;
+      letter-spacing: 0.04em;
+      text-shadow: 0 3px 0 rgba(255,255,255,0.75);
+    }
+
+    .afternoon .period { text-shadow: none; }
+
+    .digital-time {
+      margin-top: 8px;
+      font-size: clamp(62px, 18vw, 82px);
+      line-height: 0.92;
+      font-weight: 1000;
+      letter-spacing: -0.07em;
+      color: #0b48a5;
+      text-shadow: 0 4px 0 rgba(255,255,255,0.8);
+    }
+
+    .afternoon .digital-time {
+      color: #fff;
+      text-shadow: 0 4px 12px rgba(0,0,0,0.35);
+    }
+
+    .message-card {
+      margin-top: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.9);
+      color: #11408d;
+      border-radius: 18px;
+      padding: 12px 14px;
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1.35;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+    }
+
+    .afternoon .message-card {
+      background: rgba(255,255,255,0.14);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .analog-clock {
+      width: 174px;
+      height: 174px;
+      border-radius: 50%;
+      background: #fff;
+      border: 7px solid #73b7ea;
+      box-shadow: inset 0 2px 12px rgba(0,0,0,0.08), 0 8px 18px rgba(13, 64, 132, 0.16);
+      position: relative;
+      flex: 0 0 174px;
+    }
+
+    .number {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 21px;
+      font-weight: 1000;
+      color: #111827;
+      line-height: 1;
+    }
+
+    .tick {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform-origin: 0 0;
+      background: #9ca3af;
+      width: 1px;
+      height: 5px;
+    }
+
+    .tick.major {
+      width: 2px;
+      height: 9px;
+      background: #111827;
+    }
+
+    .hand {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform-origin: bottom center;
+      border-radius: 999px;
+    }
+
+    .hand.hour {
+      width: 10px;
+      height: 58px;
+      margin-left: -5px;
+      margin-top: -58px;
+      background: #222;
+      z-index: 4;
+    }
+
+    .hand.minute {
+      width: 7px;
+      height: 78px;
+      margin-left: -3.5px;
+      margin-top: -78px;
+      background: #ef1b1b;
+      box-shadow: 0 2px 6px rgba(239, 27, 27, 0.35);
+      z-index: 5;
+    }
+
+    .center-dot {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 24px;
+      height: 24px;
+      transform: translate(-50%, -50%);
+      background: #ef1b1b;
+      border: 3px solid #ff7777;
+      border-radius: 50%;
+      z-index: 8;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.22);
+    }
+
+    .content {
+      padding: 16px 14px 22px;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      color: #083985;
+      font-weight: 1000;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 2px 0 12px;
+      scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar { display: none; }
+
+    .tab {
+      flex: 0 0 auto;
+      border: 1px solid #dbeafe;
+      background: #fff;
+      color: #1558c8;
+      border-radius: 14px;
+      padding: 9px 11px;
+      font-size: 14px;
+      font-weight: 1000;
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.08);
+      cursor: pointer;
+    }
+
+    .tab.active {
+      background: #2563eb;
+      color: #fff;
+      border-color: #2563eb;
+    }
+
+    .mode-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .mode-btn {
+      border: 0;
+      border-radius: 18px;
+      padding: 14px 8px;
+      font-size: 17px;
+      font-weight: 1000;
+      background: #fff;
+      box-shadow: var(--shadow);
+      color: #334155;
+      cursor: pointer;
+    }
+
+    .mode-btn.active.queue { background: #22c55e; color: #fff; }
+    .mode-btn.active.instant { background: #fb923c; color: #fff; }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .voice-card {
+      min-height: 116px;
+      border-radius: 20px;
+      border: 2px solid transparent;
+      padding: 8px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.08s ease, filter 0.15s ease;
+      font-weight: 1000;
+    }
+
+    .voice-card:active { transform: scale(0.96); filter: brightness(0.97); }
+
+    .voice-card .emoji { font-size: 32px; line-height: 1; }
+    .voice-card .label { font-size: 16px; line-height: 1.22; white-space: pre-line; }
+
+    .speaker-dot {
+      margin-top: 4px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.72);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 19px;
+      box-shadow: inset 0 2px 5px rgba(255,255,255,0.7), 0 2px 7px rgba(15,23,42,0.12);
+    }
+
+    .pink { background: #ffe3ed; border-color: #f8b4cf; color: #4a1028; }
+    .sky { background: #e2f4ff; border-color: #b7def8; color: #082f49; }
+    .green { background: #e4f8da; border-color: #b8e49e; color: #14532d; }
+    .yellow { background: #fff4bd; border-color: #f8d456; color: #713f12; }
+    .purple { background: #efe2ff; border-color: #d8b4fe; color: #581c87; }
+    .orange { background: #ffedd5; border-color: #fdba74; color: #7c2d12; }
+
+    .queue-panel {
+      margin-top: 18px;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+
+    .queue-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .queue-title {
+      font-size: 20px;
+      font-weight: 1000;
+      color: #083985;
+    }
+
+    .small-btn {
+      border: 1px solid #d1d5db;
+      background: #f8fafc;
+      color: #475569;
+      border-radius: 13px;
+      padding: 8px 10px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .queue-list {
+      min-height: 82px;
+      background: #fff1f6;
+      border: 1px solid #ffd2e4;
+      border-radius: 18px;
+      padding: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 8px;
+    }
+
+    .empty {
+      color: #94a3b8;
+      font-weight: 900;
+      padding: 10px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: #f9a8d4;
+      color: #831843;
+      border-radius: 999px;
+      padding: 8px 10px;
+      font-weight: 1000;
+      font-size: 14px;
+    }
+
+    .chip button {
+      border: 0;
+      background: #db2777;
+      color: #fff;
+      width: 21px;
+      height: 21px;
+      border-radius: 50%;
+      font-weight: 1000;
+      cursor: pointer;
+    }
+
+    .control-row {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1.25fr 1fr;
+      gap: 10px;
+    }
+
+    .control-btn {
+      border: 0;
+      border-radius: 20px;
+      min-height: 68px;
+      color: #fff;
+      font-weight: 1000;
+      font-size: 17px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+    }
+
+    .clear { background: #f59e0b; }
+    .play { background: #22c55e; font-size: 18px; }
+    .play:disabled { background: #cbd5e1; }
+    .stop { background: #ef4444; }
+
+    .queue-meta {
+      margin-top: 10px;
+      text-align: center;
+      color: #64748b;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .nav {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 0;
+      width: 100%;
+      max-width: 430px;
+      background: rgba(255,255,255,0.96);
+      border-top: 1px solid #e5e7eb;
+      box-shadow: 0 -6px 20px rgba(0,0,0,0.08);
+      padding: 8px 18px calc(env(safe-area-inset-bottom) + 10px);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      z-index: 30;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 1000;
+    }
+
+    .nav-item.active { color: #2563eb; }
+    .nav-icon { font-size: 25px; line-height: 1; }
+
+    @media (max-width: 390px) {
+      .analog-clock { width: 158px; height: 158px; flex-basis: 158px; }
+      .number { font-size: 19px; }
+      .digital-time { font-size: 66px; }
+      .period { font-size: 32px; }
+      .button-grid { gap: 8px; }
+      .voice-card { min-height: 108px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header id="header" class="header morning">
+      <div id="skyLeft" class="sky-icon left">☀️</div>
+      <div class="sky-icon right">☁️</div>
+      <div class="clock-row">
+        <div class="time-block">
+          <div id="period" class="period">ごぜん</div>
+          <div id="digitalTime" class="digital-time">7:42</div>
+          <div class="message-card">⏰ いまの じかんを<br />みてみよう！</div>
+        </div>
+        <div id="analogClock" class="analog-clock" aria-label="アナログ時計">
+          <div id="hourHand" class="hand hour"></div>
+          <div id="minuteHand" class="hand minute"></div>
+          <div class="center-dot"></div>
+        </div>
+      </div>
+    </header>
+
+    <section class="content">
+      <div class="title-row">
+        <h1>🔊 パパのこえをえらぼう</h1>
+      </div>
+
+      <div id="tabs" class="tabs"></div>
+
+      <div class="mode-row">
+        <button id="queueMode" class="mode-btn queue active">ならべて再生</button>
+        <button id="instantMode" class="mode-btn instant">すぐ鳴らす</button>
+      </div>
+
+      <div id="buttonGrid" class="button-grid"></div>
+
+      <div class="queue-panel">
+        <div class="queue-head">
+          <div class="queue-title">再生リスト（まとめて再生）</div>
+          <button id="clearSmall" class="small-btn">🗑 ぜんぶけす</button>
+        </div>
+        <div id="queueList" class="queue-list"></div>
+        <div class="control-row">
+          <button id="clearBtn" class="control-btn clear">↻<br />クリア</button>
+          <button id="playBtn" class="control-btn play">▶<br />まとめて再生</button>
+          <button id="stopBtn" class="control-btn stop">■<br />停止</button>
+        </div>
+        <div id="queueMeta" class="queue-meta">ぜんぶの長さ 約 0秒（0個）</div>
+      </div>
+    </section>
+
+    <nav class="nav">
+      <div class="nav-item active"><div class="nav-icon">🏠</div><div>ホーム</div></div>
+      <div class="nav-item"><div class="nav-icon">☰</div><div>ことば一覧</div></div>
+      <div class="nav-item"><div class="nav-icon">⚙️</div><div>せってい</div></div>
+      <div class="nav-item"><div class="nav-icon">❔</div><div>使い方</div></div>
+    </nav>
+  </div>
+
+  <script>
+    const voiceItems = [
+      { id: "yui", label: "ゆいちゃん", text: "ゆいちゃん", category: "name", icon: "👧🏻", color: "pink" },
+      { id: "mio", label: "みおちゃん", text: "みおちゃん", category: "name", icon: "👧🏻", color: "pink" },
+      { id: "both", label: "ゆいちゃんと\nみおちゃん", text: "ゆいちゃんと、みおちゃん", category: "name", icon: "👧🏻👧🏻", color: "pink" },
+      { id: "morning", label: "朝ですよ", text: "朝ですよ", category: "action", icon: "☀️", color: "sky" },
+      { id: "face", label: "顔を洗おうね", text: "顔を洗おうね", category: "action", icon: "🫧", color: "sky" },
+      { id: "breakfast", label: "ごはん食べようね", text: "ごはんを食べようね", category: "action", icon: "🍚", color: "sky" },
+      { id: "toilet", label: "トイレに行こうね", text: "トイレに行こうね", category: "action", icon: "🚽", color: "green" },
+      { id: "clothes", label: "お着替えしようね", text: "お着替えしようね", category: "action", icon: "👕", color: "sky" },
+      { id: "shoes", label: "くつを履こうね", text: "くつを履こうね", category: "action", icon: "👟", color: "sky" },
+      { id: "car", label: "車に乗ろうね", text: "車に乗ろうね", category: "action", icon: "🚗", color: "sky" },
+      { id: "great", label: "えらいね！", text: "えらいね", category: "praise", icon: "✨", color: "yellow" },
+      { id: "sugoi", label: "すごいよ！", text: "すごいよ", category: "praise", icon: "👏", color: "yellow" },
+      { id: "oneesan", label: "お姉さんだね", text: "もう、お姉さんだね", category: "praise", icon: "⭐", color: "yellow" },
+      { id: "slow", label: "ゆっくりで大丈夫", text: "ゆっくりで大丈夫だよ", category: "safe", icon: "💚", color: "green" },
+      { id: "onebyone", label: "ひとつずつやろう", text: "ひとつずつやろうね", category: "safe", icon: "🌱", color: "green" },
+      { id: "clock", label: "時計を見よう", text: "今の時間を見てみよう", category: "time", icon: "⏰", color: "purple" },
+      { id: "longhand", label: "長い針を見よう", text: "長い針を見てみよう", category: "time", icon: "🕘", color: "purple" },
+      { id: "gogo", label: "がんばろう！", text: "がんばろう", category: "cheer", icon: "✊", color: "orange" }
+    ];
+
+    const tabs = [
+      { id: "all", label: "よく使うことば" },
+      { id: "name", label: "なまえ" },
+      { id: "action", label: "行動" },
+      { id: "praise", label: "ほめる" },
+      { id: "safe", label: "あんしん" },
+      { id: "time", label: "とけい" }
+    ];
+
+    let activeTab = "all";
+    let mode = "queue";
+    let queue = [];
+
+    const header = document.getElementById("header");
+    const skyLeft = document.getElementById("skyLeft");
+    const period = document.getElementById("period");
+    const digitalTime = document.getElementById("digitalTime");
+    const analogClock = document.getElementById("analogClock");
+    const hourHand = document.getElementById("hourHand");
+    const minuteHand = document.getElementById("minuteHand");
+    const tabsEl = document.getElementById("tabs");
+    const buttonGrid = document.getElementById("buttonGrid");
+    const queueList = document.getElementById("queueList");
+    const queueMeta = document.getElementById("queueMeta");
+    const queueMode = document.getElementById("queueMode");
+    const instantMode = document.getElementById("instantMode");
+    const playBtn = document.getElementById("playBtn");
+    const stopBtn = document.getElementById("stopBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const clearSmall = document.getElementById("clearSmall");
+
+    function pad(n) {
+      return String(n).padStart(2, "0");
+    }
+
+    function setupClockFace() {
+      for (let i = 1; i <= 12; i++) {
+        const el = document.createElement("div");
+        el.className = "number";
+        el.textContent = i;
+        const angle = (i * 30 - 90) * Math.PI / 180;
+        const r = 70;
+        const cx = 87;
+        const cy = 87;
+        el.style.left = `${cx + r * Math.cos(angle)}px`;
+        el.style.top = `${cy + r * Math.sin(angle)}px`;
+        analogClock.appendChild(el);
+      }
+
+      for (let i = 0; i < 60; i++) {
+        const tick = document.createElement("div");
+        tick.className = i % 5 === 0 ? "tick major" : "tick";
+        tick.style.transform = `rotate(${i * 6}deg) translateY(-78px)`;
+        analogClock.appendChild(tick);
+      }
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const h = now.getHours();
+      const m = now.getMinutes();
+      const isMorning = h < 12;
+
+      period.textContent = isMorning ? "ごぜん" : "ごご";
+      digitalTime.textContent = `${h}:${pad(m)}`;
+      header.classList.toggle("morning", isMorning);
+      header.classList.toggle("afternoon", !isMorning);
+      skyLeft.textContent = isMorning ? "☀️" : "🌙";
+
+      const hour12 = h % 12;
+      const hourAngle = hour12 * 30 + m * 0.5;
+      const minuteAngle = m * 6;
+      hourHand.style.transform = `rotate(${hourAngle}deg)`;
+      minuteHand.style.transform = `rotate(${minuteAngle}deg)`;
+    }
+
+    function renderTabs() {
+      tabsEl.innerHTML = "";
+      tabs.forEach(tab => {
+        const btn = document.createElement("button");
+        btn.className = `tab ${activeTab === tab.id ? "active" : ""}`;
+        btn.textContent = tab.label;
+        btn.addEventListener("click", () => {
+          activeTab = tab.id;
+          renderTabs();
+          renderButtons();
+        });
+        tabsEl.appendChild(btn);
+      });
+    }
+
+    function getVisibleItems() {
+      if (activeTab === "all") return voiceItems.slice(0, 15);
+      return voiceItems.filter(item => item.category === activeTab);
+    }
+
+    function renderButtons() {
+      buttonGrid.innerHTML = "";
+      getVisibleItems().forEach(item => {
+        const btn = document.createElement("button");
+        btn.className = `voice-card ${item.color}`;
+        btn.innerHTML = `
+          <div class="emoji">${item.icon}</div>
+          <div class="label">${item.label}</div>
+          <div class="speaker-dot">🔊</div>
+        `;
+        btn.addEventListener("click", () => addOrPlay(item));
+        buttonGrid.appendChild(btn);
+      });
+    }
+
+    function setMode(nextMode) {
+      mode = nextMode;
+      queueMode.classList.toggle("active", mode === "queue");
+      instantMode.classList.toggle("active", mode === "instant");
+    }
+
+    function addOrPlay(item) {
+      if (mode === "instant") {
+        speak(item.text);
+      } else {
+        queue.push(item);
+        renderQueue();
+      }
+    }
+
+    function renderQueue() {
+      queueList.innerHTML = "";
+      if (queue.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "ことばをえらぶと、ここにならびます";
+        queueList.appendChild(empty);
+      } else {
+        queue.forEach((item, index) => {
+          const chip = document.createElement("div");
+          chip.className = "chip";
+          chip.innerHTML = `<span>${index + 1}. ${item.label.replace("\\n", "")}</span><button aria-label="削除">×</button>`;
+          chip.querySelector("button").addEventListener("click", () => {
+            queue.splice(index, 1);
+            renderQueue();
+          });
+          queueList.appendChild(chip);
+        });
+      }
+      const totalSec = Math.max(0, Math.round(queue.reduce((s, item) => s + Math.max(1.2, item.text.length * 0.22), 0)));
+      queueMeta.textContent = `ぜんぶの長さ 約 ${totalSec}秒（${queue.length}個）`;
+      playBtn.disabled = queue.length === 0;
+    }
+
+    function speak(text) {
+      if (!("speechSynthesis" in window)) {
+        alert("このブラウザでは音声読み上げに対応していません");
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "ja-JP";
+      utterance.rate = 0.88;
+      utterance.pitch = 1.18;
+      utterance.volume = 1;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function playQueue() {
+      if (queue.length === 0) return;
+      const sentence = queue.map(item => item.text).join("。 ") + "。";
+      speak(sentence);
+    }
+
+    function stopSpeech() {
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    }
+
+    function clearQueue() {
+      queue = [];
+      renderQueue();
+    }
+
+    queueMode.addEventListener("click", () => setMode("queue"));
+    instantMode.addEventListener("click", () => setMode("instant"));
+    playBtn.addEventListener("click", playQueue);
+    stopBtn.addEventListener("click", stopSpeech);
+    clearBtn.addEventListener("click", clearQueue);
+    clearSmall.addEventListener("click", clearQueue);
+
+    setupClockFace();
+    updateClock();
+    renderTabs();
+    renderButtons();
+    renderQueue();
+    setInterval(updateClock, 1000);
+  </script>
+</body>
+</html>
