@@ -1,252 +1,520 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>パパの声でおしたく MVP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="theme-color" content="#bdeeff" />
+  <title>パパのこえで おしたく</title>
   <style>
     :root {
-      --blue: #1558c8;
+      /* base palette */
       --deep-blue: #06327a;
-      --sky-bg: #e2f4ff;
-      --sky-border: #b7def8;
-      --pink-bg: #ffe3ed;
-      --pink-border: #f8b4cf;
-      --yellow-bg: #fff4bd;
-      --yellow-border: #f8d456;
-      --green-bg: #e4f8da;
-      --green-border: #b8e49e;
-      --purple-bg: #efe2ff;
-      --purple-border: #d8b4fe;
-      --orange-bg: #ffedd5;
-      --orange-border: #fdba74;
-      --shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
-    }
+      --blue: #1558c8;
+      --soft-shadow: 0 8px 22px rgba(15, 23, 42, 0.12);
+      --card-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
 
-    * { box-sizing: border-box; }
+```
+  /* category color tokens */
+  --pink-bg: #ffe3ed;     --pink-border: #f8b4cf;     --pink-text: #8a1c4b;     --pink-icon: #db2777;
+  --sky-bg: #e2f4ff;      --sky-border: #b7def8;      --sky-text: #0b3d91;      --sky-icon: #2563eb;
+  --azure-bg: #dbeafe;    --azure-border: #93c5fd;    --azure-text: #0c4a87;    --azure-icon: #1d4ed8;
+  --yellow-bg: #fff4bd;   --yellow-border: #f8d456;   --yellow-text: #7c4a07;   --yellow-icon: #d97706;
+  --green-bg: #e4f8da;    --green-border: #b8e49e;    --green-text: #1b5e20;    --green-icon: #16a34a;
+  --purple-bg: #efe2ff;   --purple-border: #d8b4fe;   --purple-text: #4c1d95;   --purple-icon: #7c3aed;
+  --orange-bg: #ffedd5;   --orange-border: #fdba74;   --orange-text: #7c2d12;   --orange-icon: #ea580c;
+}
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
-      background: #e5e7eb;
-      color: #172033;
-      -webkit-tap-highlight-color: transparent;
-    }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-    body {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-    }
+html, body {
+  margin: 0; padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Maru Gothic ProN", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  background: #d8e2ec;
+  color: #172033;
+  overscroll-behavior: none;
+}
 
-    .app {
-      width: 100%;
-      max-width: 430px;
-      min-height: 100vh;
-      background: rgba(255,255,255,0.96);
-      position: relative;
-      overflow-x: hidden;
-      box-shadow: 0 0 40px rgba(0,0,0,0.18);
-    }
+body { min-height: 100vh; display: flex; justify-content: center; }
 
-    .header {
-      padding: calc(env(safe-area-inset-top) + 28px) 18px 22px;
-      position: relative;
-      overflow: hidden;
-      transition: background 0.35s ease, color 0.35s ease;
-      cursor: pointer;
-    }
+.app {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+  background: #ffffff;
+  position: relative;
+  overflow-x: hidden;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.18);
+  padding-bottom: calc(78px + env(safe-area-inset-bottom));
+}
 
-    .header.morning {
-      background: linear-gradient(180deg, #bdeeff 0%, #ecfbff 100%);
-      color: #0b3d91;
-    }
+/* ===== HEADER (clock) ===== */
+.header {
+  padding: calc(env(safe-area-inset-top) + 22px) 16px 18px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.5s ease, color 0.5s ease;
+  cursor: pointer;
+}
+.header.morning { background: linear-gradient(180deg, #bdeeff 0%, #ecfbff 100%); color: var(--deep-blue); }
+.header.afternoon { background: linear-gradient(180deg, #fed7aa 0%, #fef3c7 100%); color: #7c2d12; }
+.header.evening { background: linear-gradient(180deg, #fda4af 0%, #fde68a 100%); color: #7c1d3f; }
+.header.night { background: linear-gradient(180deg, #172554 0%, #312e81 52%, #111827 100%); color: #fff; }
 
-    .header.afternoon {
-      background: linear-gradient(180deg, #172554 0%, #312e81 52%, #111827 100%);
-      color: #fff;
-    }
+.sky-icon { position: absolute; font-size: 38px; opacity: 0.95; pointer-events: none; }
+.sky-icon.left { left: 16px; top: calc(env(safe-area-inset-top) + 70px); }
+.sky-icon.right { right: 12px; top: calc(env(safe-area-inset-top) + 96px); font-size: 30px; opacity: 0.75; }
 
-    .sky-icon {
-      position: absolute;
-      font-size: 42px;
-      opacity: 0.95;
-      pointer-events: none;
-    }
+.clock-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; position: relative; z-index: 2; }
+.time-block { min-width: 0; padding-top: 24px; }
 
-    .sky-icon.left { left: 18px; top: 86px; }
-    .sky-icon.right { right: 12px; top: 118px; font-size: 34px; opacity: 0.75; }
+.period {
+  font-size: 32px; line-height: 1; font-weight: 1000; letter-spacing: 0.04em;
+  text-shadow: 0 3px 0 rgba(255, 255, 255, 0.7);
+}
+.header.night .period, .header.evening .period { text-shadow: none; }
 
-    .clock-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      position: relative;
-      z-index: 2;
-    }
+.digital-time {
+  margin-top: 6px;
+  font-size: clamp(56px, 17vw, 78px);
+  line-height: 0.92; font-weight: 1000; letter-spacing: -0.07em;
+  color: #0b48a5;
+  text-shadow: 0 4px 0 rgba(255, 255, 255, 0.8);
+}
+.header.afternoon .digital-time { color: #9a3412; }
+.header.evening .digital-time { color: #9d174d; }
+.header.night .digital-time { color: #fff; text-shadow: 0 4px 12px rgba(0, 0, 0, 0.35); }
 
-    .time-block { min-width: 0; padding-top: 30px; }
+.message-card {
+  margin-top: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #11408d;
+  border-radius: 18px;
+  padding: 10px 14px;
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1.35;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+}
+.header.night .message-card { background: rgba(255, 255, 255, 0.14); color: #fff; border: 1px solid rgba(255, 255, 255, 0.25); }
+.message-card .clock-emoji { font-size: 22px; }
 
-    .period {
-      font-size: 36px;
-      line-height: 1;
-      font-weight: 1000;
-      letter-spacing: 0.04em;
-      text-shadow: 0 3px 0 rgba(255,255,255,0.75);
-    }
+.analog-clock {
+  width: 160px; height: 160px; border-radius: 50%;
+  background: #fff; border: 6px solid #73b7ea;
+  box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.08), 0 8px 18px rgba(13, 64, 132, 0.16);
+  position: relative;
+  flex: 0 0 160px;
+}
+.number {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 19px; font-weight: 1000; color: #111827; line-height: 1;
+}
+.tick {
+  position: absolute; left: 50%; top: 50%;
+  transform-origin: 0 0; background: #9ca3af;
+  width: 1px; height: 5px;
+}
+.tick.major { width: 2px; height: 9px; background: #111827; }
 
-    .afternoon .period { text-shadow: none; }
+.hand { position: absolute; left: 50%; top: 50%; transform-origin: bottom center; border-radius: 999px; }
+.hand.hour { width: 9px; height: 50px; margin-left: -4.5px; margin-top: -50px; background: #222; z-index: 4; }
+.hand.minute { width: 6px; height: 70px; margin-left: -3px; margin-top: -70px; background: #ef1b1b; box-shadow: 0 2px 6px rgba(239, 27, 27, 0.35); z-index: 5; }
+.center-dot { position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; transform: translate(-50%, -50%); background: #ef1b1b; border: 3px solid #ff7777; border-radius: 50%; z-index: 8; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22); }
 
-    .digital-time {
-      margin-top: 8px;
-      font-size: clamp(62px, 18vw, 82px);
-      line-height: 0.92;
-      font-weight: 1000;
-      letter-spacing: -0.07em;
-      color: #0b48a5;
-      text-shadow: 0 4px 0 rgba(255,255,255,0.8);
-    }
+/* ===== CONTENT ===== */
+.content { padding: 14px 12px 18px; }
+.page { display: none; }
+.page.active { display: block; }
 
-    .afternoon .digital-time { color: #fff; text-shadow: 0 4px 12px rgba(0,0,0,0.35); }
+h1 {
+  margin: 0 0 12px;
+  font-size: 22px;
+  color: #083985;
+  font-weight: 1000;
+  display: flex; align-items: center; gap: 8px;
+}
 
-    .message-card {
-      margin-top: 18px;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(255,255,255,0.9);
-      color: #11408d;
-      border-radius: 18px;
-      padding: 12px 14px;
-      font-size: 18px;
-      font-weight: 900;
-      line-height: 1.35;
-      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
-    }
+/* tabs */
+.tabs {
+  display: flex;
+  gap: 7px;
+  overflow-x: auto;
+  padding: 2px 2px 10px;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: 0 0 auto;
+  border: 2px solid #dbeafe;
+  background: #fff;
+  color: var(--blue);
+  border-radius: 14px;
+  padding: 7px 11px;
+  font-size: 13.5px;
+  font-weight: 1000;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.07);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+.tab .tab-emoji { font-size: 16px; }
+.tab.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+.tab.pink.active   { background: var(--pink-icon); border-color: var(--pink-icon); }
+.tab.sky.active    { background: var(--sky-icon); border-color: var(--sky-icon); }
+.tab.azure.active  { background: var(--azure-icon); border-color: var(--azure-icon); }
+.tab.yellow.active { background: var(--yellow-icon); border-color: var(--yellow-icon); }
+.tab.green.active  { background: var(--green-icon); border-color: var(--green-icon); }
+.tab.purple.active { background: var(--purple-icon); border-color: var(--purple-icon); }
+.tab.orange.active { background: var(--orange-icon); border-color: var(--orange-icon); }
 
-    .afternoon .message-card { background: rgba(255,255,255,0.14); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+/* mode row */
+.mode-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.mode-btn {
+  border: 0; border-radius: 16px;
+  padding: 12px 8px;
+  font-size: 15.5px; font-weight: 1000;
+  background: #fff; box-shadow: var(--soft-shadow); color: #334155;
+  cursor: pointer; transition: transform .08s ease;
+}
+.mode-btn:active { transform: scale(0.97); }
+.mode-btn.active.queue { background: #22c55e; color: #fff; }
+.mode-btn.active.instant { background: #fb923c; color: #fff; }
 
-    .analog-clock {
-      width: 174px;
-      height: 174px;
-      border-radius: 50%;
-      background: #fff;
-      border: 7px solid #73b7ea;
-      box-shadow: inset 0 2px 12px rgba(0,0,0,0.08), 0 8px 18px rgba(13, 64, 132, 0.16);
-      position: relative;
-      flex: 0 0 174px;
-    }
+/* button grid */
+.button-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+.voice-card {
+  min-height: 118px;
+  border-radius: 18px;
+  border: 2px solid transparent;
+  padding: 8px 4px 6px;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+  gap: 4px;
+  text-align: center;
+  box-shadow: var(--card-shadow);
+  cursor: pointer; user-select: none;
+  transition: transform 0.08s ease, filter 0.15s ease, box-shadow 0.15s ease;
+  font-weight: 1000;
+  position: relative;
+  background: #fff;
+}
+.voice-card:active { transform: scale(0.96); filter: brightness(0.97); }
+.voice-card.playing { box-shadow: 0 0 0 3px #22c55e, var(--card-shadow); animation: pulse 1s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 3px #22c55e, var(--card-shadow); } 50% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.4), var(--card-shadow); } }
 
-    .number {
-      position: absolute;
-      left: 50%; top: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 21px;
-      font-weight: 1000;
-      color: #111827;
-      line-height: 1;
-    }
+.voice-card .icon { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; }
+.voice-card svg { width: 38px; height: 38px; stroke-width: 2.5; }
+.voice-card .label { font-size: 14px; line-height: 1.2; white-space: pre-line; padding: 0 2px; }
+.voice-card .speaker {
+  margin-top: 2px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-size: 14px;
+}
+.voice-card .speaker svg { width: 16px; height: 16px; stroke-width: 0; }
 
-    .tick {
-      position: absolute;
-      left: 50%; top: 50%;
-      transform-origin: 0 0;
-      background: #9ca3af;
-      width: 1px; height: 5px;
-    }
+.favorite-toggle {
+  position: absolute; right: 5px; top: 5px;
+  border: 0;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 999px;
+  width: 24px; height: 24px;
+  color: #cbd5e1;
+  font-size: 14px;
+  font-weight: 1000;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,.1);
+}
+.favorite-toggle.on { color: #f59e0b; background: #fff7ed; }
 
-    .tick.major { width: 2px; height: 9px; background: #111827; }
+/* category color */
+.pink   { background: var(--pink-bg);   border-color: var(--pink-border);   color: var(--pink-text); }
+.pink   .speaker { background: var(--pink-icon); }
+.sky    { background: var(--sky-bg);    border-color: var(--sky-border);    color: var(--sky-text); }
+.sky    .speaker { background: var(--sky-icon); }
+.azure  { background: var(--azure-bg);  border-color: var(--azure-border);  color: var(--azure-text); }
+.azure  .speaker { background: var(--azure-icon); }
+.yellow { background: var(--yellow-bg); border-color: var(--yellow-border); color: var(--yellow-text); }
+.yellow .speaker { background: var(--yellow-icon); }
+.green  { background: var(--green-bg);  border-color: var(--green-border);  color: var(--green-text); }
+.green  .speaker { background: var(--green-icon); }
+.purple { background: var(--purple-bg); border-color: var(--purple-border); color: var(--purple-text); }
+.purple .speaker { background: var(--purple-icon); }
+.orange { background: var(--orange-bg); border-color: var(--orange-border); color: var(--orange-text); }
+.orange .speaker { background: var(--orange-icon); }
 
-    .hand {
-      position: absolute;
-      left: 50%; top: 50%;
-      transform-origin: bottom center;
-      border-radius: 999px;
-    }
+/* queue panel */
+.queue-panel {
+  margin-top: 16px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 22px;
+  box-shadow: var(--soft-shadow);
+  padding: 12px;
+}
+.queue-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 10px;
+}
+.queue-title { font-size: 18px; font-weight: 1000; color: #083985; display: flex; align-items: center; gap: 4px; }
+.small-btn {
+  border: 1px solid #d1d5db;
+  background: #f8fafc;
+  color: #475569;
+  border-radius: 12px;
+  padding: 7px 10px;
+  font-weight: 900;
+  font-size: 13px;
+  cursor: pointer;
+}
+.queue-list {
+  min-height: 78px;
+  background: #fff1f6;
+  border: 1px solid #ffd2e4;
+  border-radius: 16px;
+  padding: 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.empty { color: #94a3b8; font-weight: 900; padding: 12px 6px; text-align: center; font-size: 14px; }
+.queue-item {
+  display: flex; align-items: center; justify-content: space-between;
+  background: #fff;
+  border: 1px solid #f9a8d4;
+  border-radius: 12px;
+  padding: 7px 8px 7px 10px;
+  font-size: 14px;
+  font-weight: 1000;
+  color: #831843;
+}
+.queue-item.playing-now { background: #ecfccb; border-color: #84cc16; color: #365314; box-shadow: 0 0 0 2px #84cc16; }
+.queue-item .qnum {
+  flex: 0 0 22px; height: 22px;
+  border-radius: 50%;
+  background: #ec4899; color: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; margin-right: 7px;
+}
+.queue-item.playing-now .qnum { background: #65a30d; }
+.queue-item .qlabel { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.queue-item .qclose {
+  flex: 0 0 24px; height: 24px;
+  border: 0; background: #f3f4f6; color: #6b7280;
+  border-radius: 50%;
+  font-weight: 1000;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 6px;
+}
 
-    .hand.hour { width: 10px; height: 58px; margin-left: -5px; margin-top: -58px; background: #222; z-index: 4; }
-    .hand.minute { width: 7px; height: 78px; margin-left: -3.5px; margin-top: -78px; background: #ef1b1b; box-shadow: 0 2px 6px rgba(239,27,27,.35); z-index: 5; }
-    .center-dot { position:absolute; left:50%; top:50%; width:24px; height:24px; transform:translate(-50%,-50%); background:#ef1b1b; border:3px solid #ff7777; border-radius:50%; z-index:8; box-shadow:0 2px 8px rgba(0,0,0,.22); }
+.control-row { margin-top: 11px; display: grid; grid-template-columns: 1fr 1.3fr; gap: 9px; }
+.control-row.bottom { grid-template-columns: 1fr 1fr; margin-top: 8px; }
+.control-btn {
+  border: 0; border-radius: 18px;
+  min-height: 56px;
+  color: #fff; font-weight: 1000; font-size: 16px;
+  box-shadow: var(--soft-shadow);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  transition: transform .08s ease;
+}
+.control-btn:active { transform: scale(0.97); }
+.control-btn:disabled { background: #cbd5e1 !important; color: #fff; cursor: not-allowed; }
+.clear { background: #94a3b8; }
+.play  { background: #22c55e; min-height: 64px; font-size: 17px; }
+.stop  { background: #ef4444; }
+.queue-meta {
+  margin-top: 10px;
+  text-align: center;
+  color: #475569;
+  font-size: 13.5px;
+  font-weight: 900;
+  background: #f1f5f9;
+  border-radius: 12px;
+  padding: 6px 8px;
+}
+.queue-meta strong { color: #1e40af; font-size: 16px; }
 
-    .content { padding: 16px 14px 22px; }
+/* ===== LIST PAGE ===== */
+.list-search {
+  display: flex; align-items: center; gap: 6px;
+  background: #f1f5f9; border-radius: 14px; padding: 9px 11px;
+  margin-bottom: 12px;
+}
+.list-search input {
+  flex: 1; border: 0; background: transparent;
+  font-size: 16px; font-weight: 700;
+  color: #0f172a;
+  outline: none;
+  min-width: 0;
+}
+.list-group { margin-bottom: 18px; }
+.list-group-head { font-size: 16px; font-weight: 1000; color: #083985; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.list-group-head .badge { background: #e0e7ff; color: #3730a3; border-radius: 999px; padding: 2px 8px; font-size: 12px; }
+.list-rows { display: flex; flex-direction: column; gap: 6px; }
+.list-row {
+  display: flex; align-items: center; gap: 9px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 9px 10px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.list-row:active { background: #f8fafc; }
+.list-row .row-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex: 0 0 36px;
+}
+.list-row .row-icon svg { width: 26px; height: 26px; }
+.list-row .row-text { flex: 1; font-size: 14px; color: #1f2937; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.list-row .row-play {
+  flex: 0 0 36px; height: 36px;
+  border-radius: 50%;
+  background: #22c55e; color: #fff;
+  border: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 1000;
+  cursor: pointer;
+}
+.list-row .row-fav {
+  flex: 0 0 32px; height: 32px;
+  border-radius: 50%;
+  background: #f3f4f6; color: #cbd5e1;
+  border: 0;
+  font-weight: 1000;
+  cursor: pointer;
+}
+.list-row .row-fav.on { background: #fff7ed; color: #f59e0b; }
 
-    h1 { margin: 0 0 12px; font-size: 24px; color:#083985; font-weight:1000; display:flex; align-items:center; gap:8px; }
+/* ===== SETTINGS / HELP PAGE ===== */
+.setting-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 14px;
+  margin-bottom: 12px;
+  box-shadow: var(--card-shadow);
+}
+.setting-card h3 {
+  margin: 0 0 10px;
+  font-size: 16px; color: #083985; font-weight: 1000;
+  display: flex; align-items: center; gap: 6px;
+}
+.setting-card .desc { font-size: 13px; color: #475569; margin-bottom: 8px; font-weight: 700; }
+.setting-row { display: flex; align-items: center; gap: 8px; }
+.setting-row input[type="range"] { flex: 1; accent-color: #2563eb; }
+.setting-row .val { font-weight: 1000; color: #1e40af; min-width: 44px; text-align: right; font-size: 15px; }
+.reset-fav {
+  border: 1px solid #fca5a5;
+  background: #fef2f2; color: #b91c1c;
+  border-radius: 12px;
+  padding: 9px 12px;
+  font-weight: 1000;
+  cursor: pointer;
+  font-size: 14px;
+}
 
-    .tabs { display:flex; gap:8px; overflow-x:auto; padding:2px 0 12px; scrollbar-width:none; }
-    .tabs::-webkit-scrollbar { display:none; }
-    .tab { flex:0 0 auto; border:1px solid #dbeafe; background:#fff; color:#1558c8; border-radius:14px; padding:9px 11px; font-size:14px; font-weight:1000; box-shadow:0 3px 10px rgba(15,23,42,.08); cursor:pointer; }
-    .tab.active { background:#2563eb; color:#fff; border-color:#2563eb; }
+.help-step {
+  display: flex; gap: 10px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 12px;
+  margin-bottom: 10px;
+  box-shadow: var(--card-shadow);
+}
+.help-step .num {
+  flex: 0 0 36px; height: 36px;
+  border-radius: 50%;
+  background: #2563eb; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 1000;
+  font-size: 18px;
+}
+.help-step .step-body { flex: 1; }
+.help-step .step-title { font-weight: 1000; color: #083985; font-size: 15px; margin-bottom: 4px; }
+.help-step .step-text { font-size: 13.5px; color: #334155; line-height: 1.5; font-weight: 700; }
 
-    .mode-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
-    .mode-btn { border:0; border-radius:18px; padding:14px 8px; font-size:17px; font-weight:1000; background:#fff; box-shadow:var(--shadow); color:#334155; cursor:pointer; }
-    .mode-btn.active.queue { background:#22c55e; color:#fff; }
-    .mode-btn.active.instant { background:#fb923c; color:#fff; }
+/* ===== BOTTOM NAV ===== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  background: #fff;
+  border-top: 1px solid #e5e7eb;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 8px 0 calc(env(safe-area-inset-bottom) + 6px);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.06);
+  z-index: 50;
+}
+.nav-btn {
+  border: 0; background: transparent;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px;
+  padding: 4px 0 0;
+  color: #94a3b8;
+  cursor: pointer;
+  font-weight: 1000;
+  font-size: 11.5px;
+}
+.nav-btn .nav-icon { font-size: 22px; line-height: 1; }
+.nav-btn svg { width: 24px; height: 24px; }
+.nav-btn.active { color: #2563eb; }
 
-    .button-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+/* ===== TOAST ===== */
+.toast {
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom) + 92px);
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(15, 23, 42, 0.92);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 1000;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s;
+  z-index: 100;
+  max-width: 90%;
+  text-align: center;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    .voice-card {
-      min-height: 104px;
-      border-radius: 20px;
-      border: 2px solid transparent;
-      padding: 8px 6px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:6px;
-      text-align:center;
-      box-shadow:0 4px 12px rgba(15,23,42,.08);
-      cursor:pointer;
-      user-select:none;
-      transition:transform .08s ease, filter .15s ease;
-      font-weight:1000;
-      position:relative;
-    }
-    .voice-card:active { transform:scale(.96); filter:brightness(.97); }
-    .voice-card .icon { width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
-    .voice-card svg { width:40px; height:40px; stroke-width:2.5; }
-    .voice-card .label { font-size:16px; line-height:1.22; white-space:pre-line; }
-    .favorite-toggle { position:absolute; right:7px; top:7px; border:0; background:rgba(255,255,255,.7); border-radius:999px; width:25px; height:25px; color:#94a3b8; font-size:15px; font-weight:1000; }
-    .favorite-toggle.on { color:#f59e0b; background:#fff7ed; }
+@media (max-width: 390px) {
+  .analog-clock { width: 144px; height: 144px; flex-basis: 144px; }
+  .number { font-size: 17px; }
+  .digital-time { font-size: 62px; }
+  .period { font-size: 28px; }
+  .button-grid { gap: 7px; }
+  .voice-card { min-height: 112px; }
+  .voice-card .label { font-size: 13px; }
+}
+```
 
-    .pink { background:var(--pink-bg); border-color:var(--pink-border); color:#4a1028; }
-    .sky { background:var(--sky-bg); border-color:var(--sky-border); color:#082f49; }
-    .green { background:var(--green-bg); border-color:var(--green-border); color:#14532d; }
-    .yellow { background:var(--yellow-bg); border-color:var(--yellow-border); color:#713f12; }
-    .purple { background:var(--purple-bg); border-color:var(--purple-border); color:#581c87; }
-    .orange { background:var(--orange-bg); border-color:var(--orange-border); color:#7c2d12; }
-
-    .queue-panel { margin-top:18px; background:#fff; border:1px solid #e5e7eb; border-radius:24px; box-shadow:var(--shadow); padding:14px; }
-    .queue-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
-    .queue-title { font-size:20px; font-weight:1000; color:#083985; }
-    .small-btn { border:1px solid #d1d5db; background:#f8fafc; color:#475569; border-radius:13px; padding:8px 10px; font-weight:900; cursor:pointer; }
-    .queue-list { min-height:82px; background:#fff1f6; border:1px solid #ffd2e4; border-radius:18px; padding:10px; display:flex; flex-wrap:wrap; align-content:flex-start; gap:8px; }
-    .empty { color:#94a3b8; font-weight:900; padding:10px; }
-    .chip { display:inline-flex; align-items:center; gap:7px; background:#f9a8d4; color:#831843; border-radius:999px; padding:8px 10px; font-weight:1000; font-size:14px; }
-    .chip button { border:0; background:#db2777; color:#fff; width:21px; height:21px; border-radius:50%; font-weight:1000; cursor:pointer; }
-
-    .control-row { margin-top:12px; display:grid; grid-template-columns:1fr 1.25fr 1fr; gap:10px; }
-    .control-btn { border:0; border-radius:20px; min-height:68px; color:#fff; font-weight:1000; font-size:17px; box-shadow:var(--shadow); cursor:pointer; }
-    .clear { background:#f59e0b; }
-    .play { background:#22c55e; font-size:18px; }
-    .play:disabled { background:#cbd5e1; }
-    .stop { background:#ef4444; }
-    .queue-meta { margin-top:10px; text-align:center; color:#64748b; font-size:14px; font-weight:900; }
-
-    @media (max-width: 390px) {
-      .analog-clock { width:158px; height:158px; flex-basis:158px; }
-      .number { font-size:19px; }
-      .digital-time { font-size:66px; }
-      .period { font-size:32px; }
-      .button-grid { gap:8px; }
-      .voice-card { min-height:98px; }
-    }
   </style>
 </head>
 <body>
   <div class="app">
+    <!-- ============ HEADER ============ -->
     <header id="header" class="header morning" role="button" aria-label="今の時刻を読み上げる">
       <div id="skyLeft" class="sky-icon left">☀️</div>
       <div class="sky-icon right">☁️</div>
@@ -254,7 +522,10 @@
         <div class="time-block">
           <div id="period" class="period">ごぜん</div>
           <div id="digitalTime" class="digital-time">7:42</div>
-          <div class="message-card" id="timeSpeakCard">⏰ いまの じかんを<br />みてみよう！</div>
+          <div class="message-card" id="timeSpeakCard">
+            <span class="clock-emoji">⏰</span>
+            <span>いまの じかんを<br />みてみよう！</span>
+          </div>
         </div>
         <div id="analogClock" class="analog-clock" aria-label="アナログ時計">
           <div id="hourHand" class="hand hour"></div>
@@ -264,124 +535,401 @@
       </div>
     </header>
 
-    <section class="content">
-      <h1>🔊 パパのこえをえらぼう</h1>
-      <div id="tabs" class="tabs"></div>
+```
+<!-- ============ MAIN CONTENT ============ -->
+<section class="content">
+  <!-- HOME PAGE -->
+  <div class="page active" id="page-home">
+    <h1>🔊 パパのこえを えらぼう</h1>
+    <div id="tabs" class="tabs"></div>
 
-      <div class="mode-row">
-        <button id="queueMode" class="mode-btn queue active">ならべて再生</button>
-        <button id="instantMode" class="mode-btn instant">すぐ鳴らす</button>
+    <div class="mode-row">
+      <button id="queueMode" class="mode-btn queue active">📋 ならべて再生</button>
+      <button id="instantMode" class="mode-btn instant">⚡ すぐ鳴らす</button>
+    </div>
+
+    <div id="buttonGrid" class="button-grid"></div>
+
+    <div class="queue-panel">
+      <div class="queue-head">
+        <div class="queue-title">📋 再生リスト</div>
+        <button id="clearSmall" class="small-btn">🗑 ぜんぶけす</button>
       </div>
-
-      <div id="buttonGrid" class="button-grid"></div>
-
-      <div class="queue-panel">
-        <div class="queue-head">
-          <div class="queue-title">再生リスト（まとめて再生）</div>
-          <button id="clearSmall" class="small-btn">🗑 ぜんぶけす</button>
-        </div>
-        <div id="queueList" class="queue-list"></div>
-        <div class="control-row">
-          <button id="clearBtn" class="control-btn clear">↻<br />クリア</button>
-          <button id="playBtn" class="control-btn play">▶<br />まとめて再生</button>
-          <button id="stopBtn" class="control-btn stop">■<br />停止</button>
-        </div>
-        <div id="queueMeta" class="queue-meta">ぜんぶの長さ 約 0秒（0個）</div>
+      <div id="queueList" class="queue-list"></div>
+      <div id="queueMeta" class="queue-meta">ぜんぶの長さ <strong>0秒</strong>（0個）</div>
+      <div class="control-row">
+        <button id="stopBtn" class="control-btn stop">■ 停止</button>
+        <button id="playBtn" class="control-btn play">▶ まとめて再生</button>
       </div>
-    </section>
+      <div class="control-row bottom">
+        <button id="clearBtn" class="control-btn clear">↻ クリア</button>
+        <button id="shuffleBtn" class="control-btn" style="background:#8b5cf6;">🔀 シャッフル</button>
+      </div>
+    </div>
   </div>
 
+  <!-- LIST PAGE -->
+  <div class="page" id="page-list">
+    <h1>📚 ことば一覧</h1>
+    <div class="list-search">
+      <span>🔍</span>
+      <input id="searchInput" type="text" placeholder="ことばを さがす..." />
+    </div>
+    <div id="listContainer"></div>
+  </div>
+
+  <!-- SETTINGS PAGE -->
+  <div class="page" id="page-settings">
+    <h1>⚙️ せってい</h1>
+
+    <div class="setting-card">
+      <h3>🐢 再生スピード</h3>
+      <div class="desc">音声の話す速さを変えられます（0.7倍〜1.3倍）</div>
+      <div class="setting-row">
+        <input id="rateRange" type="range" min="0.7" max="1.3" step="0.05" value="1" />
+        <span class="val" id="rateVal">1.00</span>
+      </div>
+    </div>
+
+    <div class="setting-card">
+      <h3>🔊 音量</h3>
+      <div class="desc">本体の音量とは別に、アプリ内の音量を調整できます</div>
+      <div class="setting-row">
+        <input id="volumeRange" type="range" min="0" max="1" step="0.05" value="1" />
+        <span class="val" id="volumeVal">100%</span>
+      </div>
+    </div>
+
+    <div class="setting-card">
+      <h3>⏱ 連続再生の間隔</h3>
+      <div class="desc">「まとめて再生」で次のことばを話すまでの間（秒）</div>
+      <div class="setting-row">
+        <input id="gapRange" type="range" min="0" max="1.5" step="0.1" value="0.4" />
+        <span class="val" id="gapVal">0.4秒</span>
+      </div>
+    </div>
+
+    <div class="setting-card">
+      <h3>⭐ よく使うことば</h3>
+      <div class="desc" id="favCount">登録数：0個</div>
+      <button id="resetFav" class="reset-fav">⭐ よく使うことばを ぜんぶリセット</button>
+    </div>
+
+    <div class="setting-card">
+      <h3>ℹ️ このアプリについて</h3>
+      <div class="desc" style="line-height:1.6;">
+        パパのこえで おしたく v1.0<br/>
+        ゆいちゃん・みおちゃん専用<br/>
+        音声39ことば収録<br/>
+        <span style="color:#94a3b8;font-size:11px;">© myGEMS</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HELP PAGE -->
+  <div class="page" id="page-help">
+    <h1>💡 使い方</h1>
+
+    <div class="help-step">
+      <div class="num">1</div>
+      <div class="step-body">
+        <div class="step-title">カテゴリを えらぶ</div>
+        <div class="step-text">「なまえ」「おはよう」「おしたく」など、上の青いタブで カテゴリを 切りかえられます。</div>
+      </div>
+    </div>
+
+    <div class="help-step">
+      <div class="num">2</div>
+      <div class="step-body">
+        <div class="step-title">モードを えらぶ</div>
+        <div class="step-text"><strong style="color:#22c55e;">📋 ならべて再生</strong>：ことばを じゅんばんに ならべて あとで まとめて再生<br/><strong style="color:#fb923c;">⚡ すぐ鳴らす</strong>：タップしたら すぐ パパの声が なります</div>
+      </div>
+    </div>
+
+    <div class="help-step">
+      <div class="num">3</div>
+      <div class="step-body">
+        <div class="step-title">ことばを タップ</div>
+        <div class="step-text">かわいい イラストの ボタンを タップすると、パパの こえが ながれます。</div>
+      </div>
+    </div>
+
+    <div class="help-step">
+      <div class="num">4</div>
+      <div class="step-body">
+        <div class="step-title">⭐ よく使うことば に 登録</div>
+        <div class="step-text">右上の ★マークを タップすると、「よく使うことば」タブに 入ります。お気に入りを 集めて 朝の おしたくが もっと スムーズに！</div>
+      </div>
+    </div>
+
+    <div class="help-step">
+      <div class="num">5</div>
+      <div class="step-body">
+        <div class="step-title">▶ まとめて再生</div>
+        <div class="step-text">下の 再生リストに ならんだ ことばを、まとめて じゅんばんに 再生します。「ゆいちゃん → 顔を洗おうね → ご飯を食べようね」のように 朝の流れを 作れます。</div>
+      </div>
+    </div>
+
+    <div class="help-step">
+      <div class="num">6</div>
+      <div class="step-body">
+        <div class="step-title">🕐 時計を タップ</div>
+        <div class="step-text">上の 大きな時計を タップすると「今は何時かな？」と パパの声が ながれます。時計を 読む 練習にも！</div>
+      </div>
+    </div>
+
+    <div class="help-step" style="background:#fff7ed;border-color:#fdba74;">
+      <div class="num" style="background:#ea580c;">💡</div>
+      <div class="step-body">
+        <div class="step-title">音声ファイルの 置き場所</div>
+        <div class="step-text" style="font-family:monospace;font-size:12px;">このHTMLと同じ場所に「voice」フォルダを作り、その中に39個のMP3ファイル（日本語ファイル名のまま）を 入れてください。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BOTTOM NAV ============ -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" data-page="home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/></svg>
+    <span>ホーム</span>
+  </button>
+  <button class="nav-btn" data-page="list">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.2"/><circle cx="4" cy="12" r="1.2"/><circle cx="4" cy="18" r="1.2"/></svg>
+    <span>ことば一覧</span>
+  </button>
+  <button class="nav-btn" data-page="settings">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <span>せってい</span>
+  </button>
+  <button class="nav-btn" data-page="help">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <span>使い方</span>
+  </button>
+</nav>
+
+<!-- toast -->
+<div id="toast" class="toast">登録しました</div>
+```
+
+  </div>
+
+  <!-- ===================== SCRIPT ===================== -->
+
   <script>
+    /* =========================================================
+       1) ICONS (SVG)
+    ========================================================= */
     const iconSvg = {
-      girl: `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="30" r="18" fill="#FFE0C2" stroke="#4B5563"/><path d="M14 29c2-13 9-20 18-20s16 7 18 20c-8-5-23-5-36 0Z" fill="#5B341F"/><circle cx="25" cy="31" r="2.5" fill="#111827"/><circle cx="39" cy="31" r="2.5" fill="#111827"/><path d="M25 41c4 3 10 3 14 0" stroke="#B45309" stroke-linecap="round"/><path d="M12 29c-8 2-8 15 1 17M52 29c8 2 8 15-1 17" stroke="#5B341F" stroke-width="4" stroke-linecap="round"/><circle cx="22" cy="38" r="3" fill="#FCA5A5"/><circle cx="42" cy="38" r="3" fill="#FCA5A5"/></svg>`,
-      girls: `<svg viewBox="0 0 64 64" fill="none"><circle cx="23" cy="31" r="14" fill="#FFE0C2" stroke="#4B5563"/><circle cx="43" cy="31" r="14" fill="#FFE0C2" stroke="#4B5563"/><path d="M11 30c1-10 6-15 12-15s11 5 12 15c-6-4-16-4-24 0Z" fill="#5B341F"/><path d="M31 30c1-10 6-15 12-15s11 5 12 15c-6-4-16-4-24 0Z" fill="#5B341F"/><circle cx="18" cy="32" r="2" fill="#111827"/><circle cx="28" cy="32" r="2" fill="#111827"/><circle cx="38" cy="32" r="2" fill="#111827"/><circle cx="48" cy="32" r="2" fill="#111827"/><path d="M18 40c3 2 7 2 10 0M38 40c3 2 7 2 10 0" stroke="#B45309" stroke-linecap="round"/></svg>`,
-      sun: `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="14" fill="#FBBF24" stroke="#F59E0B"/><path d="M32 4v10M32 50v10M4 32h10M50 32h10M12 12l7 7M45 45l7 7M52 12l-7 7M19 45l-7 7" stroke="#F59E0B" stroke-width="4" stroke-linecap="round"/><circle cx="27" cy="30" r="2" fill="#7C2D12"/><circle cx="37" cy="30" r="2" fill="#7C2D12"/><path d="M26 38c4 3 8 3 12 0" stroke="#7C2D12" stroke-linecap="round"/></svg>`,
-      face: `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="17" fill="#FFE0C2" stroke="#4B5563"/><path d="M20 22c7-9 18-9 25 0" stroke="#5B341F" stroke-width="5" stroke-linecap="round"/><circle cx="26" cy="32" r="2" fill="#111827"/><circle cx="38" cy="32" r="2" fill="#111827"/><path d="M27 42c4 2 7 2 10 0" stroke="#B45309" stroke-linecap="round"/><circle cx="13" cy="34" r="7" fill="#BAE6FD" opacity=".85"/><circle cx="51" cy="34" r="7" fill="#BAE6FD" opacity=".85"/><path d="M8 25c5-4 10-4 15 0M41 25c5-4 10-4 15 0" stroke="#38BDF8" stroke-width="3" stroke-linecap="round"/></svg>`,
-      rice: `<svg viewBox="0 0 64 64" fill="none"><path d="M13 31h38l-5 17a7 7 0 0 1-7 5H25a7 7 0 0 1-7-5l-5-17Z" fill="#E0F2FE" stroke="#2563EB" stroke-width="3"/><path d="M16 31c2-10 7-17 16-17s14 7 16 17" fill="#fff" stroke="#CBD5E1" stroke-width="2"/><path d="M22 42h20" stroke="#60A5FA" stroke-width="3" stroke-linecap="round"/><path d="M50 20l8 28" stroke="#92400E" stroke-width="4" stroke-linecap="round"/><path d="M57 20l-1 28" stroke="#92400E" stroke-width="4" stroke-linecap="round"/></svg>`,
-      toilet: `<svg viewBox="0 0 64 64" fill="none"><path d="M20 8h25v23H20z" fill="#F8FAFC" stroke="#2563EB" stroke-width="3"/><path d="M17 32h34v7c0 8-7 15-17 15S17 47 17 39v-7Z" fill="#DBEAFE" stroke="#2563EB" stroke-width="3"/><path d="M24 54h22" stroke="#2563EB" stroke-width="4" stroke-linecap="round"/></svg>`,
-      shirt: `<svg viewBox="0 0 64 64" fill="none"><path d="M23 11h18l6 5 9 5-8 12-6-3v23H22V30l-6 3-8-12 9-5 6-5Z" fill="#DBEAFE" stroke="#2563EB" stroke-width="3"/><path d="M25 12c1 5 5 8 7 8s6-3 7-8" stroke="#2563EB" stroke-width="3"/></svg>`,
-      shoe: `<svg viewBox="0 0 64 64" fill="none"><path d="M12 39c12 0 17-10 24-10 6 0 7 8 16 8 4 0 7 3 7 7v4H9v-5c0-2 1-4 3-4Z" fill="#BFDBFE" stroke="#2563EB" stroke-width="3"/><path d="M22 38h14M29 34l5 4M36 32l5 5" stroke="#2563EB" stroke-width="3" stroke-linecap="round"/></svg>`,
-      car: `<svg viewBox="0 0 64 64" fill="none"><path d="M11 31l6-12h30l6 12v17H11V31Z" fill="#BFDBFE" stroke="#2563EB" stroke-width="3"/><path d="M20 31h24l-4-8H24l-4 8Z" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/><circle cx="21" cy="49" r="5" fill="#1E3A8A"/><circle cx="43" cy="49" r="5" fill="#1E3A8A"/></svg>`,
-      star: `<svg viewBox="0 0 64 64" fill="none"><path d="M32 6l7 16 17 2-13 11 4 17-15-9-15 9 4-17L8 24l17-2 7-16Z" fill="#FACC15" stroke="#F59E0B" stroke-width="3"/><circle cx="27" cy="30" r="2" fill="#7C2D12"/><circle cx="37" cy="30" r="2" fill="#7C2D12"/><path d="M26 38c4 3 8 3 12 0" stroke="#7C2D12" stroke-linecap="round"/></svg>`,
-      clap: `<svg viewBox="0 0 64 64" fill="none"><path d="M22 36V15a5 5 0 0 1 10 0v17" stroke="#D97706" stroke-width="5" stroke-linecap="round"/><path d="M32 33V13a5 5 0 0 1 10 0v23" stroke="#D97706" stroke-width="5" stroke-linecap="round"/><path d="M42 35V20a5 5 0 0 1 10 0v20c0 12-8 18-18 18-9 0-16-5-20-14l-4-9a5 5 0 0 1 9-4l3 5" fill="#FDE68A" stroke="#D97706" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-      heart: `<svg viewBox="0 0 64 64" fill="none"><path d="M32 54S10 41 10 24c0-8 6-14 14-14 5 0 8 2 10 6 2-4 5-6 10-6 8 0 14 6 14 14 0 17-22 30-22 30Z" fill="#86EFAC" stroke="#16A34A" stroke-width="3"/></svg>`,
-      clock: `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="24" fill="#F5F3FF" stroke="#7C3AED" stroke-width="4"/><path d="M32 17v17l12 7" stroke="#7C3AED" stroke-width="5" stroke-linecap="round"/><path d="M32 8V4M32 60v-4M8 32H4M60 32h-4" stroke="#7C3AED" stroke-width="3" stroke-linecap="round"/></svg>`,
-      fist: `<svg viewBox="0 0 64 64" fill="none"><path d="M18 32V19a5 5 0 0 1 10 0v10M28 29V16a5 5 0 0 1 10 0v13M38 30V19a5 5 0 0 1 10 0v18c0 12-7 20-19 20-10 0-17-7-17-17v-8a5 5 0 0 1 10 0v5" fill="#FED7AA" stroke="#EA580C" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+      // people
+      yui:    `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="34" r="17" fill="#FFE0C2" stroke="#5B341F" stroke-width="2"/><path d="M14 32c2-13 9-22 18-22s16 9 18 22c-8-5-23-5-36 0Z" fill="#5B341F"/><path d="M16 26c-3-6-1-10 4-12M48 26c3-6 1-10-4-12" fill="#5B341F"/><circle cx="14" cy="22" r="5" fill="#5B341F"/><circle cx="50" cy="22" r="5" fill="#5B341F"/><circle cx="14" cy="22" r="2.5" fill="#F472B6"/><circle cx="50" cy="22" r="2.5" fill="#F472B6"/><circle cx="26" cy="34" r="2.5" fill="#111827"/><circle cx="38" cy="34" r="2.5" fill="#111827"/><path d="M26 43c4 3 8 3 12 0" stroke="#B45309" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="22" cy="40" r="3" fill="#FCA5A5"/><circle cx="42" cy="40" r="3" fill="#FCA5A5"/></svg>`,
+      mio:    `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="34" r="17" fill="#FFE0C2" stroke="#5B341F" stroke-width="2"/><path d="M14 32c2-13 9-22 18-22s16 9 18 22c-8-5-23-5-36 0Z" fill="#7C3F1F"/><path d="M10 30c-2 6 0 12 6 14M54 30c2 6 0 12-6 14" fill="#7C3F1F"/><circle cx="10" cy="33" r="6" fill="#7C3F1F"/><circle cx="54" cy="33" r="6" fill="#7C3F1F"/><circle cx="10" cy="32" r="2.5" fill="#A78BFA"/><circle cx="54" cy="32" r="2.5" fill="#A78BFA"/><circle cx="26" cy="34" r="2.5" fill="#111827"/><circle cx="38" cy="34" r="2.5" fill="#111827"/><path d="M26 43c4 3 8 3 12 0" stroke="#B45309" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="22" cy="40" r="3" fill="#FCA5A5"/><circle cx="42" cy="40" r="3" fill="#FCA5A5"/></svg>`,
+      twins:  `<svg viewBox="0 0 64 64" fill="none"><circle cx="21" cy="35" r="13" fill="#FFE0C2" stroke="#5B341F" stroke-width="2"/><circle cx="43" cy="35" r="13" fill="#FFE0C2" stroke="#5B341F" stroke-width="2"/><path d="M9 33c1-10 6-17 12-17s11 7 12 17c-6-4-18-4-24 0Z" fill="#5B341F"/><path d="M31 33c1-10 6-17 12-17s11 7 12 17c-6-4-18-4-24 0Z" fill="#7C3F1F"/><circle cx="17" cy="36" r="1.8" fill="#111827"/><circle cx="25" cy="36" r="1.8" fill="#111827"/><circle cx="39" cy="36" r="1.8" fill="#111827"/><circle cx="47" cy="36" r="1.8" fill="#111827"/><path d="M17 42c2 1.5 5 1.5 8 0M39 42c2 1.5 5 1.5 8 0" stroke="#B45309" stroke-linecap="round" stroke-width="2" fill="none"/></svg>`,
+      papa:   `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="30" r="16" fill="#FFE0C2" stroke="#4B5563" stroke-width="2"/><path d="M18 24c0-9 6-15 14-15s14 6 14 15c-5-3-23-3-28 0Z" fill="#1F2937"/><circle cx="26" cy="30" r="2.5" fill="#111827"/><circle cx="38" cy="30" r="2.5" fill="#111827"/><path d="M26 38c4 3 8 3 12 0" stroke="#B45309" stroke-linecap="round" stroke-width="2" fill="none"/><path d="M16 50h32v8H16z" fill="#3B82F6" stroke="#1E40af" stroke-width="2"/><path d="M24 50l8 6 8-6" stroke="#fff" stroke-width="2" fill="none"/></svg>`,
+
+      // morning
+      sun:     `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="14" fill="#FBBF24" stroke="#F59E0B" stroke-width="2"/><path d="M32 4v10M32 50v10M4 32h10M50 32h10M12 12l7 7M45 45l7 7M52 12l-7 7M19 45l-7 7" stroke="#F59E0B" stroke-width="4" stroke-linecap="round"/><circle cx="27" cy="30" r="2" fill="#7C2D12"/><circle cx="37" cy="30" r="2" fill="#7C2D12"/><path d="M26 38c4 3 8 3 12 0" stroke="#7C2D12" stroke-linecap="round" stroke-width="2" fill="none"/></svg>`,
+      morning: `<svg viewBox="0 0 64 64" fill="none"><path d="M4 44h56" stroke="#0EA5E9" stroke-width="3"/><circle cx="32" cy="44" r="16" fill="#FCD34D" stroke="#F59E0B" stroke-width="2"/><path d="M32 22v6M16 36l4 3M48 36l-4 3M10 44h6M48 44h6" stroke="#F59E0B" stroke-width="3" stroke-linecap="round"/><path d="M27 44c0 3 2 5 5 5s5-2 5-5" stroke="#7C2D12" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,
+      wake:    `<svg viewBox="0 0 64 64" fill="none"><rect x="8" y="36" width="48" height="22" rx="5" fill="#DBEAFE" stroke="#2563EB" stroke-width="2"/><path d="M12 36c0-8 5-14 12-14h16c7 0 12 6 12 14" fill="#FBCFE8" stroke="#DB2777" stroke-width="2"/><circle cx="24" cy="44" r="3" fill="#111827"/><circle cx="40" cy="44" r="3" fill="#111827"/><path d="M28 50c2 2 6 2 8 0" stroke="#7C2D12" stroke-linecap="round" stroke-width="2" fill="none"/></svg>`,
+      newday:  `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="38" r="14" fill="#FCD34D" stroke="#F59E0B" stroke-width="2"/><path d="M32 18v6M14 38h6M44 38h6M19 25l4 4M45 25l-4 4" stroke="#F59E0B" stroke-width="3" stroke-linecap="round"/><path d="M8 56c8-4 16 4 24 0s16 4 24 0" stroke="#22C55E" stroke-width="3" fill="none"/><path d="M10 60c8-3 16 3 22 0s14 3 22 0" stroke="#16A34A" stroke-width="2" fill="none"/></svg>`,
+
+      // action
+      face:    `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="17" fill="#FFE0C2" stroke="#5B341F" stroke-width="2"/><circle cx="26" cy="32" r="2" fill="#111827"/><circle cx="38" cy="32" r="2" fill="#111827"/><path d="M27 42c4 2 7 2 10 0" stroke="#B45309" stroke-linecap="round" stroke-width="2" fill="none"/><circle cx="14" cy="34" r="9" fill="#BAE6FD" opacity=".85"/><circle cx="50" cy="34" r="9" fill="#BAE6FD" opacity=".85"/><circle cx="10" cy="28" r="3" fill="#BAE6FD" opacity=".7"/><circle cx="54" cy="28" r="3" fill="#BAE6FD" opacity=".7"/></svg>`,
+      shirt:   `<svg viewBox="0 0 64 64" fill="none"><path d="M23 11h18l6 5 9 5-8 12-6-3v23H22V30l-6 3-8-12 9-5 6-5Z" fill="#DBEAFE" stroke="#2563EB" stroke-width="2"/><path d="M25 12c1 5 5 8 7 8s6-3 7-8" stroke="#2563EB" stroke-width="2" fill="none"/></svg>`,
+      gym:     `<svg viewBox="0 0 64 64" fill="none"><path d="M23 11h18l6 5 9 5-8 12-6-3v23H22V30l-6 3-8-12 9-5 6-5Z" fill="#FECACA" stroke="#DC2626" stroke-width="2"/><path d="M25 12c1 5 5 8 7 8s6-3 7-8" stroke="#DC2626" stroke-width="2" fill="none"/><circle cx="32" cy="42" r="6" fill="#fff" stroke="#DC2626" stroke-width="2"/><path d="M28 42h8M32 38v8" stroke="#DC2626" stroke-width="2"/></svg>`,
+      shoe:    `<svg viewBox="0 0 64 64" fill="none"><path d="M12 39c12 0 17-10 24-10 6 0 7 8 16 8 4 0 7 3 7 7v4H9v-5c0-2 1-4 3-4Z" fill="#BFDBFE" stroke="#2563EB" stroke-width="2"/><path d="M22 38h14M29 34l5 4M36 32l5 5" stroke="#2563EB" stroke-width="2" stroke-linecap="round"/></svg>`,
+      toilet:  `<svg viewBox="0 0 64 64" fill="none"><path d="M20 8h25v23H20z" fill="#F8FAFC" stroke="#2563EB" stroke-width="2"/><path d="M17 32h34v7c0 8-7 15-17 15S17 47 17 39v-7Z" fill="#DBEAFE" stroke="#2563EB" stroke-width="2"/><path d="M24 54h22" stroke="#2563EB" stroke-width="3" stroke-linecap="round"/></svg>`,
+      rice:    `<svg viewBox="0 0 64 64" fill="none"><path d="M13 31h38l-5 17a7 7 0 0 1-7 5H25a7 7 0 0 1-7-5l-5-17Z" fill="#E0F2FE" stroke="#2563EB" stroke-width="2"/><path d="M16 31c2-10 7-17 16-17s14 7 16 17" fill="#fff" stroke="#CBD5E1" stroke-width="2"/><path d="M22 42h20" stroke="#60A5FA" stroke-width="3" stroke-linecap="round"/><path d="M50 20l8 28" stroke="#92400E" stroke-width="4" stroke-linecap="round"/><path d="M57 20l-1 28" stroke="#92400E" stroke-width="4" stroke-linecap="round"/></svg>`,
+      car:     `<svg viewBox="0 0 64 64" fill="none"><path d="M11 31l6-12h30l6 12v17H11V31Z" fill="#BFDBFE" stroke="#2563EB" stroke-width="2"/><path d="M20 31h24l-4-8H24l-4 8Z" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/><circle cx="21" cy="49" r="5" fill="#1E3A8A"/><circle cx="43" cy="49" r="5" fill="#1E3A8A"/></svg>`,
+      seatbelt:`<svg viewBox="0 0 64 64" fill="none"><rect x="14" y="10" width="36" height="44" rx="6" fill="#DBEAFE" stroke="#2563EB" stroke-width="2"/><circle cx="32" cy="24" r="6" fill="#FFE0C2" stroke="#5B341F" stroke-width="2"/><path d="M18 36c2 8 8 14 14 14s12-6 14-14" fill="#FFE0C2" stroke="#5B341F" stroke-width="2"/><path d="M14 14l36 36M50 14l-32 32" stroke="#DC2626" stroke-width="4" stroke-linecap="round"/></svg>`,
+      depart:  `<svg viewBox="0 0 64 64" fill="none"><path d="M6 36L58 24l-12 8 6 12-10 2-6-8-12 6-12-2-6-6Z" fill="#FBBF24" stroke="#F59E0B" stroke-width="2"/><circle cx="48" cy="20" r="3" fill="#fff"/></svg>`,
+
+      // praise
+      star:    `<svg viewBox="0 0 64 64" fill="none"><path d="M32 6l7 16 17 2-13 11 4 17-15-9-15 9 4-17L8 24l17-2 7-16Z" fill="#FACC15" stroke="#F59E0B" stroke-width="2"/><circle cx="27" cy="30" r="2" fill="#7C2D12"/><circle cx="37" cy="30" r="2" fill="#7C2D12"/><path d="M26 38c4 3 8 3 12 0" stroke="#7C2D12" stroke-linecap="round" stroke-width="2" fill="none"/></svg>`,
+      clap:    `<svg viewBox="0 0 64 64" fill="none"><path d="M22 36V15a5 5 0 0 1 10 0v17" stroke="#D97706" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M32 33V13a5 5 0 0 1 10 0v23" stroke="#D97706" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M42 35V20a5 5 0 0 1 10 0v20c0 12-8 18-18 18-9 0-16-5-20-14l-4-9a5 5 0 0 1 9-4l3 5" fill="#FDE68A" stroke="#D97706" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+      crown:   `<svg viewBox="0 0 64 64" fill="none"><path d="M8 22l8 24h32l8-24-12 10-12-16-12 16Z" fill="#FACC15" stroke="#D97706" stroke-width="2"/><path d="M16 46h32" stroke="#D97706" stroke-width="3"/><circle cx="32" cy="22" r="3" fill="#EF4444"/><circle cx="14" cy="22" r="2" fill="#3B82F6"/><circle cx="50" cy="22" r="2" fill="#22C55E"/></svg>`,
+      thumb:   `<svg viewBox="0 0 64 64" fill="none"><path d="M18 28v25H10V28h8Z" fill="#FDBA74" stroke="#EA580C" stroke-width="2"/><path d="M18 28V18c0-5 4-10 8-8 3 1 4 8 0 16h12c8 0 12 4 10 12l-2 10c-1 4-4 5-7 5H18" fill="#FED7AA" stroke="#EA580C" stroke-width="2"/></svg>`,
+      bigsis:  `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="20" fill="#FCE7F3" stroke="#EC4899" stroke-width="2"/><circle cx="32" cy="32" r="14" fill="#FFE0C2" stroke="#5B341F" stroke-width="2"/><path d="M16 28c2-12 8-18 16-18s14 6 16 18" fill="#5B341F"/><circle cx="26" cy="32" r="2" fill="#111827"/><circle cx="38" cy="32" r="2" fill="#111827"/><path d="M27 40c3 2 7 2 10 0" stroke="#B45309" stroke-linecap="round" stroke-width="2" fill="none"/><text x="50" y="20" font-size="14" font-weight="bold" fill="#EC4899">★</text></svg>`,
+      smile:   `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="22" fill="#FACC15" stroke="#D97706" stroke-width="2"/><circle cx="24" cy="28" r="3" fill="#111827"/><circle cx="40" cy="28" r="3" fill="#111827"/><path d="M20 38c4 7 20 7 24 0" stroke="#7C2D12" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M14 22c2-3 6-3 8 0M42 22c2-3 6-3 8 0" stroke="#7C2D12" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`,
+      heartred:`<svg viewBox="0 0 64 64" fill="none"><path d="M32 54S10 41 10 24c0-8 6-14 14-14 5 0 8 2 10 6 2-4 5-6 10-6 8 0 14 6 14 14 0 17-22 30-22 30Z" fill="#FB7185" stroke="#E11D48" stroke-width="2"/><path d="M22 22c1-3 3-5 6-5" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`,
+
+      // safe
+      heart:   `<svg viewBox="0 0 64 64" fill="none"><path d="M32 54S10 41 10 24c0-8 6-14 14-14 5 0 8 2 10 6 2-4 5-6 10-6 8 0 14 6 14 14 0 17-22 30-22 30Z" fill="#86EFAC" stroke="#16A34A" stroke-width="2"/></svg>`,
+      turtle:  `<svg viewBox="0 0 64 64" fill="none"><ellipse cx="32" cy="40" rx="22" ry="14" fill="#86EFAC" stroke="#16A34A" stroke-width="2"/><path d="M20 38c3-4 9-4 12 0M32 38c3-4 9-4 12 0" stroke="#16A34A" stroke-width="2" fill="none"/><circle cx="48" cy="36" r="6" fill="#86EFAC" stroke="#16A34A" stroke-width="2"/><circle cx="50" cy="34" r="1.5" fill="#111827"/><path d="M10 44c-3 0-4 3-3 5M16 50c-2 2-2 5 0 6M48 50c2 2 2 5 0 6M54 44c3 0 4 3 3 5" stroke="#16A34A" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`,
+      one:     `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="22" fill="#A7F3D0" stroke="#10B981" stroke-width="2"/><text x="32" y="46" font-size="36" font-weight="bold" fill="#065F46" text-anchor="middle" font-family="Arial">1</text></svg>`,
+      handup:  `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="50" r="12" fill="#86EFAC" stroke="#16A34A" stroke-width="2"/><path d="M28 50V20a4 4 0 0 1 8 0v30" fill="#FED7AA" stroke="#EA580C" stroke-width="2"/><path d="M28 20c-3 0-5-2-5-4M36 20c3 0 5-2 5-4" stroke="#EA580C" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`,
+      check:   `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="22" fill="#A7F3D0" stroke="#10B981" stroke-width="2"/><path d="M20 32l8 8 16-16" stroke="#065F46" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`,
+
+      // time
+      clock:   `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="24" fill="#F5F3FF" stroke="#7C3AED" stroke-width="3"/><path d="M32 17v17l12 7" stroke="#7C3AED" stroke-width="4" stroke-linecap="round" fill="none"/><path d="M32 8V4M32 60v-4M8 32H4M60 32h-4" stroke="#7C3AED" stroke-width="3" stroke-linecap="round"/></svg>`,
+      longhand:`<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="24" fill="#F5F3FF" stroke="#7C3AED" stroke-width="3"/><path d="M32 32V8" stroke="#EF4444" stroke-width="5" stroke-linecap="round"/><path d="M32 32l10 5" stroke="#7C3AED" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="32" r="3" fill="#7C3AED"/></svg>`,
+      question:`<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="24" fill="#DDD6FE" stroke="#7C3AED" stroke-width="3"/><path d="M24 24c0-5 4-8 8-8s8 3 8 8c0 4-4 5-6 7-2 1-2 4-2 5" stroke="#4C1D95" stroke-width="4" stroke-linecap="round" fill="none"/><circle cx="32" cy="46" r="2.5" fill="#4C1D95"/></svg>`,
+      hourglass:`<svg viewBox="0 0 64 64" fill="none"><path d="M16 8h32M16 56h32" stroke="#7C3AED" stroke-width="3" stroke-linecap="round"/><path d="M18 8c0 12 14 16 14 24S18 44 18 56h28c0-12-14-16-14-24S46 20 46 8Z" fill="#DDD6FE" stroke="#7C3AED" stroke-width="2"/><path d="M22 12c0 6 10 14 10 20s-10 14-10 20" fill="#FCD34D"/></svg>`,
+
+      // mission
+      challenge:`<svg viewBox="0 0 64 64" fill="none"><path d="M8 12h48v16c0 8-6 14-14 14H22c-8 0-14-6-14-14V12Z" fill="#FED7AA" stroke="#EA580C" stroke-width="2"/><path d="M8 12V4h48v8M22 42v8h20v-8" stroke="#EA580C" stroke-width="2" fill="none"/><path d="M16 54h32v4H16z" fill="#EA580C"/><path d="M2 16c-2 4-2 10 6 12M62 16c2 4 2 10-6 12" stroke="#EA580C" stroke-width="2" fill="none"/></svg>`,
+      start:    `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="24" fill="#FB923C" stroke="#EA580C" stroke-width="3"/><path d="M24 18v28l22-14Z" fill="#fff"/></svg>`,
+      bigsischk:`<svg viewBox="0 0 64 64" fill="none"><rect x="10" y="10" width="44" height="44" rx="8" fill="#FFEDD5" stroke="#EA580C" stroke-width="2"/><path d="M18 18h28M18 26h28M18 34h22" stroke="#EA580C" stroke-width="2" stroke-linecap="round"/><circle cx="46" cy="42" r="10" fill="#22C55E" stroke="#16A34A" stroke-width="2"/><path d="M41 42l4 4 7-7" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"/></svg>`,
+      goal:     `<svg viewBox="0 0 64 64" fill="none"><path d="M14 56V8" stroke="#7C2D12" stroke-width="4" stroke-linecap="round"/><path d="M14 10h34l-6 8 6 8H14" fill="#FB923C" stroke="#EA580C" stroke-width="2"/><circle cx="40" cy="46" r="6" fill="#FCD34D" stroke="#D97706" stroke-width="2"/></svg>`,
+      fist:     `<svg viewBox="0 0 64 64" fill="none"><path d="M18 32V19a5 5 0 0 1 10 0v10M28 29V16a5 5 0 0 1 10 0v13M38 30V19a5 5 0 0 1 10 0v18c0 12-7 20-19 20-10 0-17-7-17-17v-8a5 5 0 0 1 10 0v5" fill="#FED7AA" stroke="#EA580C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`
     };
 
+    /* speaker SVG (white) */
+    const speakerSvg = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4 7 9H3v6h4l5 5V4z"/><path d="M16 9c1 1 1 5 0 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M19 6c3 3 3 9 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`;
+
+    /* =========================================================
+       2) VOICE ITEMS (39 files, 7 categories)
+    ========================================================= */
     const voiceItems = [
-      { id: "yui", label: "ゆいちゃん", text: "ゆいちゃん", category: "name", icon: "girl", color: "pink" },
-      { id: "mio", label: "みおちゃん", text: "みおちゃん", category: "name", icon: "girl", color: "pink" },
-      { id: "both", label: "ゆいちゃんと\nみおちゃん", text: "ゆいちゃんと、みおちゃん", category: "name", icon: "girls", color: "pink" },
-      { id: "morning", label: "朝ですよ", text: "朝ですよ", category: "action", icon: "sun", color: "sky" },
-      { id: "face", label: "顔を洗おうね", text: "顔を洗おうね", category: "action", icon: "face", color: "sky" },
-      { id: "breakfast", label: "ごはん食べようね", text: "ごはんを食べようね", category: "action", icon: "rice", color: "sky" },
-      { id: "toilet", label: "トイレに行こうね", text: "トイレに行こうね", category: "action", icon: "toilet", color: "sky" },
-      { id: "clothes", label: "お着替えしようね", text: "お着替えしようね", category: "action", icon: "shirt", color: "sky" },
-      { id: "shoes", label: "くつを履こうね", text: "くつを履こうね", category: "action", icon: "shoe", color: "sky" },
-      { id: "car", label: "車に乗ろうね", text: "車に乗ろうね", category: "action", icon: "car", color: "sky" },
-      { id: "great", label: "えらいね！", text: "えらいね", category: "praise", icon: "star", color: "yellow" },
-      { id: "sugoi", label: "すごいよ！", text: "すごいよ", category: "praise", icon: "clap", color: "yellow" },
-      { id: "oneesan", label: "お姉さんだね", text: "もう、お姉さんだね", category: "praise", icon: "star", color: "yellow" },
-      { id: "slow", label: "ゆっくりで大丈夫", text: "ゆっくりで大丈夫だよ", category: "safe", icon: "heart", color: "green" },
-      { id: "onebyone", label: "ひとつずつやろう", text: "ひとつずつやろうね", category: "safe", icon: "heart", color: "green" },
-      { id: "clock", label: "時計を見よう", text: "今の時間を見てみよう", category: "time", icon: "clock", color: "purple" },
-      { id: "longhand", label: "長い針を見よう", text: "長い針を見てみよう", category: "time", icon: "clock", color: "purple" },
-      { id: "gogo", label: "がんばろう！", text: "がんばろう", category: "cheer", icon: "fist", color: "orange" }
+      // ----- なまえ (4) -----
+      { id: "yui",       file: "ゆいちゃん",                  label: "ゆいちゃん",     category: "name",    icon: "yui",   color: "pink" },
+      { id: "mio",       file: "みおちゃん",                  label: "みおちゃん",     category: "name",    icon: "mio",   color: "pink" },
+      { id: "yuimio",    file: "ゆいちゃん_みおちゃん",        label: "ゆいちゃんと\nみおちゃん", category: "name",    icon: "twins", color: "pink" },
+      { id: "futari",    file: "ふたりとも",                  label: "ふたりとも",     category: "name",    icon: "twins", color: "pink" },
+
+      // ----- おはよう (5) -----
+      { id: "ohayou",    file: "おはよう",                    label: "おはよう",       category: "greet",   icon: "sun",     color: "sky" },
+      { id: "morning",   file: "朝ですよ",                    label: "朝ですよ",       category: "greet",   icon: "morning", color: "sky" },
+      { id: "wake",      file: "起きようね",                  label: "起きようね",     category: "greet",   icon: "wake",    color: "sky" },
+      { id: "newday",    file: "今日も楽しい一日が始まるよ",   label: "今日も楽しい\n一日が始まるよ", category: "greet", icon: "newday", color: "sky" },
+      { id: "papadesu",  file: "パパですよ",                  label: "パパですよ",     category: "greet",   icon: "papa",    color: "sky" },
+
+      // ----- おしたく (9) -----
+      { id: "face",      file: "顔を洗おうね",                label: "顔を洗おうね",   category: "action",  icon: "face",     color: "azure" },
+      { id: "clothes",   file: "お着替えしようね",            label: "お着替え\nしようね", category: "action",  icon: "shirt",   color: "azure" },
+      { id: "gym",       file: "体操服を着ようね",            label: "体操服を\n着ようね", category: "action",  icon: "gym",     color: "azure" },
+      { id: "shoes",     file: "くつを履こうね",              label: "くつを履こうね", category: "action",  icon: "shoe",    color: "azure" },
+      { id: "toilet",    file: "トイレに行こうね",            label: "トイレに\n行こうね", category: "action",  icon: "toilet",  color: "azure" },
+      { id: "rice",      file: "ご飯を食べようね",            label: "ご飯を\n食べようね", category: "action",  icon: "rice",   color: "azure" },
+      { id: "car",       file: "車に乗ろうね",                label: "車に乗ろうね",   category: "action",  icon: "car",      color: "azure" },
+      { id: "seatbelt",  file: "シートベルトしようね",         label: "シートベルト\nしようね", category: "action", icon: "seatbelt", color: "azure" },
+      { id: "depart",    file: "もうすぐ出発だよ",             label: "もうすぐ\n出発だよ", category: "action",  icon: "depart",  color: "azure" },
+
+      // ----- ほめる (7) -----
+      { id: "erai",      file: "えらいね",                    label: "えらいね",       category: "praise",  icon: "star",   color: "yellow" },
+      { id: "sugoi",     file: "すごいよ",                    label: "すごいよ",       category: "praise",  icon: "clap",   color: "yellow" },
+      { id: "yoku",      file: "よくできたね",                label: "よくできたね",   category: "praise",  icon: "crown",  color: "yellow" },
+      { id: "jibun",     file: "自分でできたね",              label: "自分で\nできたね", category: "praise", icon: "thumb",  color: "yellow" },
+      { id: "oneesan",   file: "もうお姉さんだね",            label: "もうお姉さん\nだね", category: "praise", icon: "bigsis", color: "yellow" },
+      { id: "saikou",    file: "最高だよ",                    label: "最高だよ",       category: "praise",  icon: "smile",  color: "yellow" },
+      { id: "papaureshi",file: "パパ嬉しいな",                label: "パパ\n嬉しいな",  category: "praise",  icon: "heartred", color: "yellow" },
+
+      // ----- あんしん (5) -----
+      { id: "slow",      file: "ゆっくりで大丈夫だよ",        label: "ゆっくりで\n大丈夫だよ", category: "safe", icon: "turtle", color: "green" },
+      { id: "onebyone",  file: "ひとつずつやろうね",          label: "ひとつずつ\nやろうね", category: "safe",   icon: "one",    color: "green" },
+      { id: "awate",     file: "あわてなくていいよ",          label: "あわてなくて\nいいよ", category: "safe",   icon: "heart",  color: "green" },
+      { id: "dekiru",    file: "できるとこからやろう",        label: "できるとこ\nからやろう", category: "safe", icon: "handup", color: "green" },
+      { id: "maniau",    file: "大丈夫間に合うよ",            label: "大丈夫\n間に合うよ", category: "safe",   icon: "check",  color: "green" },
+
+      // ----- とけい (4) -----
+      { id: "tokei",     file: "時計を見てみよう",            label: "時計を\n見てみよう", category: "time",   icon: "clock",    color: "purple" },
+      { id: "longhand",  file: "長い針を見てみよう",          label: "長い針を\n見てみよう", category: "time",   icon: "longhand", color: "purple" },
+      { id: "nanji",     file: "今は何時かな",                label: "今は何時かな",   category: "time",   icon: "question", color: "purple" },
+      { id: "atosukoshi",file: "あと少しだよ",                label: "あと少しだよ",   category: "time",   icon: "hourglass",color: "purple" },
+
+      // ----- ミッション (5) -----
+      { id: "challenge", file: "おしたくチャレンジ",          label: "おしたく\nチャレンジ", category: "mission", icon: "challenge", color: "orange" },
+      { id: "start",     file: "ミッションスタート",          label: "ミッション\nスタート", category: "mission", icon: "start",   color: "orange" },
+      { id: "oneecheck", file: "お姉さんチェック",            label: "お姉さん\nチェック",  category: "mission", icon: "bigsischk", color: "orange" },
+      { id: "goalsoon",  file: "ゴールまであと少し",          label: "ゴールまで\nあと少し", category: "mission", icon: "goal",    color: "orange" },
+      { id: "ganbarou",  file: "がんばろう",                  label: "がんばろう",     category: "mission", icon: "fist",     color: "orange" }
     ];
 
+    /* category tabs */
     const tabs = [
-      { id: "favorites", label: "よく使うことば" },
-      { id: "name", label: "なまえ" },
-      { id: "action", label: "行動" },
-      { id: "praise", label: "ほめる" },
-      { id: "safe", label: "あんしん" },
-      { id: "time", label: "とけい" }
+      { id: "favorites", label: "よく使う",   emoji: "⭐", color: "yellow" },
+      { id: "name",      label: "なまえ",     emoji: "👧", color: "pink" },
+      { id: "greet",     label: "おはよう",   emoji: "☀️", color: "sky" },
+      { id: "action",    label: "おしたく",   emoji: "👕", color: "azure" },
+      { id: "praise",    label: "ほめる",     emoji: "⭐", color: "yellow" },
+      { id: "safe",      label: "あんしん",   emoji: "💚", color: "green" },
+      { id: "time",      label: "とけい",     emoji: "⏰", color: "purple" },
+      { id: "mission",   label: "ミッション", emoji: "🏆", color: "orange" }
     ];
 
-    let activeTab = localStorage.getItem("oshitaku-active-tab") || "name";
-    let mode = "queue";
-    let queue = [];
-    let favorites = JSON.parse(localStorage.getItem("oshitaku-favorites") || "[]");
+    /* =========================================================
+       3) STATE
+    ========================================================= */
+    const STORAGE_PREFIX = "oshitaku-v1-";
+    const lsGet = (k, d) => { try { const v = localStorage.getItem(STORAGE_PREFIX + k); return v === null ? d : JSON.parse(v); } catch(e){ return d; } };
+    const lsSet = (k, v) => { try { localStorage.setItem(STORAGE_PREFIX + k, JSON.stringify(v)); } catch(e){} };
 
-    const header = document.getElementById("header");
-    const skyLeft = document.getElementById("skyLeft");
-    const period = document.getElementById("period");
-    const digitalTime = document.getElementById("digitalTime");
-    const analogClock = document.getElementById("analogClock");
-    const hourHand = document.getElementById("hourHand");
-    const minuteHand = document.getElementById("minuteHand");
-    const tabsEl = document.getElementById("tabs");
-    const buttonGrid = document.getElementById("buttonGrid");
-    const queueList = document.getElementById("queueList");
-    const queueMeta = document.getElementById("queueMeta");
-    const queueMode = document.getElementById("queueMode");
-    const instantMode = document.getElementById("instantMode");
-    const playBtn = document.getElementById("playBtn");
-    const stopBtn = document.getElementById("stopBtn");
-    const clearBtn = document.getElementById("clearBtn");
-    const clearSmall = document.getElementById("clearSmall");
+    let activeTab    = lsGet("active-tab", "name");
+    let activePage   = "home";
+    let mode         = "queue";
+    let queue        = [];
+    let favorites    = lsGet("favorites", []);
+    let settings     = lsGet("settings", { rate: 1.0, volume: 1.0, gap: 0.4 });
+    let audioDurations = {}; // file -> seconds
 
-    function pad(n) { return String(n).padStart(2, "0"); }
-    function displayHour24To12(h) { const v = h % 12; return v === 0 ? 12 : v; }
+    let currentAudio = null;
+    let isPlaying    = false;
+    let currentPlayingQueueIndex = -1;
 
+    /* =========================================================
+       4) DOM
+    ========================================================= */
+    const header        = document.getElementById("header");
+    const skyLeft       = document.getElementById("skyLeft");
+    const period        = document.getElementById("period");
+    const digitalTime   = document.getElementById("digitalTime");
+    const analogClock   = document.getElementById("analogClock");
+    const hourHand      = document.getElementById("hourHand");
+    const minuteHand    = document.getElementById("minuteHand");
+    const tabsEl        = document.getElementById("tabs");
+    const buttonGrid    = document.getElementById("buttonGrid");
+    const queueList     = document.getElementById("queueList");
+    const queueMeta     = document.getElementById("queueMeta");
+    const queueModeBtn  = document.getElementById("queueMode");
+    const instantModeBtn= document.getElementById("instantMode");
+    const playBtn       = document.getElementById("playBtn");
+    const stopBtn       = document.getElementById("stopBtn");
+    const clearBtn      = document.getElementById("clearBtn");
+    const shuffleBtn    = document.getElementById("shuffleBtn");
+    const clearSmall    = document.getElementById("clearSmall");
+    const toast         = document.getElementById("toast");
+
+    /* =========================================================
+       5) UTIL
+    ========================================================= */
+    const pad = n => String(n).padStart(2, "0");
+    const displayHour24To12 = h => { const v = h % 12; return v === 0 ? 12 : v; };
+    const audioUrl = file => `voice/${encodeURIComponent(file)}.mp3`;
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add("show");
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => toast.classList.remove("show"), 1500);
+    }
+
+    function getCategoryColor(cat) {
+      const t = tabs.find(t => t.id === cat);
+      return t ? t.color : "pink";
+    }
+
+    /* =========================================================
+       6) CLOCK
+    ========================================================= */
     function setupClockFace() {
+      const rect = analogClock.getBoundingClientRect();
+      const size = rect.width || 160;
+      const cx = size / 2;
+      const cy = size / 2;
+      const r = size / 2 - 18;
       for (let i = 1; i <= 12; i++) {
         const el = document.createElement("div");
         el.className = "number";
         el.textContent = i;
         const angle = (i * 30 - 90) * Math.PI / 180;
-        const r = 70;
-        const cx = 87;
-        const cy = 87;
         el.style.left = `${cx + r * Math.cos(angle)}px`;
-        el.style.top = `${cy + r * Math.sin(angle)}px`;
+        el.style.top  = `${cy + r * Math.sin(angle)}px`;
         analogClock.appendChild(el);
       }
       for (let i = 0; i < 60; i++) {
         const tick = document.createElement("div");
         tick.className = i % 5 === 0 ? "tick major" : "tick";
-        tick.style.transform = `rotate(${i * 6}deg) translateY(-78px)`;
+        tick.style.transform = `rotate(${i * 6}deg) translateY(-${size/2 - 4}px)`;
         analogClock.appendChild(tick);
       }
     }
@@ -394,48 +942,154 @@
     }
 
     function updateClock() {
-      const { h, m, displayHour, isMorning } = currentTimeParts();
-      period.textContent = isMorning ? "ごぜん" : "ごご";
+      const now = new Date();
+      const h = now.getHours();
+      const m = now.getMinutes();
+      const displayHour = displayHour24To12(h);
+      period.textContent = h < 12 ? "ごぜん" : "ごご";
       digitalTime.textContent = `${displayHour}:${pad(m)}`;
-      header.classList.toggle("morning", isMorning);
-      header.classList.toggle("afternoon", !isMorning);
-      skyLeft.textContent = isMorning ? "☀️" : "🌙";
+
+      // sky theme
+      let phase;
+      if (h >= 5 && h < 11) phase = "morning";
+      else if (h >= 11 && h < 16) phase = "afternoon";
+      else if (h >= 16 && h < 19) phase = "evening";
+      else phase = "night";
+      header.classList.remove("morning","afternoon","evening","night");
+      header.classList.add(phase);
+      skyLeft.textContent = (phase === "night") ? "🌙" : (phase === "evening" ? "🌇" : (phase === "afternoon" ? "🌤" : "☀️"));
+
       const hourAngle = (h % 12) * 30 + m * 0.5;
       const minuteAngle = m * 6;
-      hourHand.style.transform = `rotate(${hourAngle}deg)`;
+      hourHand.style.transform   = `rotate(${hourAngle}deg)`;
       minuteHand.style.transform = `rotate(${minuteAngle}deg)`;
     }
 
-    function speakCurrentTime() {
-      const { m, displayHour, isMorning } = currentTimeParts();
-      const minuteText = m === 0 ? "ちょうど" : `${m}分`;
-      speak(`${isMorning ? "午前" : "午後"}${displayHour}時${minuteText}です`);
+    /* =========================================================
+       7) AUDIO (preload & play)
+    ========================================================= */
+    function preloadDurations() {
+      // load metadata for each file to compute total queue duration
+      voiceItems.forEach(item => {
+        const a = new Audio(audioUrl(item.file));
+        a.preload = "metadata";
+        a.addEventListener("loadedmetadata", () => {
+          if (!isNaN(a.duration) && isFinite(a.duration)) {
+            audioDurations[item.file] = a.duration;
+            renderQueue(); // refresh meta if queue exists
+          }
+        });
+        a.addEventListener("error", () => {
+          audioDurations[item.file] = 2.0; // fallback
+        });
+      });
     }
 
+    function stopCurrentAudio() {
+      if (currentAudio) {
+        try {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+        } catch(e){}
+        currentAudio = null;
+      }
+      isPlaying = false;
+      currentPlayingQueueIndex = -1;
+      // remove visual playing states
+      document.querySelectorAll(".voice-card.playing").forEach(el => el.classList.remove("playing"));
+      renderQueue();
+    }
+
+    function playOne(item, opts = {}) {
+      return new Promise((resolve) => {
+        stopCurrentAudio();
+        const a = new Audio(audioUrl(item.file));
+        a.volume = settings.volume;
+        a.playbackRate = settings.rate;
+        currentAudio = a;
+        isPlaying = true;
+
+        // visual highlight
+        if (opts.cardEl) opts.cardEl.classList.add("playing");
+
+        const finish = () => {
+          if (opts.cardEl) opts.cardEl.classList.remove("playing");
+          if (currentAudio === a) {
+            currentAudio = null;
+            isPlaying = false;
+          }
+          resolve();
+        };
+
+        a.addEventListener("ended", finish);
+        a.addEventListener("error", () => {
+          showToast(`⚠️ 音声が見つかりません: ${item.file}`);
+          finish();
+        });
+
+        a.play().catch(err => {
+          // iOS may require user gesture; this should be inside one
+          showToast("再生に失敗しました");
+          finish();
+        });
+      });
+    }
+
+    async function playQueue() {
+      if (queue.length === 0) return;
+      stopCurrentAudio();
+      isPlaying = true;
+      for (let i = 0; i < queue.length; i++) {
+        if (!isPlaying) break;
+        currentPlayingQueueIndex = i;
+        renderQueue();
+        await playOne(queue[i]);
+        if (!isPlaying) break;
+        if (i < queue.length - 1 && settings.gap > 0) {
+          await new Promise(r => setTimeout(r, settings.gap * 1000));
+        }
+      }
+      currentPlayingQueueIndex = -1;
+      isPlaying = false;
+      renderQueue();
+    }
+
+    /* =========================================================
+       8) RENDER : tabs / buttons / queue / list / settings
+    ========================================================= */
     function renderTabs() {
       tabsEl.innerHTML = "";
       tabs.forEach(tab => {
         const btn = document.createElement("button");
-        btn.className = `tab ${activeTab === tab.id ? "active" : ""}`;
-        btn.textContent = tab.label;
+        btn.className = `tab ${tab.color} ${activeTab === tab.id ? "active" : ""}`;
+        btn.innerHTML = `<span class="tab-emoji">${tab.emoji}</span>${tab.label}`;
         btn.addEventListener("click", () => {
           activeTab = tab.id;
-          localStorage.setItem("oshitaku-active-tab", activeTab);
-          renderTabs(); renderButtons();
+          lsSet("active-tab", activeTab);
+          renderTabs();
+          renderButtons();
         });
         tabsEl.appendChild(btn);
       });
     }
 
     function getVisibleItems() {
-      if (activeTab === "favorites") return voiceItems.filter(item => favorites.includes(item.id));
-      return voiceItems.filter(item => item.category === activeTab);
+      if (activeTab === "favorites") return voiceItems.filter(i => favorites.includes(i.id));
+      return voiceItems.filter(i => i.category === activeTab);
     }
 
     function toggleFavorite(id) {
-      favorites = favorites.includes(id) ? favorites.filter(x => x !== id) : [...favorites, id];
-      localStorage.setItem("oshitaku-favorites", JSON.stringify(favorites));
+      if (favorites.includes(id)) {
+        favorites = favorites.filter(x => x !== id);
+        showToast("⭐ よく使うことばから はずしました");
+      } else {
+        favorites = [...favorites, id];
+        showToast("⭐ よく使うことばに 追加しました");
+      }
+      lsSet("favorites", favorites);
       renderButtons();
+      renderList();
+      updateFavCount();
     }
 
     function renderButtons() {
@@ -445,7 +1099,7 @@
         const empty = document.createElement("div");
         empty.className = "empty";
         empty.style.gridColumn = "1 / -1";
-        empty.textContent = "☆をつけたことばが、ここに並びます";
+        empty.innerHTML = "⭐ ボタンの ★マークを タップすると<br/>ここに よく使うことばが ならびます";
         buttonGrid.appendChild(empty);
         return;
       }
@@ -453,11 +1107,12 @@
         const btn = document.createElement("button");
         btn.className = `voice-card ${item.color}`;
         btn.innerHTML = `
-          <button class="favorite-toggle ${favorites.includes(item.id) ? "on" : ""}" aria-label="よく使うことばに追加">★</button>
-          <div class="icon">${iconSvg[item.icon]}</div>
+          <button class="favorite-toggle ${favorites.includes(item.id) ? "on" : ""}" aria-label="よく使うことば">★</button>
+          <div class="icon">${iconSvg[item.icon] || iconSvg.star}</div>
           <div class="label">${item.label}</div>
+          <div class="speaker">${speakerSvg}</div>
         `;
-        btn.addEventListener("click", () => addOrPlay(item));
+        btn.addEventListener("click", () => addOrPlay(item, btn));
         btn.querySelector(".favorite-toggle").addEventListener("click", (e) => {
           e.stopPropagation();
           toggleFavorite(item.id);
@@ -466,15 +1121,19 @@
       });
     }
 
-    function setMode(nextMode) {
-      mode = nextMode;
-      queueMode.classList.toggle("active", mode === "queue");
-      instantMode.classList.toggle("active", mode === "instant");
+    function setMode(next) {
+      mode = next;
+      queueModeBtn.classList.toggle("active", mode === "queue");
+      instantModeBtn.classList.toggle("active", mode === "instant");
     }
 
-    function addOrPlay(item) {
-      if (mode === "instant") speak(item.text);
-      else { queue.push(item); renderQueue(); }
+    function addOrPlay(item, cardEl) {
+      if (mode === "instant") {
+        playOne(item, { cardEl });
+      } else {
+        queue.push(item);
+        renderQueue();
+      }
     }
 
     function renderQueue() {
@@ -482,58 +1141,205 @@
       if (queue.length === 0) {
         const empty = document.createElement("div");
         empty.className = "empty";
-        empty.textContent = "ことばをえらぶと、ここにならびます";
+        empty.textContent = "ことばを えらぶと ここに ならびます";
         queueList.appendChild(empty);
       } else {
-        queue.forEach((item, index) => {
-          const chip = document.createElement("div");
-          chip.className = "chip";
-          chip.innerHTML = `<span>${index + 1}. ${item.label.replace("\\n", "")}</span><button aria-label="削除">×</button>`;
-          chip.querySelector("button").addEventListener("click", () => { queue.splice(index, 1); renderQueue(); });
-          queueList.appendChild(chip);
+        queue.forEach((item, idx) => {
+          const row = document.createElement("div");
+          row.className = "queue-item" + (idx === currentPlayingQueueIndex ? " playing-now" : "");
+          row.innerHTML = `
+            <span class="qnum">${idx + 1}</span>
+            <span class="qlabel">${item.label.replace(/\n/g, " ")}</span>
+            <button class="qclose" aria-label="削除">×</button>
+          `;
+          row.querySelector(".qclose").addEventListener("click", (e) => {
+            e.stopPropagation();
+            queue.splice(idx, 1);
+            renderQueue();
+          });
+          queueList.appendChild(row);
         });
       }
-      const totalSec = Math.max(0, Math.round(queue.reduce((s, item) => s + Math.max(1.2, item.text.length * 0.22), 0)));
-      queueMeta.textContent = `ぜんぶの長さ 約 ${totalSec}秒（${queue.length}個）`;
-      playBtn.disabled = queue.length === 0;
+      // total duration
+      let total = 0;
+      let allKnown = true;
+      queue.forEach(it => {
+        if (audioDurations[it.file]) total += audioDurations[it.file];
+        else { total += 2.0; allKnown = false; }
+      });
+      // add gap between
+      if (queue.length > 1) total += (queue.length - 1) * settings.gap;
+      const totalRounded = Math.max(0, Math.round(total));
+      queueMeta.innerHTML = `ぜんぶの長さ <strong>${allKnown ? "" : "約"}${totalRounded}秒</strong>（${queue.length}個）`;
+      playBtn.disabled = queue.length === 0 || isPlaying;
     }
 
-    function speak(text) {
-      if (!("speechSynthesis" in window)) {
-        alert("このブラウザでは音声読み上げに対応していません");
-        return;
+    /* ----- list page ----- */
+    const listContainer = document.getElementById("listContainer");
+    const searchInput = document.getElementById("searchInput");
+
+    function renderList() {
+      const query = (searchInput.value || "").trim().toLowerCase();
+      listContainer.innerHTML = "";
+      tabs.filter(t => t.id !== "favorites").forEach(tab => {
+        const items = voiceItems.filter(i => i.category === tab.id)
+          .filter(i => !query || i.label.toLowerCase().includes(query) || i.file.toLowerCase().includes(query));
+        if (items.length === 0) return;
+        const group = document.createElement("div");
+        group.className = "list-group";
+        group.innerHTML = `<div class="list-group-head">${tab.emoji} ${tab.label} <span class="badge">${items.length}</span></div><div class="list-rows"></div>`;
+        const rows = group.querySelector(".list-rows");
+        items.forEach(item => {
+          const row = document.createElement("div");
+          row.className = "list-row";
+          row.innerHTML = `
+            <div class="row-icon ${item.color}">${iconSvg[item.icon] || iconSvg.star}</div>
+            <div class="row-text">${item.label.replace(/\n/g, " ")}</div>
+            <button class="row-fav ${favorites.includes(item.id) ? "on" : ""}" aria-label="お気に入り">★</button>
+            <button class="row-play" aria-label="再生">▶</button>
+          `;
+          row.querySelector(".row-play").addEventListener("click", (e) => {
+            e.stopPropagation();
+            playOne(item);
+          });
+          row.querySelector(".row-fav").addEventListener("click", (e) => {
+            e.stopPropagation();
+            toggleFavorite(item.id);
+          });
+          row.addEventListener("click", () => {
+            // add to queue from list page
+            queue.push(item);
+            renderQueue();
+            showToast(`📋 再生リストに追加：${item.label.replace(/\n/g, " ")}`);
+          });
+          rows.appendChild(row);
+        });
+        listContainer.appendChild(group);
+      });
+      if (listContainer.children.length === 0) {
+        const e = document.createElement("div");
+        e.className = "empty";
+        e.textContent = `「${searchInput.value}」に あう ことばが ありません`;
+        listContainer.appendChild(e);
       }
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "ja-JP";
-      utterance.rate = 0.88;
-      utterance.pitch = 1.18;
-      utterance.volume = 1;
-      window.speechSynthesis.speak(utterance);
     }
 
-    function playQueue() {
-      if (queue.length === 0) return;
-      speak(queue.map(item => item.text).join("。 ") + "。");
+    /* ----- settings ----- */
+    const rateRange = document.getElementById("rateRange");
+    const rateVal   = document.getElementById("rateVal");
+    const volumeRange = document.getElementById("volumeRange");
+    const volumeVal   = document.getElementById("volumeVal");
+    const gapRange  = document.getElementById("gapRange");
+    const gapVal    = document.getElementById("gapVal");
+    const resetFav  = document.getElementById("resetFav");
+    const favCountEl= document.getElementById("favCount");
+
+    function renderSettings() {
+      rateRange.value   = settings.rate;
+      volumeRange.value = settings.volume;
+      gapRange.value    = settings.gap;
+      rateVal.textContent   = Number(settings.rate).toFixed(2);
+      volumeVal.textContent = Math.round(settings.volume * 100) + "%";
+      gapVal.textContent    = Number(settings.gap).toFixed(1) + "秒";
+      updateFavCount();
+    }
+    function updateFavCount() {
+      favCountEl.textContent = `登録数：${favorites.length}個`;
     }
 
-    function stopSpeech() { if ("speechSynthesis" in window) window.speechSynthesis.cancel(); }
-    function clearQueue() { queue = []; renderQueue(); }
+    rateRange.addEventListener("input", () => {
+      settings.rate = parseFloat(rateRange.value);
+      rateVal.textContent = settings.rate.toFixed(2);
+      lsSet("settings", settings);
+    });
+    volumeRange.addEventListener("input", () => {
+      settings.volume = parseFloat(volumeRange.value);
+      volumeVal.textContent = Math.round(settings.volume * 100) + "%";
+      lsSet("settings", settings);
+    });
+    gapRange.addEventListener("input", () => {
+      settings.gap = parseFloat(gapRange.value);
+      gapVal.textContent = settings.gap.toFixed(1) + "秒";
+      lsSet("settings", settings);
+      renderQueue();
+    });
+    resetFav.addEventListener("click", () => {
+      if (favorites.length === 0) { showToast("登録されていません"); return; }
+      if (!confirm(`よく使うことばを ぜんぶ リセットしますか？\n（${favorites.length}個）`)) return;
+      favorites = [];
+      lsSet("favorites", favorites);
+      renderButtons();
+      renderList();
+      updateFavCount();
+      showToast("リセットしました");
+    });
 
-    header.addEventListener("click", speakCurrentTime);
-    queueMode.addEventListener("click", () => setMode("queue"));
-    instantMode.addEventListener("click", () => setMode("instant"));
+    /* =========================================================
+       9) PAGE SWITCH (bottom nav)
+    ========================================================= */
+    function setPage(id) {
+      activePage = id;
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+      document.getElementById("page-" + id).classList.add("active");
+      document.querySelectorAll(".nav-btn").forEach(b => {
+        b.classList.toggle("active", b.dataset.page === id);
+      });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (id === "list") renderList();
+      if (id === "settings") renderSettings();
+      if (id === "home") renderButtons();
+    }
+
+    document.querySelectorAll(".nav-btn").forEach(b => {
+      b.addEventListener("click", () => setPage(b.dataset.page));
+    });
+
+    /* =========================================================
+       10) EVENTS
+    ========================================================= */
+    header.addEventListener("click", () => {
+      // play "今は何時かな"
+      const item = voiceItems.find(i => i.id === "nanji");
+      if (item) playOne(item);
+    });
+
+    queueModeBtn.addEventListener("click", () => setMode("queue"));
+    instantModeBtn.addEventListener("click", () => setMode("instant"));
     playBtn.addEventListener("click", playQueue);
-    stopBtn.addEventListener("click", stopSpeech);
-    clearBtn.addEventListener("click", clearQueue);
-    clearSmall.addEventListener("click", clearQueue);
+    stopBtn.addEventListener("click", stopCurrentAudio);
+    clearBtn.addEventListener("click", () => { queue = []; renderQueue(); });
+    clearSmall.addEventListener("click", () => { queue = []; renderQueue(); });
+    shuffleBtn.addEventListener("click", () => {
+      for (let i = queue.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [queue[i], queue[j]] = [queue[j], queue[i]];
+      }
+      renderQueue();
+    });
+    searchInput.addEventListener("input", renderList);
 
+    /* =========================================================
+       11) INIT
+    ========================================================= */
     setupClockFace();
     updateClock();
+    setInterval(updateClock, 1000);
     renderTabs();
     renderButtons();
     renderQueue();
-    setInterval(updateClock, 1000);
+    renderSettings();
+    preloadDurations();
+
+    // iOS audio unlock: prime on first touch anywhere
+    let primed = false;
+    document.addEventListener("touchstart", () => {
+      if (primed) return;
+      primed = true;
+      const a = new Audio();
+      a.muted = true;
+      a.play().catch(()=>{});
+    }, { once: true });
   </script>
+
 </body>
 </html>
