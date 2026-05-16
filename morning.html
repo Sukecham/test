@@ -903,13 +903,14 @@ input[type="range"]::-moz-range-thumb{
       constructor() {
         this.audio = new Audio();
         this.audio.preload = "auto";
-        this.durations = new Map();   // filename -> seconds
-        this.encoding = null;          // 'NFC' or 'NFD' - 起動時に判定
+        this.durations = new Map();    // filename -> seconds
+        this.urlMap = new Map();        // filename -> working URL (per-file resolved)
         this.currentItem = null;
         this.queue = [];
         this.queueIndex = 0;
         this.isPlayingQueue = false;
         this.stopped = false;
+        this._retryAttempted = false;   // 現在の再生で代替URLを試したか
         this.onItemStart = null;
         this.onItemEnd = null;
         this.onQueueEnd = null;
@@ -918,11 +919,20 @@ input[type="range"]::-moz-range-thumb{
         this.audio.addEventListener("error", () => this._onAudioError());
       }
 
-      // 起動時に1回だけ呼ぶ。NFC/NFDのどちらが使えるかを判定する。
-      async detectEncoding(testFilename) {
-        if (this.encoding) return this.encoding;
+      // 候補URLを返す(NFC優先、NFD≠NFCならNFDも)
+      _candidates(filename) {
+        const nfc = filename.normalize("NFC");
+        const nfd = filename.normalize("NFD");
+        const urls = ["voice/" + encodeURIComponent(nfc)];
+        if (nfd !== nfc) urls.push("voice/" + encodeURIComponent(nfd));
+        return urls;
+      }
 
-        const tryUrl = (url) => new Promise((resolve) => {
+      // HEADリクエストでURLが200を返すかテスト
+      _probeUrl(url) {
+        return new Promise((resolve) => {
+          // HEAD リクエストは GitHub Pages 等で405になることがあるので、
+          // Audio要素のloadedmetadata/errorで判定する方が確実
           const a = new Audio();
           a.preload = "metadata";
           let done = false;
@@ -932,34 +942,48 @@ input[type="range"]::-moz-range-thumb{
           a.addEventListener("canplay", ok, { once: true });
           a.addEventListener("error", ng, { once: true });
           a.src = url;
-          setTimeout(() => { if (!done) { done = true; resolve(false); } }, 3500);
+          setTimeout(() => { if (!done) { done = true; resolve(false); } }, 4000);
         });
-
-        const nfc = testFilename.normalize("NFC");
-        const nfd = testFilename.normalize("NFD");
-        const nfcUrl = "voice/" + encodeURIComponent(nfc);
-
-        if (await tryUrl(nfcUrl)) {
-          this.encoding = "NFC";
-          console.info("Audio encoding detected: NFC");
-          return "NFC";
-        }
-        if (nfd !== nfc) {
-          const nfdUrl = "voice/" + encodeURIComponent(nfd);
-          if (await tryUrl(nfdUrl)) {
-            this.encoding = "NFD";
-            console.info("Audio encoding detected: NFD");
-            return "NFD";
-          }
-        }
-        this.encoding = "NFC"; // fallback
-        console.warn("Audio encoding detection failed, using NFC");
-        return "NFC";
       }
 
+      // 1ファイル分のURL解決(NFC→NFDの順で試行)
+      async _resolveOne(filename) {
+        if (this.urlMap.has(filename)) return this.urlMap.get(filename);
+        const candidates = this._candidates(filename);
+        for (const url of candidates) {
+          // eslint-disable-next-line no-await-in-loop
+          if (await this._probeUrl(url)) {
+            this.urlMap.set(filename, url);
+            return url;
+          }
+        }
+        // 全て失敗 → 一旦NFCをキャッシュ(再生時のエラーフォールバックで再試行する)
+        this.urlMap.set(filename, candidates[0]);
+        return candidates[0];
+      }
+
+      // 全ファイルのURLを起動時に並列解決(同時8件)
+      async resolveAllUrls(items) {
+        const concurrency = 8;
+        let idx = 0;
+        let resolved = 0;
+        const workers = Array(concurrency).fill(0).map(async () => {
+          while (idx < items.length) {
+            const i = idx++;
+            // eslint-disable-next-line no-await-in-loop
+            await this._resolveOne(items[i].file);
+            resolved++;
+          }
+        });
+        await Promise.all(workers);
+        console.info(`URL resolved: ${resolved}/${items.length}`);
+      }
+
+      // 同期的にURLを返す(起動時に解決済みのはず)
       fileUrl(filename) {
-        const form = this.encoding === "NFD" ? "NFD" : "NFC";
-        return "voice/" + encodeURIComponent(filename.normalize(form));
+        if (this.urlMap.has(filename)) return this.urlMap.get(filename);
+        // 起動時未解決の場合のフォールバック - NFCを返す
+        return "voice/" + encodeURIComponent(filename.normalize("NFC"));
       }
 
       preloadDuration(filename) {
@@ -984,12 +1008,12 @@ input[type="range"]::-moz-range-thumb{
       }
 
       async preloadAll(items) {
-        // 並列度を制限してプリロード(同時8件)
         const concurrency = 8;
         let idx = 0;
         const workers = Array(concurrency).fill(0).map(async () => {
           while (idx < items.length) {
             const i = idx++;
+            // eslint-disable-next-line no-await-in-loop
             await this.preloadDuration(items[i].file);
           }
         });
@@ -1006,13 +1030,13 @@ input[type="range"]::-moz-range-thumb{
       }
 
       _setAndPlay(item) {
-        // 既存の再生を完全に停止
         try {
           this.audio.pause();
           this.audio.currentTime = 0;
         } catch (e) {}
         this._applySettings();
         this.currentItem = item;
+        this._retryAttempted = false;
         const url = this.fileUrl(item.file);
         this.audio.src = url;
         try { this.audio.load(); } catch (e) {}
@@ -1021,12 +1045,7 @@ input[type="range"]::-moz-range-thumb{
         if (p && p.catch) {
           p.catch(err => {
             console.warn("Play failed for", item.file, err);
-            // キュー再生中なら次へ進む
-            if (this.isPlayingQueue) {
-              this._onAudioEnded(true);
-            } else {
-              showToast("⚠️ 「" + item.file + "」を再生できません。voice/フォルダをご確認ください");
-            }
+            // error イベントが追って発火するので、そこで対応する
           });
         }
       }
@@ -1070,12 +1089,39 @@ input[type="range"]::-moz-range-thumb{
       }
 
       _onAudioError() {
-        if (!this.currentItem) return;
-        console.warn("Audio error event for:", this.currentItem.file);
+        const item = this.currentItem;
+        if (!item) return;
+
+        // 再生時セーフティネット: キャッシュURLでエラー → もう一方のエンコーディングを試す
+        if (!this._retryAttempted) {
+          this._retryAttempted = true;
+          const cached = this.urlMap.get(item.file);
+          const candidates = this._candidates(item.file);
+          const alt = candidates.find(c => c !== cached);
+          if (alt) {
+            console.info("Retry with alternate encoding:", item.file);
+            this.urlMap.set(item.file, alt); // 成功したらキャッシュ更新
+            this.audio.src = alt;
+            try { this.audio.load(); } catch (e) {}
+            const p = this.audio.play();
+            if (p && p.catch) {
+              p.catch(() => {
+                // 二度目も失敗 → 諦め
+                this._failItem(item);
+              });
+            }
+            return;
+          }
+        }
+        this._failItem(item);
+      }
+
+      _failItem(item) {
+        console.warn("Audio failed permanently:", item.file);
         if (this.isPlayingQueue) {
           this._onAudioEnded(true);
         } else {
-          showToast("⚠️ 「" + this.currentItem.file + "」を再生できません");
+          showToast("⚠️ 「" + item.file + "」を再生できません");
           this.currentItem = null;
         }
       }
@@ -1550,12 +1596,16 @@ input[type="range"]::-moz-range-thumb{
     renderQueue();
     initSettingsScreen();
 
-    // Detect filename encoding (NFC/NFD), then preload all audio durations in background
-    audio.detectEncoding("ゆいちゃん.mp3").then(() => {
-      audio.preloadAll(voiceItems).then(() => {
-        renderQueue(); // Re-render queue to update duration display
-      });
-    });
+    // 起動時:全ファイルのURLを個別解決(NFC/NFD混在対応) → 再生時間プリロード
+    (async () => {
+      try {
+        await audio.resolveAllUrls(voiceItems);
+        await audio.preloadAll(voiceItems);
+        renderQueue();
+      } catch (e) {
+        console.warn("Init failed:", e);
+      }
+    })();
 
     // Prevent double-tap zoom on iOS
     let lastTouchEnd = 0;
