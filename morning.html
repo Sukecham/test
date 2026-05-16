@@ -109,27 +109,29 @@ button{
 .evening .stars{ display:block; position:absolute; inset:0; pointer-events:none; }
 
 .clock-row{
-  display:grid; grid-template-columns: 1fr auto; gap:10px;
+  display:grid; grid-template-columns: minmax(0,1fr) 172px; gap:8px;
   align-items:center; position:relative; z-index:2;
 }
-.time-block{ min-width:0; padding-top:6px; }
+.time-block{ min-width:0; padding-top:6px; overflow:hidden; }
 .digital-time{
-  font-size:clamp(72px,21vw,98px);
-  line-height:.95; font-weight:900; letter-spacing:-.06em; color:#0B48A5;
+  font-size:clamp(56px, 15vw, 72px);
+  line-height:.95; font-weight:900; letter-spacing:-.05em; color:#0B48A5;
   text-shadow:0 4px 0 rgba(255,255,255,.85);
+  white-space:nowrap;
 }
 .morning .digital-time{ color:#B14A0A; text-shadow:0 4px 0 rgba(255,255,255,.75); }
 .afternoon .digital-time{ color:#0B48A5; text-shadow:0 4px 0 rgba(255,255,255,.85); }
 .evening .digital-time{ color:#FFF; text-shadow:0 4px 14px rgba(0,0,0,.4); }
 .message-card{
-  margin-top:12px;
-  display:inline-flex; align-items:center; gap:10px;
+  margin-top:10px;
+  display:inline-flex; align-items:center; gap:8px;
   background:rgba(255,255,255,.95); color:#11408D;
-  border-radius:18px; padding:10px 14px;
-  font-size:15px; line-height:1.32; font-weight:900;
+  border-radius:16px; padding:8px 12px;
+  font-size:13px; line-height:1.3; font-weight:900;
   box-shadow:0 4px 12px rgba(15,23,42,.1);
+  max-width:100%;
 }
-.message-card .alarm-icon{ font-size:22px; }
+.message-card .alarm-icon{ font-size:18px; flex-shrink:0; }
 .evening .message-card{
   background:rgba(255,255,255,.15); color:#FFF;
   border:1px solid rgba(255,255,255,.22);
@@ -140,32 +142,27 @@ button{
 
 /* ----- ANALOG CLOCK ----- */
 .analog-clock{
-  width:194px; height:194px; border-radius:50%;
-  background:#FFF; border:7px solid #73B7EA;
+  width:172px; height:172px; border-radius:50%;
+  background:#FFF; border:5px solid #73B7EA;
   box-shadow: inset 0 2px 12px rgba(0,0,0,.08), 0 8px 18px rgba(13,64,132,.18);
-  position:relative; flex:0 0 194px;
+  position:relative; flex:0 0 172px;
 }
 .evening .analog-clock{ border-color:#A5B4FC; box-shadow: inset 0 2px 12px rgba(0,0,0,.2), 0 8px 18px rgba(0,0,0,.4); }
 .number{
-  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-  font-size:18px; font-weight:900; color:#111827; line-height:1;
+  position:absolute; transform:translate(-50%,-50%);
+  font-size:17px; font-weight:900; color:#111827; line-height:1;
   width:22px; height:22px; display:flex; align-items:center; justify-content:center;
 }
-.tick{
-  position:absolute; left:50%; top:50%; transform-origin:0 0;
-  background:#9CA3AF; width:1px; height:5px;
-}
-.tick.major{ width:2px; height:9px; background:#111827; }
 .hand{
   position:absolute; left:50%; top:50%;
   transform-origin:bottom center; border-radius:999px;
   transition:transform .4s var(--tap);
 }
-.hand.hour  { width:10px; height:50px; margin-left:-5px; margin-top:-50px; background:#1F2937; z-index:4; }
-.hand.minute{ width:7px;  height:72px; margin-left:-3.5px; margin-top:-72px; background:#EF1B1B; box-shadow:0 2px 6px rgba(239,27,27,.35); z-index:5; }
+.hand.hour  { width:9px; height:44px; margin-left:-4.5px; margin-top:-44px; background:#1F2937; z-index:4; }
+.hand.minute{ width:6px; height:64px; margin-left:-3px; margin-top:-64px; background:#EF1B1B; box-shadow:0 2px 6px rgba(239,27,27,.35); z-index:5; }
 .center-dot{
   position:absolute; left:50%; top:50%;
-  width:22px; height:22px; transform:translate(-50%,-50%);
+  width:18px; height:18px; transform:translate(-50%,-50%);
   background:#EF1B1B; border:3px solid #FFB4B4; border-radius:50%;
   z-index:8; box-shadow:0 2px 8px rgba(0,0,0,.22);
 }
@@ -339,7 +336,10 @@ button{
 
 .control-grid{
   margin-top:12px;
-  display:grid; grid-template-columns:1fr 1fr; gap:10px;
+  display:grid;
+  grid-template-columns: 1fr 1.4fr;
+  grid-template-areas: "stop play" "clear clear";
+  gap:10px;
 }
 .control-btn-big{
   min-height:58px; border-radius:18px; color:#FFF; font-weight:900; font-size:17px;
@@ -349,11 +349,10 @@ button{
 }
 .control-btn-big:active{ transform:scale(.97); }
 .control-btn-big:disabled{ filter:grayscale(.5); opacity:.55; }
-.btn-stop{ background:linear-gradient(180deg,#F87171 0%,#EF4444 100%); }
-.btn-play{ background:linear-gradient(180deg,#34D399 0%,#16A34A 100%); }
+.btn-stop{ grid-area:stop; background:linear-gradient(180deg,#F87171 0%,#EF4444 100%); }
+.btn-play{ grid-area:play; background:linear-gradient(180deg,#34D399 0%,#16A34A 100%); }
 .btn-play.playing{ background:linear-gradient(180deg,#FBBF24 0%,#F59E0B 100%); }
-.btn-clear{ background:linear-gradient(180deg,#9CA3AF 0%,#6B7280 100%); }
-.btn-shuffle{ background:linear-gradient(180deg,#A78BFA 0%,#7C3AED 100%); }
+.btn-clear{ grid-area:clear; background:linear-gradient(180deg,#9CA3AF 0%,#6B7280 100%); min-height:50px; font-size:16px; }
 
 /* ----- BOTTOM NAV ----- */
 .bottom-nav{
@@ -504,14 +503,19 @@ input[type="range"]::-moz-range-thumb{
 @keyframes spin{ to{ transform:rotate(360deg);} }
 
 @media (max-width:390px){
-  .analog-clock{ width:160px; height:160px; flex-basis:160px; }
-  .number{ font-size:17px; }
-  .digital-time{ font-size:76px; }
+  .analog-clock{ width:152px; height:152px; flex-basis:152px; }
+  .number{ font-size:16px; }
+  .clock-row{ grid-template-columns: minmax(0,1fr) 152px; }
+  .digital-time{ font-size:64px; }
   .voice-card{ min-height:110px; }
   .voice-card .illust{ width:50px; height:50px; }
   .voice-card .label{ font-size:14px; min-height:34px; }
 }
 @media (max-width:340px){
+  .analog-clock{ width:136px; height:136px; flex-basis:136px; }
+  .number{ font-size:14px; }
+  .clock-row{ grid-template-columns: minmax(0,1fr) 136px; }
+  .digital-time{ font-size:56px; }
   .button-grid{ gap:8px; }
   .voice-card{ min-height:104px; padding:10px 4px 10px; }
   .voice-card .label{ font-size:13px; }
@@ -591,7 +595,6 @@ input[type="range"]::-moz-range-thumb{
         <button id="stopBtn" class="control-btn-big btn-stop">■ 停止</button>
         <button id="playBtn" class="control-btn-big btn-play" disabled>▶ まとめて再生</button>
         <button id="clearBtn" class="control-btn-big btn-clear">↻ クリア</button>
-        <button id="shuffleBtn" class="control-btn-big btn-shuffle" disabled>🔀 シャッフル</button>
       </div>
     </div>
   </section>
@@ -639,10 +642,10 @@ input[type="range"]::-moz-range-thumb{
     <div class="setting-card">
       <div class="setting-label">⏸ ことばのあいだの「間」</div>
       <div class="setting-desc">まとめて再生時、各音声の間に空ける時間</div>
-      <input type="range" id="gapSlider" min="0" max="2000" value="350" step="50" />
+      <input type="range" id="gapSlider" min="0" max="1500" value="0" step="50" />
       <div class="setting-value">
         <span>なし</span>
-        <span id="gapValue">0.35 秒</span>
+        <span id="gapValue">0.00 秒</span>
         <span>長め</span>
       </div>
     </div>
@@ -901,25 +904,44 @@ input[type="range"]::-moz-range-thumb{
        ========================================================= */
     class AudioEngine {
       constructor() {
-        this.audio = new Audio();
-        this.audio.preload = "auto";
-        this.durations = new Map();    // filename -> seconds
-        this.urlMap = new Map();        // filename -> working URL (per-file resolved)
+        // Web Audio API context (lazy init for iOS gesture requirement)
+        this.ctx = null;
+        this.buffers = new Map();       // filename -> AudioBuffer
+        this.urlMap = new Map();         // filename -> working URL
+        this.currentSource = null;       // 現在のBufferSourceNode
+        this.currentGain = null;
         this.currentItem = null;
         this.queue = [];
         this.queueIndex = 0;
         this.isPlayingQueue = false;
         this.stopped = false;
-        this._retryAttempted = false;   // 現在の再生で代替URLを試したか
+        // フォールバック用HTMLAudioElement(WebAudio未対応時)
+        this.fallbackAudio = null;
+        this.useWebAudio = !!(window.AudioContext || window.webkitAudioContext);
         this.onItemStart = null;
         this.onItemEnd = null;
         this.onQueueEnd = null;
-
-        this.audio.addEventListener("ended", () => this._onAudioEnded(false));
-        this.audio.addEventListener("error", () => this._onAudioError());
       }
 
-      // 候補URLを返す(NFC優先、NFD≠NFCならNFDも)
+      _initCtx() {
+        if (!this.useWebAudio) return false;
+        if (!this.ctx) {
+          try {
+            const AC = window.AudioContext || window.webkitAudioContext;
+            this.ctx = new AC();
+          } catch (e) {
+            console.warn("AudioContext init failed", e);
+            this.useWebAudio = false;
+            return false;
+          }
+        }
+        // iOSではユーザー操作後にresumeが必要
+        if (this.ctx.state === "suspended") {
+          this.ctx.resume().catch(() => {});
+        }
+        return true;
+      }
+
       _candidates(filename) {
         const nfc = filename.normalize("NFC");
         const nfd = filename.normalize("NFD");
@@ -928,132 +950,212 @@ input[type="range"]::-moz-range-thumb{
         return urls;
       }
 
-      // HEADリクエストでURLが200を返すかテスト
-      _probeUrl(url) {
-        return new Promise((resolve) => {
-          // HEAD リクエストは GitHub Pages 等で405になることがあるので、
-          // Audio要素のloadedmetadata/errorで判定する方が確実
-          const a = new Audio();
-          a.preload = "metadata";
-          let done = false;
-          const ok = () => { if (done) return; done = true; resolve(true); };
-          const ng = () => { if (done) return; done = true; resolve(false); };
-          a.addEventListener("loadedmetadata", ok, { once: true });
-          a.addEventListener("canplay", ok, { once: true });
-          a.addEventListener("error", ng, { once: true });
-          a.src = url;
-          setTimeout(() => { if (!done) { done = true; resolve(false); } }, 4000);
-        });
+      // 1ファイル分のURL解決 + AudioBufferデコード
+      async _loadOne(filename) {
+        if (this.buffers.has(filename)) return this.buffers.get(filename);
+        if (!this.ctx) {
+          // ctx未初期化の場合は仮初期化(再生前なのでまだresumeは不要)
+          if (!this.useWebAudio) return null;
+          try {
+            const AC = window.AudioContext || window.webkitAudioContext;
+            this.ctx = new AC();
+          } catch (e) { this.useWebAudio = false; return null; }
+        }
+        const candidates = this._candidates(filename);
+        for (const url of candidates) {
+          try {
+            // eslint-disable-next-line no-await-in-loop
+            const res = await fetch(url);
+            if (!res.ok) continue;
+            // eslint-disable-next-line no-await-in-loop
+            const arr = await res.arrayBuffer();
+            // decodeAudioData - Safariは古いコールバック形式の場合も対応
+            // eslint-disable-next-line no-await-in-loop
+            const buf = await new Promise((resolve, reject) => {
+              const p = this.ctx.decodeAudioData(arr, resolve, reject);
+              if (p && p.then) p.then(resolve, reject);
+            });
+            this.urlMap.set(filename, url);
+            this.buffers.set(filename, buf);
+            return buf;
+          } catch (e) {
+            // 次の候補へ
+          }
+        }
+        console.warn("Decode failed for", filename);
+        return null;
       }
 
-      // 1ファイル分のURL解決(NFC→NFDの順で試行)
-      async _resolveOne(filename) {
+      // 起動時:全ファイルを並列でデコード&キャッシュ
+      async preloadAll(items) {
+        if (!this.useWebAudio) {
+          // フォールバック:HTMLAudioElement経由でメタデータのみ
+          this.fallbackAudio = new Audio();
+          for (const item of items) {
+            await this._resolveOneHttp(item.file);
+          }
+          return;
+        }
+        const concurrency = 6;
+        let idx = 0;
+        let loaded = 0;
+        const workers = Array(concurrency).fill(0).map(async () => {
+          while (idx < items.length) {
+            const i = idx++;
+            // eslint-disable-next-line no-await-in-loop
+            const buf = await this._loadOne(items[i].file);
+            if (buf) loaded++;
+          }
+        });
+        await Promise.all(workers);
+        console.info(`WebAudio buffers loaded: ${loaded}/${items.length}`);
+      }
+
+      // フォールバック用URL解決
+      async _resolveOneHttp(filename) {
         if (this.urlMap.has(filename)) return this.urlMap.get(filename);
         const candidates = this._candidates(filename);
         for (const url of candidates) {
-          // eslint-disable-next-line no-await-in-loop
-          if (await this._probeUrl(url)) {
-            this.urlMap.set(filename, url);
-            return url;
-          }
+          try {
+            // eslint-disable-next-line no-await-in-loop
+            const res = await fetch(url, { method: "HEAD" });
+            if (res.ok) {
+              this.urlMap.set(filename, url);
+              return url;
+            }
+          } catch (e) {}
         }
-        // 全て失敗 → 一旦NFCをキャッシュ(再生時のエラーフォールバックで再試行する)
         this.urlMap.set(filename, candidates[0]);
         return candidates[0];
       }
 
-      // 全ファイルのURLを起動時に並列解決(同時8件)
-      async resolveAllUrls(items) {
-        const concurrency = 8;
-        let idx = 0;
-        let resolved = 0;
-        const workers = Array(concurrency).fill(0).map(async () => {
-          while (idx < items.length) {
-            const i = idx++;
-            // eslint-disable-next-line no-await-in-loop
-            await this._resolveOne(items[i].file);
-            resolved++;
-          }
-        });
-        await Promise.all(workers);
-        console.info(`URL resolved: ${resolved}/${items.length}`);
-      }
-
-      // 同期的にURLを返す(起動時に解決済みのはず)
       fileUrl(filename) {
-        if (this.urlMap.has(filename)) return this.urlMap.get(filename);
-        // 起動時未解決の場合のフォールバック - NFCを返す
-        return "voice/" + encodeURIComponent(filename.normalize("NFC"));
-      }
-
-      preloadDuration(filename) {
-        if (this.durations.has(filename)) return Promise.resolve(this.durations.get(filename));
-        const url = this.fileUrl(filename);
-        return new Promise((resolve) => {
-          const a = new Audio();
-          a.preload = "metadata";
-          let done = false;
-          const finish = (d) => {
-            if (done) return; done = true;
-            this.durations.set(filename, d);
-            resolve(d);
-          };
-          a.addEventListener("loadedmetadata", () => {
-            finish(isFinite(a.duration) && a.duration > 0 ? a.duration : 1.5);
-          }, { once: true });
-          a.addEventListener("error", () => finish(1.5), { once: true });
-          a.src = url;
-          setTimeout(() => finish(1.5), 5000);
-        });
-      }
-
-      async preloadAll(items) {
-        const concurrency = 8;
-        let idx = 0;
-        const workers = Array(concurrency).fill(0).map(async () => {
-          while (idx < items.length) {
-            const i = idx++;
-            // eslint-disable-next-line no-await-in-loop
-            await this.preloadDuration(items[i].file);
-          }
-        });
-        await Promise.all(workers);
+        return this.urlMap.get(filename) ||
+               "voice/" + encodeURIComponent(filename.normalize("NFC"));
       }
 
       getDuration(filename) {
-        return this.durations.get(filename) || 1.5;
+        const b = this.buffers.get(filename);
+        if (b) return b.duration;
+        return 1.5; // フォールバック用デフォルト
       }
 
-      _applySettings() {
-        this.audio.volume = settings.volume / 100;
-        this.audio.playbackRate = settings.rate / 100;
+      _stopCurrent() {
+        if (this.currentSource) {
+          try {
+            this.currentSource.onended = null;
+            this.currentSource.stop(0);
+          } catch (e) {}
+          try { this.currentSource.disconnect(); } catch (e) {}
+          this.currentSource = null;
+        }
+        if (this.currentGain) {
+          try { this.currentGain.disconnect(); } catch (e) {}
+          this.currentGain = null;
+        }
+        if (this.fallbackAudio) {
+          try { this.fallbackAudio.pause(); } catch (e) {}
+        }
       }
 
-      _setAndPlay(item) {
-        try {
-          this.audio.pause();
-          this.audio.currentTime = 0;
-        } catch (e) {}
-        this._applySettings();
-        this.currentItem = item;
-        this._retryAttempted = false;
-        const url = this.fileUrl(item.file);
-        this.audio.src = url;
-        try { this.audio.load(); } catch (e) {}
-        if (this.onItemStart) this.onItemStart(item);
-        const p = this.audio.play();
-        if (p && p.catch) {
-          p.catch(err => {
-            console.warn("Play failed for", item.file, err);
-            // error イベントが追って発火するので、そこで対応する
+      // Web Audio API でバッファ再生(極小ラグ)
+      _playBufferNow(item, onEnded) {
+        const buffer = this.buffers.get(item.file);
+        if (!buffer) {
+          // バッファ未ロード → 即時ロード後に再生
+          this._loadOne(item.file).then(b => {
+            if (this.stopped || this.currentItem !== item) return;
+            if (b) this._actuallyStartBuffer(item, b, onEnded);
+            else if (onEnded) onEnded(true);
           });
+          return;
+        }
+        this._actuallyStartBuffer(item, buffer, onEnded);
+      }
+
+      _actuallyStartBuffer(item, buffer, onEnded) {
+        this._stopCurrent();
+        const source = this.ctx.createBufferSource();
+        source.buffer = buffer;
+        source.playbackRate.value = settings.rate / 100;
+        const gain = this.ctx.createGain();
+        gain.gain.value = settings.volume / 100;
+        source.connect(gain).connect(this.ctx.destination);
+
+        this.currentSource = source;
+        this.currentGain = gain;
+        this.currentItem = item;
+
+        let fired = false;
+        source.onended = () => {
+          if (fired) return;
+          fired = true;
+          if (this.currentSource === source) {
+            this.currentSource = null;
+            this.currentGain = null;
+          }
+          if (onEnded) onEnded(false);
+        };
+
+        if (this.onItemStart) this.onItemStart(item);
+        try {
+          source.start(0); // 即時再生(ラグ0ms)
+        } catch (e) {
+          console.warn("BufferSource start failed:", e);
+          fired = true;
+          if (onEnded) onEnded(true);
+        }
+      }
+
+      // フォールバック用HTMLAudioElement再生
+      _playElementNow(item, onEnded) {
+        this._stopCurrent();
+        if (!this.fallbackAudio) this.fallbackAudio = new Audio();
+        const a = this.fallbackAudio;
+        a.volume = settings.volume / 100;
+        a.playbackRate = settings.rate / 100;
+        a.src = this.fileUrl(item.file);
+        try { a.load(); } catch (e) {}
+        this.currentItem = item;
+
+        const onEnd = () => {
+          a.removeEventListener("ended", onEnd);
+          a.removeEventListener("error", onErr);
+          if (onEnded) onEnded(false);
+        };
+        const onErr = () => {
+          a.removeEventListener("ended", onEnd);
+          a.removeEventListener("error", onErr);
+          if (onEnded) onEnded(true);
+        };
+        a.addEventListener("ended", onEnd, { once: true });
+        a.addEventListener("error", onErr, { once: true });
+
+        if (this.onItemStart) this.onItemStart(item);
+        const p = a.play();
+        if (p && p.catch) p.catch(err => {
+          console.warn("Fallback play failed", err);
+        });
+      }
+
+      _playNow(item, onEnded) {
+        this._initCtx();
+        this.currentItem = item;
+        if (this.useWebAudio && this.ctx) {
+          this._playBufferNow(item, onEnded);
+        } else {
+          this._playElementNow(item, onEnded);
         }
       }
 
       playOne(item) {
         this.stopped = false;
         this.isPlayingQueue = false;
-        this._setAndPlay(item);
+        this._playNow(item, (errored) => {
+          if (this.onItemEnd) this.onItemEnd(item);
+          this.currentItem = null;
+          if (errored) showToast("⚠️ 「" + item.file + "」を再生できません");
+        });
       }
 
       playQueue(queueItems) {
@@ -1062,6 +1164,7 @@ input[type="range"]::-moz-range-thumb{
         this.queueIndex = 0;
         this.isPlayingQueue = true;
         this.stopped = false;
+        this._initCtx();
         this._playNext();
       }
 
@@ -1073,72 +1176,31 @@ input[type="range"]::-moz-range-thumb{
           return;
         }
         const item = this.queue[this.queueIndex];
-        this._setAndPlay(item);
-      }
-
-      _onAudioEnded(errored) {
-        const ended = this.currentItem;
-        if (this.onItemEnd && ended) this.onItemEnd(ended);
-        if (!this.isPlayingQueue || this.stopped) {
-          this.currentItem = null;
-          return;
-        }
-        this.queueIndex++;
-        const gap = errored ? 50 : settings.gap;
-        setTimeout(() => this._playNext(), gap);
-      }
-
-      _onAudioError() {
-        const item = this.currentItem;
-        if (!item) return;
-
-        // 再生時セーフティネット: キャッシュURLでエラー → もう一方のエンコーディングを試す
-        if (!this._retryAttempted) {
-          this._retryAttempted = true;
-          const cached = this.urlMap.get(item.file);
-          const candidates = this._candidates(item.file);
-          const alt = candidates.find(c => c !== cached);
-          if (alt) {
-            console.info("Retry with alternate encoding:", item.file);
-            this.urlMap.set(item.file, alt); // 成功したらキャッシュ更新
-            this.audio.src = alt;
-            try { this.audio.load(); } catch (e) {}
-            const p = this.audio.play();
-            if (p && p.catch) {
-              p.catch(() => {
-                // 二度目も失敗 → 諦め
-                this._failItem(item);
-              });
-            }
-            return;
+        this._playNow(item, (errored) => {
+          if (this.onItemEnd) this.onItemEnd(item);
+          if (!this.isPlayingQueue || this.stopped) return;
+          this.queueIndex++;
+          const gap = errored ? 0 : settings.gap;
+          if (gap <= 0) {
+            // ゼロギャップ:即座に次へ
+            this._playNext();
+          } else {
+            setTimeout(() => this._playNext(), gap);
           }
-        }
-        this._failItem(item);
-      }
-
-      _failItem(item) {
-        console.warn("Audio failed permanently:", item.file);
-        if (this.isPlayingQueue) {
-          this._onAudioEnded(true);
-        } else {
-          showToast("⚠️ 「" + item.file + "」を再生できません");
-          this.currentItem = null;
-        }
+        });
       }
 
       stop() {
         this.stopped = true;
         this.isPlayingQueue = false;
-        try {
-          this.audio.pause();
-          this.audio.currentTime = 0;
-        } catch (e) {}
+        this._stopCurrent();
         this.currentItem = null;
         if (this.onQueueEnd) this.onQueueEnd();
       }
 
       isPlaying() {
-        return !this.audio.paused && !this.audio.ended;
+        return this.currentSource !== null ||
+               (this.fallbackAudio && !this.fallbackAudio.paused);
       }
     }
 
@@ -1148,7 +1210,7 @@ input[type="range"]::-moz-range-thumb{
     const defaultSettings = {
       volume: 100,
       rate: 100,
-      gap: 350,
+      gap: 0,
       showFavorites: false,
       instantMode: false
     };
@@ -1186,7 +1248,6 @@ input[type="range"]::-moz-range-thumb{
     const playBtn       = $("playBtn");
     const stopBtn       = $("stopBtn");
     const clearBtn      = $("clearBtn");
-    const shuffleBtn    = $("shuffleBtn");
     const clearAllBtn   = $("clearAllBtn");
     const toastEl       = $("toast");
 
@@ -1202,25 +1263,19 @@ input[type="range"]::-moz-range-thumb{
     function displayHour24To12(h) { const v = h % 12; return v === 0 ? 12 : v; }
 
     function setupClockFace() {
-      const cx = 97;   // 中心(時計の半径)
-      const cy = 97;
-      const rNum = 82; // 数字の配置半径 - 外周近く
-      const rTick = 87;// 目盛り配置距離(時計中心からの距離)
+      // 数字をパーセンテージで配置(時計サイズに自動追従)
+      // 半径41% = 内側ボーダーから少し内側
+      const rPct = 41;
       for (let i = 1; i <= 12; i++) {
         const el = document.createElement("div");
         el.className = "number";
         el.textContent = i;
         const angle = (i * 30 - 90) * Math.PI / 180;
-        el.style.left = `${cx + rNum * Math.cos(angle)}px`;
-        el.style.top  = `${cy + rNum * Math.sin(angle)}px`;
+        el.style.left = `${50 + rPct * Math.cos(angle)}%`;
+        el.style.top  = `${50 + rPct * Math.sin(angle)}%`;
         analogClock.appendChild(el);
       }
-      for (let i = 0; i < 60; i++) {
-        const tick = document.createElement("div");
-        tick.className = i % 5 === 0 ? "tick major" : "tick";
-        tick.style.transform = `rotate(${i * 6}deg) translateY(-${rTick}px)`;
-        analogClock.appendChild(tick);
-      }
+      // 目盛りは省略(数字だけのほうが子供が読みやすい)
     }
 
     function currentTimeParts() {
@@ -1388,7 +1443,6 @@ input[type="range"]::-moz-range-thumb{
       queueDuration.textContent = formatDuration(totalSec);
       queueCount.textContent = `（${queue.length}個）`;
       playBtn.disabled = queue.length === 0;
-      shuffleBtn.disabled = queue.length < 2;
     }
 
     function formatDuration(sec) {
@@ -1413,17 +1467,6 @@ input[type="range"]::-moz-range-thumb{
       stopAll();
       queue = [];
       renderQueue();
-    }
-
-    function shuffleQueue() {
-      if (queue.length < 2) return;
-      // Fisher-Yates シャッフル
-      for (let i = queue.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [queue[i], queue[j]] = [queue[j], queue[i]];
-      }
-      renderQueue();
-      if (navigator.vibrate) try { navigator.vibrate(15); } catch(e){}
     }
 
     /* =========================================================
@@ -1529,23 +1572,32 @@ input[type="range"]::-moz-range-thumb{
         }
         testResult.textContent = "▶ 再生中…";
         testResult.style.color = "#0F172A";
-        const tmpAudio = new Audio(audio.fileUrl(testItem.file));
-        tmpAudio.volume = settings.volume / 100;
-        tmpAudio.playbackRate = settings.rate / 100;
-        tmpAudio.addEventListener("ended", () => {
-          testResult.textContent = "✅ 再生できました！voice/フォルダは正常です";
-          testResult.style.color = "#16A34A";
-        });
-        tmpAudio.addEventListener("error", () => {
-          testResult.innerHTML = `❌ <code style="background:#FEE2E2;padding:1px 4px;border-radius:4px;">voice/${testItem.file}</code> が見つかりません`;
-          testResult.style.color = "#EF4444";
-        });
-        try {
-          await tmpAudio.play();
-        } catch (err) {
-          testResult.textContent = `❌ 再生失敗: ${err.message}`;
-          testResult.style.color = "#EF4444";
-        }
+        // AudioEngineで直接再生(Web Audio APIで瞬時)
+        let resolved = false;
+        const origStart = audio.onItemStart;
+        const origEnd   = audio.onItemEnd;
+        audio.onItemStart = (it) => { if (origStart) origStart(it); };
+        audio.onItemEnd = (it) => {
+          if (origEnd) origEnd(it);
+          audio.onItemStart = origStart;
+          audio.onItemEnd = origEnd;
+          if (!resolved) {
+            resolved = true;
+            testResult.textContent = "✅ 再生できました！voice/フォルダは正常です";
+            testResult.style.color = "#16A34A";
+          }
+        };
+        audio.playOne(testItem);
+        // 5秒後にも結果が出てなければエラー扱い
+        setTimeout(() => {
+          if (!resolved) {
+            resolved = true;
+            audio.onItemStart = origStart;
+            audio.onItemEnd = origEnd;
+            testResult.innerHTML = `❌ <code style="background:#FEE2E2;padding:1px 4px;border-radius:4px;">voice/${testItem.file}</code> が見つかりません`;
+            testResult.style.color = "#EF4444";
+          }
+        }, 5000);
       });
     }
 
@@ -1584,7 +1636,6 @@ input[type="range"]::-moz-range-thumb{
     playBtn.addEventListener("click", playQueue);
     stopBtn.addEventListener("click", stopAll);
     clearBtn.addEventListener("click", clearQueue);
-    shuffleBtn.addEventListener("click", shuffleQueue);
     clearAllBtn.addEventListener("click", clearQueue);
 
     setupClockFace();
@@ -1596,16 +1647,28 @@ input[type="range"]::-moz-range-thumb{
     renderQueue();
     initSettingsScreen();
 
-    // 起動時:全ファイルのURLを個別解決(NFC/NFD混在対応) → 再生時間プリロード
+    // 起動時:Web Audio API で全ファイルをデコード&メモリにキャッシュ
+    // (連続再生のタイムラグをほぼゼロにするため)
     (async () => {
       try {
-        await audio.resolveAllUrls(voiceItems);
         await audio.preloadAll(voiceItems);
-        renderQueue();
+        renderQueue(); // 再生時間表示更新
       } catch (e) {
-        console.warn("Init failed:", e);
+        console.warn("Preload failed:", e);
       }
     })();
+
+    // 初回ユーザー操作で AudioContext を resume(iOS Safari 対策)
+    const _unlockAudio = () => {
+      try {
+        if (audio.useWebAudio && !audio.ctx) audio._initCtx();
+        else if (audio.ctx && audio.ctx.state === "suspended") audio.ctx.resume();
+      } catch (e) {}
+      document.removeEventListener("touchstart", _unlockAudio, true);
+      document.removeEventListener("click", _unlockAudio, true);
+    };
+    document.addEventListener("touchstart", _unlockAudio, true);
+    document.addEventListener("click", _unlockAudio, true);
 
     // Prevent double-tap zoom on iOS
     let lastTouchEnd = 0;
