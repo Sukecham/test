@@ -113,6 +113,14 @@ button{
   align-items:center; position:relative; z-index:2;
 }
 .time-block{ min-width:0; padding-top:6px; overflow:hidden; }
+.period{
+  font-size:24px; font-weight:900; line-height:1; letter-spacing:.02em;
+  margin-bottom:4px;
+  text-shadow:0 2px 0 rgba(255,255,255,.7);
+}
+.morning .period{ color:#B14A0A; text-shadow:0 2px 0 rgba(255,255,255,.65); }
+.afternoon .period{ color:#0B48A5; text-shadow:0 2px 0 rgba(255,255,255,.7); }
+.evening .period{ color:#FFF; text-shadow:0 2px 8px rgba(0,0,0,.5); }
 .digital-time{
   font-size:clamp(56px, 15vw, 72px);
   line-height:.95; font-weight:900; letter-spacing:-.05em; color:#0B48A5;
@@ -506,6 +514,7 @@ input[type="range"]::-moz-range-thumb{
   .analog-clock{ width:152px; height:152px; flex-basis:152px; }
   .number{ font-size:16px; }
   .clock-row{ grid-template-columns: minmax(0,1fr) 152px; }
+  .period{ font-size:21px; }
   .digital-time{ font-size:64px; }
   .voice-card{ min-height:110px; }
   .voice-card .illust{ width:50px; height:50px; }
@@ -515,6 +524,7 @@ input[type="range"]::-moz-range-thumb{
   .analog-clock{ width:136px; height:136px; flex-basis:136px; }
   .number{ font-size:14px; }
   .clock-row{ grid-template-columns: minmax(0,1fr) 136px; }
+  .period{ font-size:18px; }
   .digital-time{ font-size:56px; }
   .button-grid{ gap:8px; }
   .voice-card{ min-height:104px; padding:10px 4px 10px; }
@@ -559,6 +569,7 @@ input[type="range"]::-moz-range-thumb{
 
     <div class="clock-row">
       <div class="time-block">
+        <div id="period" class="period">ごぜん</div>
         <div id="digitalTime" class="digital-time">7:42</div>
         <div class="message-card">
           <span class="alarm-icon">⏰</span>
@@ -1236,6 +1247,7 @@ input[type="range"]::-moz-range-thumb{
        ========================================================= */
     const $ = (id) => document.getElementById(id);
     const header        = $("header");
+    const period        = $("period");
     const digitalTime   = $("digitalTime");
     const analogClock   = $("analogClock");
     const hourHand      = $("hourHand");
@@ -1291,6 +1303,7 @@ input[type="range"]::-moz-range-thumb{
 
     function updateClock() {
       const { h, m, displayHour, mode } = currentTimeParts();
+      period.textContent = h < 12 ? "ごぜん" : "ごご";
       digitalTime.textContent = `${displayHour}:${pad(m)}`;
       header.classList.remove("morning", "afternoon", "evening");
       header.classList.add(mode);
@@ -1301,9 +1314,38 @@ input[type="range"]::-moz-range-thumb{
     }
 
     function speakCurrentTime() {
-      // Use the closest matching MP3 from the voice set
-      const item = voiceItems.find(v => v.file === "時計を見てみよう.mp3");
-      if (item) audio.playOne(item);
+      // ブラウザ標準の音声合成(Web Speech API)で現在時刻を読み上げる
+      if (!("speechSynthesis" in window)) {
+        showToast("⚠️ この端末は音声読み上げに対応していません");
+        return;
+      }
+      // 現在再生中のMP3があれば停止(音声重複を防ぐ)
+      audio.stop();
+
+      const { h, m, displayHour } = currentTimeParts();
+      const text = `${displayHour}じ ${m}ふん`;
+
+      // 既存の発話をキャンセル(連打対応)
+      try { window.speechSynthesis.cancel(); } catch (e) {}
+
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "ja-JP";
+      u.rate = 0.95;          // 子供向けにややゆっくり
+      u.pitch = 1.1;           // やや高めの声
+      u.volume = settings.volume / 100;
+
+      // 利用可能な日本語ボイスを選択
+      const voices = window.speechSynthesis.getVoices();
+      const jpVoice = voices.find(v => v.lang === "ja-JP") ||
+                      voices.find(v => v.lang && v.lang.startsWith("ja"));
+      if (jpVoice) u.voice = jpVoice;
+
+      try {
+        window.speechSynthesis.speak(u);
+      } catch (e) {
+        console.warn("TTS speak failed:", e);
+        showToast("⚠️ 音声読み上げに失敗しました");
+      }
     }
 
     /* =========================================================
@@ -1669,6 +1711,16 @@ input[type="range"]::-moz-range-thumb{
     };
     document.addEventListener("touchstart", _unlockAudio, true);
     document.addEventListener("click", _unlockAudio, true);
+
+    // 音声合成エンジンのボイスリストを早期にウォームアップ
+    if ("speechSynthesis" in window) {
+      try {
+        window.speechSynthesis.getVoices();
+        window.speechSynthesis.addEventListener("voiceschanged", () => {
+          // 音声リスト読み込み完了
+        });
+      } catch (e) {}
+    }
 
     // Prevent double-tap zoom on iOS
     let lastTouchEnd = 0;
