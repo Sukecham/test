@@ -7,929 +7,1172 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="theme-color" content="#bdeeff" />
-  <title>パパのこえで おしたく</title>
+  <title>パパのこえでおしたく</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
   <style>
     :root {
-      /* base palette */
-      --deep-blue: #06327a;
-      --blue: #1558c8;
-      --soft-shadow: 0 8px 22px rgba(15, 23, 42, 0.12);
-      --card-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+      --pink-bg:#FFE0EC; --pink-edge:#FBB6CE; --pink-deep:#9D174D; --pink-accent:#EC4899;
+      --sky-bg:#DBEEFF;  --sky-edge:#93C5FD;  --sky-deep:#0C4A6E;  --sky-accent:#2563EB;
+      --yellow-bg:#FFF3C4; --yellow-edge:#FCD34D; --yellow-deep:#78350F; --yellow-accent:#F59E0B;
+      --green-bg:#DCFCE7; --green-edge:#86EFAC; --green-deep:#14532D; --green-accent:#16A34A;
+      --purple-bg:#EDE9FE; --purple-edge:#C4B5FD; --purple-deep:#4C1D95; --purple-accent:#7C3AED;
+      --orange-bg:#FFEDD5; --orange-edge:#FDBA74; --orange-deep:#7C2D12; --orange-accent:#F97316;
+      --ink:#0F172A; --sub:#475569; --paper:#FFFFFF; --line:#E2E8F0;
+      --shadow-sm:0 2px 6px rgba(15,23,42,.08);
+      --shadow-md:0 6px 18px rgba(15,23,42,.12);
+      --shadow-lg:0 12px 32px rgba(15,23,42,.18);
+      --radius-card:22px;
+      --radius-pill:999px;
+      --tap:cubic-bezier(.34,1.56,.64,1);
+    }
 
 ```
-  /* category color tokens */
-  --pink-bg: #ffe3ed;     --pink-border: #f8b4cf;     --pink-text: #8a1c4b;     --pink-icon: #db2777;
-  --sky-bg: #e2f4ff;      --sky-border: #b7def8;      --sky-text: #0b3d91;      --sky-icon: #2563eb;
-  --azure-bg: #dbeafe;    --azure-border: #93c5fd;    --azure-text: #0c4a87;    --azure-icon: #1d4ed8;
-  --yellow-bg: #fff4bd;   --yellow-border: #f8d456;   --yellow-text: #7c4a07;   --yellow-icon: #d97706;
-  --green-bg: #e4f8da;    --green-border: #b8e49e;    --green-text: #1b5e20;    --green-icon: #16a34a;
-  --purple-bg: #efe2ff;   --purple-border: #d8b4fe;   --purple-text: #4c1d95;   --purple-icon: #7c3aed;
-  --orange-bg: #ffedd5;   --orange-border: #fdba74;   --orange-text: #7c2d12;   --orange-icon: #ea580c;
+*,*::before,*::after{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  font-family:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","ヒラギノ丸ゴ ProN W4",-apple-system,BlinkMacSystemFont,sans-serif;
+  font-weight:800;
+  color:var(--ink);
+  background:#cbd5e1;
+  min-height:100vh;
+  min-height:100dvh;
+  display:flex;
+  justify-content:center;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-font-smoothing:antialiased;
+  overscroll-behavior:none;
+}
+button{
+  font-family:inherit; font-weight:inherit; color:inherit;
+  cursor:pointer; border:0; background:transparent; padding:0;
 }
 
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-html, body {
-  margin: 0; padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Maru Gothic ProN", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
-  background: #d8e2ec;
-  color: #172033;
-  overscroll-behavior: none;
+/* ----- APP FRAME ----- */
+.app{
+  width:100%; max-width:430px; min-height:100vh; min-height:100dvh;
+  background:#F8FAFC; position:relative; overflow:hidden;
+  box-shadow:0 0 50px rgba(0,0,0,.25);
+  display:flex; flex-direction:column;
 }
+.screen{ flex:1; overflow-y:auto; overflow-x:hidden; padding-bottom:96px; scroll-behavior:smooth; }
+.screen::-webkit-scrollbar{ display:none; }
 
-body { min-height: 100vh; display: flex; justify-content: center; }
+.screen:not(.active){ display:none; }
 
-.app {
-  width: 100%;
-  max-width: 430px;
-  min-height: 100vh;
-  background: #ffffff;
-  position: relative;
-  overflow-x: hidden;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.18);
-  padding-bottom: calc(78px + env(safe-area-inset-bottom));
+/* ----- HEADER (CLOCK) ----- */
+.header{
+  position:relative; overflow:hidden;
+  padding:calc(env(safe-area-inset-top) + 18px) 18px 22px;
+  transition:background .6s ease, color .6s ease;
+  cursor:pointer; user-select:none;
 }
-
-/* ===== HEADER (clock) ===== */
-.header {
-  padding: calc(env(safe-area-inset-top) + 22px) 16px 18px;
-  position: relative;
-  overflow: hidden;
-  transition: background 0.5s ease, color 0.5s ease;
-  cursor: pointer;
+/* あさ (5:00-10:59): 朝焼け ピンク→オレンジ→水色 */
+.header.morning{
+  background:
+    radial-gradient(ellipse 220px 80px at 78% 14%, rgba(255,255,255,.6), transparent 70%),
+    linear-gradient(180deg, #FFD9C2 0%, #FFE7C2 38%, #BFE5FF 100%);
+  color:#7A3415;
 }
-.header.morning { background: linear-gradient(180deg, #bdeeff 0%, #ecfbff 100%); color: var(--deep-blue); }
-.header.afternoon { background: linear-gradient(180deg, #fed7aa 0%, #fef3c7 100%); color: #7c2d12; }
-.header.evening { background: linear-gradient(180deg, #fda4af 0%, #fde68a 100%); color: #7c1d3f; }
-.header.night { background: linear-gradient(180deg, #172554 0%, #312e81 52%, #111827 100%); color: #fff; }
-
-.sky-icon { position: absolute; font-size: 38px; opacity: 0.95; pointer-events: none; }
-.sky-icon.left { left: 16px; top: calc(env(safe-area-inset-top) + 70px); }
-.sky-icon.right { right: 12px; top: calc(env(safe-area-inset-top) + 96px); font-size: 30px; opacity: 0.75; }
-
-.clock-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; position: relative; z-index: 2; }
-.time-block { min-width: 0; padding-top: 24px; }
-
-.period {
-  font-size: 32px; line-height: 1; font-weight: 1000; letter-spacing: 0.04em;
-  text-shadow: 0 3px 0 rgba(255, 255, 255, 0.7);
+/* ひる (11:00-16:59): 青空 */
+.header.afternoon{
+  background:
+    radial-gradient(ellipse 220px 80px at 80% 14%, rgba(255,255,255,.75), transparent 70%),
+    radial-gradient(ellipse 160px 60px at 22% 38%, rgba(255,255,255,.55), transparent 70%),
+    linear-gradient(180deg,#A9E5FF 0%,#D7F2FF 60%,#F0FBFF 100%);
+  color:#06327A;
 }
-.header.night .period, .header.evening .period { text-shadow: none; }
-
-.digital-time {
-  margin-top: 6px;
-  font-size: clamp(56px, 17vw, 78px);
-  line-height: 0.92; font-weight: 1000; letter-spacing: -0.07em;
-  color: #0b48a5;
-  text-shadow: 0 4px 0 rgba(255, 255, 255, 0.8);
+/* よる (17:00-04:59): 夜空 */
+.header.evening{
+  background:
+    radial-gradient(ellipse 200px 80px at 80% 18%, rgba(255,255,255,.10), transparent 70%),
+    linear-gradient(180deg,#1E293B 0%,#312E81 55%,#0F172A 100%);
+  color:#FFF;
 }
-.header.afternoon .digital-time { color: #9a3412; }
-.header.evening .digital-time { color: #9d174d; }
-.header.night .digital-time { color: #fff; text-shadow: 0 4px 12px rgba(0, 0, 0, 0.35); }
-
-.message-card {
-  margin-top: 14px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.92);
-  color: #11408d;
-  border-radius: 18px;
-  padding: 10px 14px;
-  font-size: 16px;
-  font-weight: 900;
-  line-height: 1.35;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+.sky-deco{ position:absolute; pointer-events:none; }
+.sky-deco.sun{
+  width:62px; height:62px; right:44%; top:54px; opacity:.95;
 }
-.header.night .message-card { background: rgba(255, 255, 255, 0.14); color: #fff; border: 1px solid rgba(255, 255, 255, 0.25); }
-.message-card .clock-emoji { font-size: 22px; }
-
-.analog-clock {
-  width: 160px; height: 160px; border-radius: 50%;
-  background: #fff; border: 6px solid #73b7ea;
-  box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.08), 0 8px 18px rgba(13, 64, 132, 0.16);
-  position: relative;
-  flex: 0 0 160px;
+.sky-deco.cloud-left{ width:48px; left:14px; top:120px; opacity:.85; }
+.sky-deco.cloud-right{ width:54px; right:8px; top:18px; opacity:.6; }
+.morning .sky-deco.sun{ display:block; filter:drop-shadow(0 2px 8px rgba(255,153,51,.45)); }
+.afternoon .sky-deco.sun{ display:block; }
+.evening .sky-deco.sun{ display:none; }
+.evening .sky-deco.cloud-left,.evening .sky-deco.cloud-right{ opacity:.18; }
+.moon{ display:none; }
+.evening .moon{
+  display:block; position:absolute; width:54px; height:54px; right:46%; top:54px;
 }
-.number {
-  position: absolute; left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 19px; font-weight: 1000; color: #111827; line-height: 1;
+.stars{ display:none; }
+.evening .stars{ display:block; position:absolute; inset:0; pointer-events:none; }
+
+.clock-row{
+  display:grid; grid-template-columns: 1fr auto; gap:10px;
+  align-items:center; position:relative; z-index:2;
 }
-.tick {
-  position: absolute; left: 50%; top: 50%;
-  transform-origin: 0 0; background: #9ca3af;
-  width: 1px; height: 5px;
+.time-block{ min-width:0; padding-top:6px; }
+.digital-time{
+  font-size:clamp(72px,21vw,98px);
+  line-height:.95; font-weight:900; letter-spacing:-.06em; color:#0B48A5;
+  text-shadow:0 4px 0 rgba(255,255,255,.85);
 }
-.tick.major { width: 2px; height: 9px; background: #111827; }
-
-.hand { position: absolute; left: 50%; top: 50%; transform-origin: bottom center; border-radius: 999px; }
-.hand.hour { width: 9px; height: 50px; margin-left: -4.5px; margin-top: -50px; background: #222; z-index: 4; }
-.hand.minute { width: 6px; height: 70px; margin-left: -3px; margin-top: -70px; background: #ef1b1b; box-shadow: 0 2px 6px rgba(239, 27, 27, 0.35); z-index: 5; }
-.center-dot { position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; transform: translate(-50%, -50%); background: #ef1b1b; border: 3px solid #ff7777; border-radius: 50%; z-index: 8; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22); }
-
-/* ===== CONTENT ===== */
-.content { padding: 14px 12px 18px; }
-.page { display: none; }
-.page.active { display: block; }
-
-h1 {
-  margin: 0 0 12px;
-  font-size: 22px;
-  color: #083985;
-  font-weight: 1000;
-  display: flex; align-items: center; gap: 8px;
+.morning .digital-time{ color:#B14A0A; text-shadow:0 4px 0 rgba(255,255,255,.75); }
+.afternoon .digital-time{ color:#0B48A5; text-shadow:0 4px 0 rgba(255,255,255,.85); }
+.evening .digital-time{ color:#FFF; text-shadow:0 4px 14px rgba(0,0,0,.4); }
+.message-card{
+  margin-top:12px;
+  display:inline-flex; align-items:center; gap:10px;
+  background:rgba(255,255,255,.95); color:#11408D;
+  border-radius:18px; padding:10px 14px;
+  font-size:15px; line-height:1.32; font-weight:900;
+  box-shadow:0 4px 12px rgba(15,23,42,.1);
+}
+.message-card .alarm-icon{ font-size:22px; }
+.evening .message-card{
+  background:rgba(255,255,255,.15); color:#FFF;
+  border:1px solid rgba(255,255,255,.22);
+}
+.morning .message-card{
+  background:rgba(255,255,255,.92); color:#7A3415;
 }
 
-/* tabs */
-.tabs {
-  display: flex;
-  gap: 7px;
-  overflow-x: auto;
-  padding: 2px 2px 10px;
-  scrollbar-width: none;
+/* ----- ANALOG CLOCK ----- */
+.analog-clock{
+  width:194px; height:194px; border-radius:50%;
+  background:#FFF; border:7px solid #73B7EA;
+  box-shadow: inset 0 2px 12px rgba(0,0,0,.08), 0 8px 18px rgba(13,64,132,.18);
+  position:relative; flex:0 0 194px;
 }
-.tabs::-webkit-scrollbar { display: none; }
-.tab {
-  flex: 0 0 auto;
-  border: 2px solid #dbeafe;
-  background: #fff;
-  color: var(--blue);
-  border-radius: 14px;
-  padding: 7px 11px;
-  font-size: 13.5px;
-  font-weight: 1000;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.07);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  white-space: nowrap;
+.evening .analog-clock{ border-color:#A5B4FC; box-shadow: inset 0 2px 12px rgba(0,0,0,.2), 0 8px 18px rgba(0,0,0,.4); }
+.number{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  font-size:18px; font-weight:900; color:#111827; line-height:1;
+  width:22px; height:22px; display:flex; align-items:center; justify-content:center;
 }
-.tab .tab-emoji { font-size: 16px; }
-.tab.active { background: #2563eb; color: #fff; border-color: #2563eb; }
-.tab.pink.active   { background: var(--pink-icon); border-color: var(--pink-icon); }
-.tab.sky.active    { background: var(--sky-icon); border-color: var(--sky-icon); }
-.tab.azure.active  { background: var(--azure-icon); border-color: var(--azure-icon); }
-.tab.yellow.active { background: var(--yellow-icon); border-color: var(--yellow-icon); }
-.tab.green.active  { background: var(--green-icon); border-color: var(--green-icon); }
-.tab.purple.active { background: var(--purple-icon); border-color: var(--purple-icon); }
-.tab.orange.active { background: var(--orange-icon); border-color: var(--orange-icon); }
-
-/* mode row */
-.mode-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-.mode-btn {
-  border: 0; border-radius: 16px;
-  padding: 12px 8px;
-  font-size: 15.5px; font-weight: 1000;
-  background: #fff; box-shadow: var(--soft-shadow); color: #334155;
-  cursor: pointer; transition: transform .08s ease;
+.tick{
+  position:absolute; left:50%; top:50%; transform-origin:0 0;
+  background:#9CA3AF; width:1px; height:5px;
 }
-.mode-btn:active { transform: scale(0.97); }
-.mode-btn.active.queue { background: #22c55e; color: #fff; }
-.mode-btn.active.instant { background: #fb923c; color: #fff; }
-
-/* button grid */
-.button-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
-.voice-card {
-  min-height: 118px;
-  border-radius: 18px;
-  border: 2px solid transparent;
-  padding: 8px 4px 6px;
-  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-  gap: 4px;
-  text-align: center;
-  box-shadow: var(--card-shadow);
-  cursor: pointer; user-select: none;
-  transition: transform 0.08s ease, filter 0.15s ease, box-shadow 0.15s ease;
-  font-weight: 1000;
-  position: relative;
-  background: #fff;
+.tick.major{ width:2px; height:9px; background:#111827; }
+.hand{
+  position:absolute; left:50%; top:50%;
+  transform-origin:bottom center; border-radius:999px;
+  transition:transform .4s var(--tap);
 }
-.voice-card:active { transform: scale(0.96); filter: brightness(0.97); }
-.voice-card.playing { box-shadow: 0 0 0 3px #22c55e, var(--card-shadow); animation: pulse 1s ease-in-out infinite; }
-@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 3px #22c55e, var(--card-shadow); } 50% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.4), var(--card-shadow); } }
-
-.voice-card .icon { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; }
-.voice-card svg { width: 38px; height: 38px; stroke-width: 2.5; }
-.voice-card .label { font-size: 14px; line-height: 1.2; white-space: pre-line; padding: 0 2px; }
-.voice-card .speaker {
-  margin-top: 2px;
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  color: #fff;
-  font-size: 14px;
-}
-.voice-card .speaker svg { width: 16px; height: 16px; stroke-width: 0; }
-
-.favorite-toggle {
-  position: absolute; right: 5px; top: 5px;
-  border: 0;
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 999px;
-  width: 24px; height: 24px;
-  color: #cbd5e1;
-  font-size: 14px;
-  font-weight: 1000;
-  cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0,0,0,.1);
-}
-.favorite-toggle.on { color: #f59e0b; background: #fff7ed; }
-
-/* category color */
-.pink   { background: var(--pink-bg);   border-color: var(--pink-border);   color: var(--pink-text); }
-.pink   .speaker { background: var(--pink-icon); }
-.sky    { background: var(--sky-bg);    border-color: var(--sky-border);    color: var(--sky-text); }
-.sky    .speaker { background: var(--sky-icon); }
-.azure  { background: var(--azure-bg);  border-color: var(--azure-border);  color: var(--azure-text); }
-.azure  .speaker { background: var(--azure-icon); }
-.yellow { background: var(--yellow-bg); border-color: var(--yellow-border); color: var(--yellow-text); }
-.yellow .speaker { background: var(--yellow-icon); }
-.green  { background: var(--green-bg);  border-color: var(--green-border);  color: var(--green-text); }
-.green  .speaker { background: var(--green-icon); }
-.purple { background: var(--purple-bg); border-color: var(--purple-border); color: var(--purple-text); }
-.purple .speaker { background: var(--purple-icon); }
-.orange { background: var(--orange-bg); border-color: var(--orange-border); color: var(--orange-text); }
-.orange .speaker { background: var(--orange-icon); }
-
-/* queue panel */
-.queue-panel {
-  margin-top: 16px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 22px;
-  box-shadow: var(--soft-shadow);
-  padding: 12px;
-}
-.queue-head {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 10px; margin-bottom: 10px;
-}
-.queue-title { font-size: 18px; font-weight: 1000; color: #083985; display: flex; align-items: center; gap: 4px; }
-.small-btn {
-  border: 1px solid #d1d5db;
-  background: #f8fafc;
-  color: #475569;
-  border-radius: 12px;
-  padding: 7px 10px;
-  font-weight: 900;
-  font-size: 13px;
-  cursor: pointer;
-}
-.queue-list {
-  min-height: 78px;
-  background: #fff1f6;
-  border: 1px solid #ffd2e4;
-  border-radius: 16px;
-  padding: 9px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.empty { color: #94a3b8; font-weight: 900; padding: 12px 6px; text-align: center; font-size: 14px; }
-.queue-item {
-  display: flex; align-items: center; justify-content: space-between;
-  background: #fff;
-  border: 1px solid #f9a8d4;
-  border-radius: 12px;
-  padding: 7px 8px 7px 10px;
-  font-size: 14px;
-  font-weight: 1000;
-  color: #831843;
-}
-.queue-item.playing-now { background: #ecfccb; border-color: #84cc16; color: #365314; box-shadow: 0 0 0 2px #84cc16; }
-.queue-item .qnum {
-  flex: 0 0 22px; height: 22px;
-  border-radius: 50%;
-  background: #ec4899; color: #fff;
-  display: inline-flex; align-items: center; justify-content: center;
-  font-size: 12px; margin-right: 7px;
-}
-.queue-item.playing-now .qnum { background: #65a30d; }
-.queue-item .qlabel { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.queue-item .qclose {
-  flex: 0 0 24px; height: 24px;
-  border: 0; background: #f3f4f6; color: #6b7280;
-  border-radius: 50%;
-  font-weight: 1000;
-  cursor: pointer;
-  font-size: 14px;
-  margin-left: 6px;
+.hand.hour  { width:10px; height:50px; margin-left:-5px; margin-top:-50px; background:#1F2937; z-index:4; }
+.hand.minute{ width:7px;  height:72px; margin-left:-3.5px; margin-top:-72px; background:#EF1B1B; box-shadow:0 2px 6px rgba(239,27,27,.35); z-index:5; }
+.center-dot{
+  position:absolute; left:50%; top:50%;
+  width:22px; height:22px; transform:translate(-50%,-50%);
+  background:#EF1B1B; border:3px solid #FFB4B4; border-radius:50%;
+  z-index:8; box-shadow:0 2px 8px rgba(0,0,0,.22);
 }
 
-.control-row { margin-top: 11px; display: grid; grid-template-columns: 1fr 1.3fr; gap: 9px; }
-.control-row.bottom { grid-template-columns: 1fr 1fr; margin-top: 8px; }
-.control-btn {
-  border: 0; border-radius: 18px;
-  min-height: 56px;
-  color: #fff; font-weight: 1000; font-size: 16px;
-  box-shadow: var(--soft-shadow);
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center; gap: 5px;
-  transition: transform .08s ease;
+/* ----- MAIN CONTENT ----- */
+.content{ padding:18px 14px 14px; }
+.section-title{
+  margin:0 0 12px; font-size:22px; color:#083985; font-weight:900;
+  display:flex; align-items:center; gap:8px;
 }
-.control-btn:active { transform: scale(0.97); }
-.control-btn:disabled { background: #cbd5e1 !important; color: #fff; cursor: not-allowed; }
-.clear { background: #94a3b8; }
-.play  { background: #22c55e; min-height: 64px; font-size: 17px; }
-.stop  { background: #ef4444; }
-.queue-meta {
-  margin-top: 10px;
-  text-align: center;
-  color: #475569;
-  font-size: 13.5px;
-  font-weight: 900;
-  background: #f1f5f9;
-  border-radius: 12px;
-  padding: 6px 8px;
-}
-.queue-meta strong { color: #1e40af; font-size: 16px; }
+.section-title .emoji{ font-size:24px; }
 
-/* ===== LIST PAGE ===== */
-.list-search {
-  display: flex; align-items: center; gap: 6px;
-  background: #f1f5f9; border-radius: 14px; padding: 9px 11px;
-  margin-bottom: 12px;
+/* ----- CATEGORY TABS ----- */
+.tabs{
+  display:flex; gap:8px; overflow-x:auto; overflow-y:hidden;
+  padding:2px 2px 12px; scrollbar-width:none;
+  scroll-snap-type:x proximity;
 }
-.list-search input {
-  flex: 1; border: 0; background: transparent;
-  font-size: 16px; font-weight: 700;
-  color: #0f172a;
-  outline: none;
-  min-width: 0;
+.tabs::-webkit-scrollbar{ display:none; }
+.tab{
+  flex:0 0 auto; scroll-snap-align:start;
+  display:inline-flex; align-items:center; gap:6px;
+  padding:8px 14px 8px 8px; border-radius:var(--radius-pill);
+  font-size:15px; font-weight:900;
+  background:#FFF; color:var(--sub); border:2px solid #E2E8F0;
+  box-shadow:var(--shadow-sm); transition:transform .15s, filter .15s, background .2s;
 }
-.list-group { margin-bottom: 18px; }
-.list-group-head { font-size: 16px; font-weight: 1000; color: #083985; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-.list-group-head .badge { background: #e0e7ff; color: #3730a3; border-radius: 999px; padding: 2px 8px; font-size: 12px; }
-.list-rows { display: flex; flex-direction: column; gap: 6px; }
-.list-row {
-  display: flex; align-items: center; gap: 9px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 9px 10px;
-  font-weight: 900;
-  cursor: pointer;
+.tab:active{ transform:scale(.94); }
+.tab .tab-icon{
+  width:28px; height:28px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
 }
-.list-row:active { background: #f8fafc; }
-.list-row .row-icon {
-  width: 36px; height: 36px;
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  flex: 0 0 36px;
-}
-.list-row .row-icon svg { width: 26px; height: 26px; }
-.list-row .row-text { flex: 1; font-size: 14px; color: #1f2937; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.list-row .row-play {
-  flex: 0 0 36px; height: 36px;
-  border-radius: 50%;
-  background: #22c55e; color: #fff;
-  border: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 1000;
-  cursor: pointer;
-}
-.list-row .row-fav {
-  flex: 0 0 32px; height: 32px;
-  border-radius: 50%;
-  background: #f3f4f6; color: #cbd5e1;
-  border: 0;
-  font-weight: 1000;
-  cursor: pointer;
-}
-.list-row .row-fav.on { background: #fff7ed; color: #f59e0b; }
+.tab .tab-icon svg{ width:22px; height:22px; }
 
-/* ===== SETTINGS / HELP PAGE ===== */
-.setting-card {
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 18px;
-  padding: 14px;
-  margin-bottom: 12px;
-  box-shadow: var(--card-shadow);
+/* Tab color variants */
+.tab[data-cat="name"] .tab-icon   { background:var(--pink-bg);   }
+.tab[data-cat="action"] .tab-icon { background:var(--sky-bg);    }
+.tab[data-cat="praise"] .tab-icon { background:var(--yellow-bg); }
+.tab[data-cat="safe"] .tab-icon   { background:var(--green-bg);  }
+.tab[data-cat="time"] .tab-icon   { background:var(--purple-bg); }
+.tab[data-cat="cheer"] .tab-icon  { background:var(--orange-bg); }
+.tab[data-cat="favorites"] .tab-icon{ background:#FEF3C7; }
+
+.tab.active{ background:#FFF; color:var(--ink); border-color:#FBBF24; box-shadow:0 4px 14px rgba(251,191,36,.4); }
+.tab[data-cat="name"].active   { border-color:var(--pink-accent);   box-shadow:0 4px 14px rgba(236,72,153,.3);}
+.tab[data-cat="action"].active { border-color:var(--sky-accent);    box-shadow:0 4px 14px rgba(37,99,235,.3);}
+.tab[data-cat="praise"].active { border-color:var(--yellow-accent); box-shadow:0 4px 14px rgba(245,158,11,.3);}
+.tab[data-cat="safe"].active   { border-color:var(--green-accent);  box-shadow:0 4px 14px rgba(22,163,74,.3);}
+.tab[data-cat="time"].active   { border-color:var(--purple-accent); box-shadow:0 4px 14px rgba(124,58,237,.3);}
+.tab[data-cat="cheer"].active  { border-color:var(--orange-accent); box-shadow:0 4px 14px rgba(249,115,22,.3);}
+
+/* ----- VOICE CARD GRID ----- */
+.button-grid{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
 }
-.setting-card h3 {
-  margin: 0 0 10px;
-  font-size: 16px; color: #083985; font-weight: 1000;
-  display: flex; align-items: center; gap: 6px;
+.voice-card{
+  position:relative; min-height:112px;
+  border-radius:var(--radius-card); border:2.5px solid transparent;
+  padding:14px 8px 14px; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:8px;
+  text-align:center; box-shadow:var(--shadow-sm);
+  transition:transform .12s var(--tap), filter .15s, box-shadow .2s;
+  font-weight:900;
 }
-.setting-card .desc { font-size: 13px; color: #475569; margin-bottom: 8px; font-weight: 700; }
-.setting-row { display: flex; align-items: center; gap: 8px; }
-.setting-row input[type="range"] { flex: 1; accent-color: #2563eb; }
-.setting-row .val { font-weight: 1000; color: #1e40af; min-width: 44px; text-align: right; font-size: 15px; }
-.reset-fav {
-  border: 1px solid #fca5a5;
-  background: #fef2f2; color: #b91c1c;
-  border-radius: 12px;
-  padding: 9px 12px;
-  font-weight: 1000;
-  cursor: pointer;
-  font-size: 14px;
+.voice-card:active{ transform:scale(.94); }
+.voice-card.playing{
+  animation:playing-pulse .9s ease-in-out infinite;
+  box-shadow:0 0 0 4px rgba(59,130,246,.3), var(--shadow-md);
+}
+@keyframes playing-pulse{
+  0%,100%{ filter:brightness(1); }
+  50%{ filter:brightness(1.08); }
+}
+.voice-card .illust{
+  width:58px; height:58px; display:flex; align-items:center; justify-content:center;
+}
+.voice-card .illust svg{ width:100%; height:100%; }
+.voice-card .label{
+  font-size:15px; line-height:1.22; white-space:pre-line;
+  min-height:36px; display:flex; align-items:center; justify-content:center;
+}
+.favorite-toggle{
+  position:absolute; right:6px; top:6px;
+  width:24px; height:24px; border-radius:50%;
+  background:rgba(255,255,255,.85); color:#94A3B8;
+  font-size:14px; font-weight:900; line-height:24px;
+  transition:transform .15s;
+}
+.favorite-toggle:active{ transform:scale(.85); }
+.favorite-toggle.on{ color:#F59E0B; background:#FFF7ED; box-shadow:0 0 0 2px #FED7AA; }
+
+.pink   { background:var(--pink-bg);   border-color:var(--pink-edge);   color:var(--pink-deep);   }
+.sky    { background:var(--sky-bg);    border-color:var(--sky-edge);    color:var(--sky-deep);    }
+.yellow { background:var(--yellow-bg); border-color:var(--yellow-edge); color:var(--yellow-deep); }
+.green  { background:var(--green-bg);  border-color:var(--green-edge);  color:var(--green-deep);  }
+.purple { background:var(--purple-bg); border-color:var(--purple-edge); color:var(--purple-deep); }
+.orange { background:var(--orange-bg); border-color:var(--orange-edge); color:var(--orange-deep); }
+
+/* ----- QUEUE PANEL ----- */
+.queue-panel{
+  margin-top:18px; background:#FFF; border:1.5px solid #E2E8F0;
+  border-radius:24px; box-shadow:var(--shadow-md); padding:14px;
+}
+.queue-head{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:10px; margin-bottom:10px;
+}
+.queue-title{ font-size:19px; font-weight:900; color:#083985; }
+.clear-all-btn{
+  background:#F8FAFC; border:1.5px solid #E2E8F0; color:#475569;
+  font-weight:900; font-size:14px;
+  padding:8px 14px; border-radius:12px;
+  transition:transform .1s, background .15s;
+}
+.clear-all-btn:active{ transform:scale(.96); background:#E2E8F0; }
+
+.queue-body{ display:block; }
+.queue-list{
+  min-height:80px;
+  background:#FFF1F6; border:1.5px solid #FBCFE8; border-radius:18px;
+  padding:10px; display:flex; flex-direction:column; gap:6px;
+  max-height:280px; overflow-y:auto;
+}
+.queue-list:empty::before{
+  content:"ことばをえらぶと、ここにならびます";
+  color:#94A3B8; font-weight:800; font-size:14px;
+  align-self:center; margin:auto;
+}
+.chip{
+  display:grid; grid-template-columns:auto 1fr auto;
+  align-items:center; gap:10px;
+  background:#FFF; border:1.5px solid #FBCFE8; border-radius:14px;
+  padding:8px 10px 8px 8px; font-weight:900; font-size:15px;
+  color:#831843;
+  animation:chip-in .25s var(--tap);
+}
+@keyframes chip-in{
+  from{ transform:translateX(-16px) scale(.9); opacity:0;}
+  to{ transform:none; opacity:1;}
+}
+.chip .num{
+  width:28px; height:28px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  color:#FFF; font-weight:900; font-size:14px;
+}
+.chip .num.c0{ background:#F472B6; }
+.chip .num.c1{ background:#60A5FA; }
+.chip .num.c2{ background:#34D399; }
+.chip .num.c3{ background:#FBBF24; }
+.chip .num.c4{ background:#A78BFA; }
+.chip .num.c5{ background:#FB923C; }
+.chip .label-x{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.chip button.rm{
+  width:24px; height:24px; border-radius:50%;
+  background:#E5E7EB; color:#6B7280; font-weight:900; font-size:14px;
+  line-height:24px;
+}
+.chip button.rm:active{ background:#DB2777; color:#FFF; }
+
+.duration-box{
+  margin-top:12px;
+  background:#EFF6FF; border:1.5px solid #BFDBFE; border-radius:16px;
+  padding:10px; text-align:center; color:#1E40AF;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  font-weight:900;
+}
+.duration-box .label{ font-size:14px; color:#1E40AF; }
+.duration-box .value{ font-size:18px; color:#1E40AF; letter-spacing:-.02em; }
+.duration-box .count{ font-size:14px; color:#475569; }
+
+.control-grid{
+  margin-top:12px;
+  display:grid; grid-template-columns:1fr 1fr; gap:10px;
+}
+.control-btn-big{
+  min-height:58px; border-radius:18px; color:#FFF; font-weight:900; font-size:17px;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  box-shadow:var(--shadow-sm), inset 0 -3px 0 rgba(0,0,0,.14);
+  transition:transform .1s, filter .15s;
+}
+.control-btn-big:active{ transform:scale(.97); }
+.control-btn-big:disabled{ filter:grayscale(.5); opacity:.55; }
+.btn-stop{ background:linear-gradient(180deg,#F87171 0%,#EF4444 100%); }
+.btn-play{ background:linear-gradient(180deg,#34D399 0%,#16A34A 100%); }
+.btn-play.playing{ background:linear-gradient(180deg,#FBBF24 0%,#F59E0B 100%); }
+.btn-clear{ background:linear-gradient(180deg,#9CA3AF 0%,#6B7280 100%); }
+.btn-shuffle{ background:linear-gradient(180deg,#A78BFA 0%,#7C3AED 100%); }
+
+/* ----- BOTTOM NAV ----- */
+.bottom-nav{
+  position:absolute; left:0; right:0; bottom:0;
+  display:grid; grid-template-columns:repeat(4,1fr);
+  background:rgba(255,255,255,.96); backdrop-filter:blur(10px);
+  border-top:1px solid #E2E8F0;
+  padding:6px 0 calc(env(safe-area-inset-bottom) + 6px);
+  z-index:30;
+}
+.nav-btn{
+  display:flex; flex-direction:column; align-items:center; gap:2px;
+  padding:8px 4px; color:#94A3B8; font-size:12px; font-weight:900;
+}
+.nav-btn svg{ width:24px; height:24px; }
+.nav-btn.active{ color:#2563EB; }
+.nav-btn.active .nav-icon-bg{
+  background:#DBEAFE; border-radius:14px; padding:4px 14px;
+}
+.nav-btn .nav-icon-bg{ padding:4px 14px; transition:background .2s; }
+
+/* ----- LIST SCREEN ----- */
+.list-header{
+  padding:calc(env(safe-area-inset-top) + 18px) 18px 14px;
+  background:linear-gradient(180deg,#DBEAFE,#F1F5F9);
+}
+.list-header h2{ margin:0 0 6px; font-size:22px; color:#083985; }
+.list-header p{ margin:0; font-size:13px; color:var(--sub); font-weight:800; }
+.list-section{ padding:14px; }
+.list-cat{ margin-bottom:22px; }
+.list-cat-header{
+  display:flex; align-items:center; gap:8px;
+  font-size:16px; font-weight:900; margin-bottom:10px; padding:0 4px;
+}
+.list-cat-header .dot{ width:14px; height:14px; border-radius:4px; }
+.list-cat-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+.list-item{
+  display:flex; align-items:center; gap:10px;
+  background:#FFF; border:1.5px solid #E2E8F0; border-radius:14px;
+  padding:8px 10px; font-size:14px; font-weight:900;
+  box-shadow:var(--shadow-sm);
+  transition:transform .12s var(--tap);
+}
+.list-item:active{ transform:scale(.96); }
+.list-item .ic{ width:32px; height:32px; flex-shrink:0; }
+.list-item .ic svg{ width:100%; height:100%; }
+.list-item .lbl{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.list-item .play-mini{
+  width:26px; height:26px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  color:#FFF; font-size:11px;
 }
 
-.help-step {
-  display: flex; gap: 10px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  padding: 12px;
-  margin-bottom: 10px;
-  box-shadow: var(--card-shadow);
+/* ----- SETTINGS SCREEN ----- */
+.settings-header{
+  padding:calc(env(safe-area-inset-top) + 18px) 18px 14px;
+  background:linear-gradient(180deg,#E9D5FF,#F1F5F9);
 }
-.help-step .num {
-  flex: 0 0 36px; height: 36px;
-  border-radius: 50%;
-  background: #2563eb; color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 1000;
-  font-size: 18px;
+.settings-header h2{ margin:0 0 6px; font-size:22px; color:#4C1D95; }
+.settings-section{ padding:14px; }
+.setting-card{
+  background:#FFF; border:1.5px solid #E2E8F0; border-radius:18px;
+  padding:14px; margin-bottom:12px; box-shadow:var(--shadow-sm);
 }
-.help-step .step-body { flex: 1; }
-.help-step .step-title { font-weight: 1000; color: #083985; font-size: 15px; margin-bottom: 4px; }
-.help-step .step-text { font-size: 13.5px; color: #334155; line-height: 1.5; font-weight: 700; }
+.setting-label{ font-size:15px; font-weight:900; margin-bottom:6px; }
+.setting-desc{ font-size:12px; color:var(--sub); margin-bottom:10px; font-weight:700; }
+.setting-value{ display:flex; justify-content:space-between; align-items:center; font-size:14px; color:var(--sub); margin-top:6px; font-weight:800; }
+input[type="range"]{
+  -webkit-appearance:none; appearance:none;
+  width:100%; height:8px; background:#E2E8F0; border-radius:999px; outline:0;
+}
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none; appearance:none;
+  width:26px; height:26px; border-radius:50%; background:#7C3AED;
+  box-shadow:0 2px 6px rgba(124,58,237,.5);
+  cursor:pointer;
+}
+input[type="range"]::-moz-range-thumb{
+  width:26px; height:26px; border-radius:50%; background:#7C3AED; border:0;
+}
+.switch-row{ display:flex; justify-content:space-between; align-items:center; }
+.switch{
+  position:relative; width:52px; height:30px; background:#CBD5E1; border-radius:999px;
+  transition:background .2s;
+}
+.switch::after{
+  content:""; position:absolute; left:3px; top:3px;
+  width:24px; height:24px; background:#FFF; border-radius:50%;
+  box-shadow:0 2px 4px rgba(0,0,0,.2); transition:left .2s;
+}
+.switch.on{ background:#16A34A; }
+.switch.on::after{ left:25px; }
+.test-btn{
+  width:100%; margin-top:10px; padding:10px;
+  background:#F1F5F9; border:1.5px solid #E2E8F0; border-radius:12px;
+  font-weight:900; color:#475569;
+}
 
-/* ===== BOTTOM NAV ===== */
-.bottom-nav {
-  position: fixed;
-  bottom: 0; left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 430px;
-  background: #fff;
-  border-top: 1px solid #e5e7eb;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  padding: 8px 0 calc(env(safe-area-inset-bottom) + 6px);
-  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.06);
-  z-index: 50;
+/* ----- HELP SCREEN ----- */
+.help-header{
+  padding:calc(env(safe-area-inset-top) + 18px) 18px 14px;
+  background:linear-gradient(180deg,#FED7AA,#F1F5F9);
 }
-.nav-btn {
-  border: 0; background: transparent;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 2px;
-  padding: 4px 0 0;
-  color: #94a3b8;
-  cursor: pointer;
-  font-weight: 1000;
-  font-size: 11.5px;
+.help-header h2{ margin:0 0 6px; font-size:22px; color:#7C2D12; }
+.help-section{ padding:14px; }
+.help-card{
+  background:#FFF; border:1.5px solid #E2E8F0; border-radius:18px;
+  padding:14px; margin-bottom:12px; box-shadow:var(--shadow-sm);
 }
-.nav-btn .nav-icon { font-size: 22px; line-height: 1; }
-.nav-btn svg { width: 24px; height: 24px; }
-.nav-btn.active { color: #2563eb; }
+.help-card h3{
+  margin:0 0 8px; font-size:16px; color:#0F172A;
+  display:flex; align-items:center; gap:8px;
+}
+.help-card h3 .num{
+  width:28px; height:28px; border-radius:50%;
+  background:#F97316; color:#FFF;
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; flex-shrink:0;
+}
+.help-card p{ margin:0; font-size:14px; color:var(--sub); font-weight:700; line-height:1.55; }
+.help-card .hint{
+  margin-top:10px; padding:8px 10px; background:#FFFBEB;
+  border:1px solid #FDE68A; border-radius:10px;
+  font-size:13px; color:#78350F; font-weight:800;
+}
 
-/* ===== TOAST ===== */
-.toast {
-  position: fixed;
-  bottom: calc(env(safe-area-inset-bottom) + 92px);
-  left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: rgba(15, 23, 42, 0.92);
-  color: #fff;
-  padding: 10px 18px;
-  border-radius: 999px;
-  font-weight: 1000;
-  font-size: 14px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s, transform 0.25s;
-  z-index: 100;
-  max-width: 90%;
-  text-align: center;
+/* ----- TOAST ----- */
+.toast{
+  position:fixed; left:50%; bottom:120px; transform:translateX(-50%) translateY(20px);
+  background:rgba(15,23,42,.92); color:#FFF; padding:10px 16px; border-radius:999px;
+  font-size:14px; font-weight:900; box-shadow:var(--shadow-lg);
+  opacity:0; pointer-events:none; transition:opacity .25s, transform .25s;
+  z-index:60; max-width:300px; text-align:center;
 }
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 
-@media (max-width: 390px) {
-  .analog-clock { width: 144px; height: 144px; flex-basis: 144px; }
-  .number { font-size: 17px; }
-  .digital-time { font-size: 62px; }
-  .period { font-size: 28px; }
-  .button-grid { gap: 7px; }
-  .voice-card { min-height: 112px; }
-  .voice-card .label { font-size: 13px; }
+/* ----- LOADING ----- */
+.loading-overlay{
+  position:absolute; inset:0; background:rgba(255,255,255,.7);
+  backdrop-filter:blur(2px); z-index:100;
+  display:none; align-items:center; justify-content:center;
+}
+.loading-overlay.show{ display:flex; }
+.spinner{
+  width:48px; height:48px; border:5px solid #BFDBFE; border-top-color:#2563EB;
+  border-radius:50%; animation:spin 1s linear infinite;
+}
+@keyframes spin{ to{ transform:rotate(360deg);} }
+
+@media (max-width:390px){
+  .analog-clock{ width:160px; height:160px; flex-basis:160px; }
+  .number{ font-size:17px; }
+  .digital-time{ font-size:76px; }
+  .voice-card{ min-height:110px; }
+  .voice-card .illust{ width:50px; height:50px; }
+  .voice-card .label{ font-size:14px; min-height:34px; }
+}
+@media (max-width:340px){
+  .button-grid{ gap:8px; }
+  .voice-card{ min-height:104px; padding:10px 4px 10px; }
+  .voice-card .label{ font-size:13px; }
 }
 ```
 
   </style>
 </head>
 <body>
-  <div class="app">
-    <!-- ============ HEADER ============ -->
-    <header id="header" class="header morning" role="button" aria-label="今の時刻を読み上げる">
-      <div id="skyLeft" class="sky-icon left">☀️</div>
-      <div class="sky-icon right">☁️</div>
-      <div class="clock-row">
-        <div class="time-block">
-          <div id="period" class="period">ごぜん</div>
-          <div id="digitalTime" class="digital-time">7:42</div>
-          <div class="message-card" id="timeSpeakCard">
-            <span class="clock-emoji">⏰</span>
-            <span>いまの じかんを<br />みてみよう！</span>
-          </div>
-        </div>
-        <div id="analogClock" class="analog-clock" aria-label="アナログ時計">
-          <div id="hourHand" class="hand hour"></div>
-          <div id="minuteHand" class="hand minute"></div>
-          <div class="center-dot"></div>
-        </div>
-      </div>
-    </header>
+  <div class="app" id="app">
 
 ```
-<!-- ============ MAIN CONTENT ============ -->
-<section class="content">
-  <!-- HOME PAGE -->
-  <div class="page active" id="page-home">
-    <h1>🔊 パパのこえを えらぼう</h1>
-    <div id="tabs" class="tabs"></div>
+<!-- ============ HOME SCREEN ============ -->
+<main class="screen active" id="screen-home">
+  <header id="header" class="header morning" role="button" aria-label="今の時刻を読み上げる">
+    <svg class="sky-deco sun" viewBox="0 0 64 64" aria-hidden="true">
+      <circle cx="32" cy="32" r="13" fill="#FBBF24" stroke="#F59E0B" stroke-width="1.5"/>
+      <g stroke="#F59E0B" stroke-width="3" stroke-linecap="round">
+        <line x1="32" y1="5" x2="32" y2="13"/><line x1="32" y1="51" x2="32" y2="59"/>
+        <line x1="5" y1="32" x2="13" y2="32"/><line x1="51" y1="32" x2="59" y2="32"/>
+        <line x1="13" y1="13" x2="19" y2="19"/><line x1="45" y1="45" x2="51" y2="51"/>
+        <line x1="51" y1="13" x2="45" y2="19"/><line x1="19" y1="45" x2="13" y2="51"/>
+      </g>
+      <circle cx="27" cy="31" r="2" fill="#7C2D12"/><circle cx="37" cy="31" r="2" fill="#7C2D12"/>
+      <path d="M26 38 Q32 42 38 38" stroke="#7C2D12" stroke-width="2" stroke-linecap="round" fill="none"/>
+    </svg>
+    <svg class="moon" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M42 8C28 8 16 20 16 34s12 26 26 26c5 0 9-1 13-3-12-2-22-12-22-25S35 9 47 7c-2 0-3-1-5-1" fill="#FEF3C7" stroke="#FBBF24" stroke-width="1.5"/>
+      <circle cx="30" cy="28" r="2" fill="#FCD34D"/><circle cx="35" cy="38" r="1.5" fill="#FCD34D"/>
+    </svg>
+    <svg class="sky-deco cloud-left" viewBox="0 0 80 50" aria-hidden="true">
+      <ellipse cx="22" cy="32" rx="16" ry="12" fill="#FFF"/>
+      <ellipse cx="40" cy="28" rx="20" ry="14" fill="#FFF"/>
+      <ellipse cx="58" cy="32" rx="14" ry="10" fill="#FFF"/>
+    </svg>
+    <svg class="sky-deco cloud-right" viewBox="0 0 80 50" aria-hidden="true">
+      <ellipse cx="20" cy="30" rx="14" ry="10" fill="#FFF"/>
+      <ellipse cx="40" cy="26" rx="18" ry="13" fill="#FFF"/>
+      <ellipse cx="58" cy="32" rx="14" ry="10" fill="#FFF"/>
+    </svg>
 
-    <div class="mode-row">
-      <button id="queueMode" class="mode-btn queue active">📋 ならべて再生</button>
-      <button id="instantMode" class="mode-btn instant">⚡ すぐ鳴らす</button>
+    <div class="clock-row">
+      <div class="time-block">
+        <div id="digitalTime" class="digital-time">7:42</div>
+        <div class="message-card">
+          <span class="alarm-icon">⏰</span>
+          <span>いまの じかんを<br/>みてみよう！</span>
+        </div>
+      </div>
+      <div id="analogClock" class="analog-clock" aria-label="アナログ時計">
+        <div id="hourHand" class="hand hour"></div>
+        <div id="minuteHand" class="hand minute"></div>
+        <div class="center-dot"></div>
+      </div>
     </div>
+  </header>
 
+  <section class="content">
+    <h1 class="section-title"><span class="emoji">🔊</span>よく使うことば</h1>
+    <div id="tabs" class="tabs"></div>
     <div id="buttonGrid" class="button-grid"></div>
 
     <div class="queue-panel">
       <div class="queue-head">
         <div class="queue-title">📋 再生リスト</div>
-        <button id="clearSmall" class="small-btn">🗑 ぜんぶけす</button>
+        <button id="clearAllBtn" class="clear-all-btn">🗑 ぜんぶけす</button>
       </div>
-      <div id="queueList" class="queue-list"></div>
-      <div id="queueMeta" class="queue-meta">ぜんぶの長さ <strong>0秒</strong>（0個）</div>
-      <div class="control-row">
-        <button id="stopBtn" class="control-btn stop">■ 停止</button>
-        <button id="playBtn" class="control-btn play">▶ まとめて再生</button>
+      <div class="queue-body">
+        <div id="queueList" class="queue-list"></div>
       </div>
-      <div class="control-row bottom">
-        <button id="clearBtn" class="control-btn clear">↻ クリア</button>
-        <button id="shuffleBtn" class="control-btn" style="background:#8b5cf6;">🔀 シャッフル</button>
+      <div class="duration-box">
+        <span class="label">ぜんぶの長さ</span>
+        <span class="value" id="queueDuration">0:00</span>
+        <span class="count" id="queueCount">（0個）</span>
+      </div>
+      <div class="control-grid">
+        <button id="stopBtn" class="control-btn-big btn-stop">■ 停止</button>
+        <button id="playBtn" class="control-btn-big btn-play" disabled>▶ まとめて再生</button>
+        <button id="clearBtn" class="control-btn-big btn-clear">↻ クリア</button>
+        <button id="shuffleBtn" class="control-btn-big btn-shuffle" disabled>🔀 シャッフル</button>
       </div>
     </div>
-  </div>
+  </section>
+</main>
 
-  <!-- LIST PAGE -->
-  <div class="page" id="page-list">
-    <h1>📚 ことば一覧</h1>
-    <div class="list-search">
-      <span>🔍</span>
-      <input id="searchInput" type="text" placeholder="ことばを さがす..." />
-    </div>
-    <div id="listContainer"></div>
-  </div>
+<!-- ============ LIST SCREEN ============ -->
+<main class="screen" id="screen-list">
+  <header class="list-header">
+    <h2>📋 ことば一覧</h2>
+    <p>すべての音声をカテゴリ別に表示します。タップで再生。</p>
+  </header>
+  <section class="list-section" id="listSection"></section>
+</main>
 
-  <!-- SETTINGS PAGE -->
-  <div class="page" id="page-settings">
-    <h1>⚙️ せってい</h1>
+<!-- ============ SETTINGS SCREEN ============ -->
+<main class="screen" id="screen-settings">
+  <header class="settings-header">
+    <h2>⚙️ せってい</h2>
+    <p style="margin:0;font-size:13px;color:#475569;font-weight:800;">再生の細かい設定ができます</p>
+  </header>
+  <section class="settings-section">
 
     <div class="setting-card">
-      <h3>🐢 再生スピード</h3>
-      <div class="desc">音声の話す速さを変えられます（0.7倍〜1.3倍）</div>
-      <div class="setting-row">
-        <input id="rateRange" type="range" min="0.7" max="1.3" step="0.05" value="1" />
-        <span class="val" id="rateVal">1.00</span>
-      </div>
-    </div>
-
-    <div class="setting-card">
-      <h3>🔊 音量</h3>
-      <div class="desc">本体の音量とは別に、アプリ内の音量を調整できます</div>
-      <div class="setting-row">
-        <input id="volumeRange" type="range" min="0" max="1" step="0.05" value="1" />
-        <span class="val" id="volumeVal">100%</span>
-      </div>
-    </div>
-
-    <div class="setting-card">
-      <h3>⏱ 連続再生の間隔</h3>
-      <div class="desc">「まとめて再生」で次のことばを話すまでの間（秒）</div>
-      <div class="setting-row">
-        <input id="gapRange" type="range" min="0" max="1.5" step="0.1" value="0.4" />
-        <span class="val" id="gapVal">0.4秒</span>
+      <div class="setting-label">🔊 おとの大きさ</div>
+      <div class="setting-desc">音声ファイルの音量</div>
+      <input type="range" id="volumeSlider" min="0" max="100" value="100" />
+      <div class="setting-value">
+        <span>小さい</span>
+        <span id="volumeValue">100%</span>
+        <span>大きい</span>
       </div>
     </div>
 
     <div class="setting-card">
+      <div class="setting-label">⚡ 再生スピード</div>
+      <div class="setting-desc">音声を遅く/早く再生</div>
+      <input type="range" id="rateSlider" min="70" max="130" value="100" step="5" />
+      <div class="setting-value">
+        <span>ゆっくり</span>
+        <span id="rateValue">1.00 倍</span>
+        <span>はやい</span>
+      </div>
+    </div>
+
+    <div class="setting-card">
+      <div class="setting-label">⏸ ことばのあいだの「間」</div>
+      <div class="setting-desc">まとめて再生時、各音声の間に空ける時間</div>
+      <input type="range" id="gapSlider" min="0" max="2000" value="350" step="50" />
+      <div class="setting-value">
+        <span>なし</span>
+        <span id="gapValue">0.35 秒</span>
+        <span>長め</span>
+      </div>
+    </div>
+
+    <div class="setting-card">
+      <div class="switch-row">
+        <div>
+          <div class="setting-label" style="margin-bottom:2px;">⭐ お気に入りタブを表示</div>
+          <div class="setting-desc" style="margin-bottom:0;">タブ一覧の最初に★タブを追加</div>
+        </div>
+        <button id="favSwitch" class="switch" aria-label="お気に入りタブ表示切替"></button>
+      </div>
+    </div>
+
+    <div class="setting-card">
+      <div class="switch-row">
+        <div>
+          <div class="setting-label" style="margin-bottom:2px;">🎴 すぐ鳴らすモード</div>
+          <div class="setting-desc" style="margin-bottom:0;">タップしたらすぐ再生（リストに溜めない）</div>
+        </div>
+        <button id="instantSwitch" class="switch" aria-label="すぐ鳴らすモード"></button>
+      </div>
+    </div>
+
+    <div class="setting-card">
+      <div class="setting-label">🔧 音声ファイル確認</div>
+      <div class="setting-desc">voice/フォルダの音声ファイルが正しく読み込めるか確認</div>
+      <button id="testAudioBtn" class="test-btn">▶ テスト再生（ゆいちゃん）</button>
+      <div id="testResult" style="margin-top:8px;font-size:13px;font-weight:800;"></div>
+    </div>
+
+    <div class="setting-card" style="background:#F8FAFC;">
+      <div class="setting-label" style="font-size:13px;color:#64748B;">📦 アプリ情報</div>
+      <div style="font-size:12px;color:#94A3B8;font-weight:700;line-height:1.6;margin-top:4px;">
+        パパのこえでおしたく v1.0<br/>
+        音声ファイル数: <span id="voiceCount">0</span> 件<br/>
+        ※ MP3ファイルは <code style="background:#E2E8F0;padding:1px 4px;border-radius:4px;">voice/</code> フォルダに配置
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<!-- ============ HELP SCREEN ============ -->
+<main class="screen" id="screen-help">
+  <header class="help-header">
+    <h2>❓ つかいかた</h2>
+    <p style="margin:0;font-size:13px;color:#475569;font-weight:800;">かんたん3ステップで朝のおしたく！</p>
+  </header>
+  <section class="help-section">
+
+    <div class="help-card">
+      <h3><span class="num">1</span>カテゴリをえらぶ</h3>
+      <p>「なまえ」「行動」「ほめる」など、つかいたいことばのカテゴリをタブからえらびます。</p>
+    </div>
+
+    <div class="help-card">
+      <h3><span class="num">2</span>ことばをタップ</h3>
+      <p>つかいたいカードをタップすると、再生リストに追加されます。順番にならんでいきます。</p>
+      <div class="hint">💡 「すぐ鳴らすモード」をONにすると、タップでその場ですぐ再生されます（せっていから切替）</div>
+    </div>
+
+    <div class="help-card">
+      <h3><span class="num">3</span>まとめて再生</h3>
+      <p>緑の「▶ まとめて再生」ボタンを押すと、リストの順番でパパの声が流れます。間に「間」も入るので自然に聞こえます。</p>
+    </div>
+
+    <div class="help-card">
+      <h3>🕐 時計を読みあげ</h3>
+      <p>画面うえのデジタル時計のところをタップすると、「時計を見てみよう」と声が流れます。子どもに時計を意識させたいときに。</p>
+    </div>
+
+    <div class="help-card">
       <h3>⭐ よく使うことば</h3>
-      <div class="desc" id="favCount">登録数：0個</div>
-      <button id="resetFav" class="reset-fav">⭐ よく使うことばを ぜんぶリセット</button>
+      <p>カードの右上にある☆をタップすると、お気に入り登録されます。せっていから「お気に入りタブ」をONにすると、よく使うことばだけまとめて表示できます。</p>
     </div>
 
-    <div class="setting-card">
-      <h3>ℹ️ このアプリについて</h3>
-      <div class="desc" style="line-height:1.6;">
-        パパのこえで おしたく v1.0<br/>
-        ゆいちゃん・みおちゃん専用<br/>
-        音声39ことば収録<br/>
-        <span style="color:#94a3b8;font-size:11px;">© myGEMS</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- HELP PAGE -->
-  <div class="page" id="page-help">
-    <h1>💡 使い方</h1>
-
-    <div class="help-step">
-      <div class="num">1</div>
-      <div class="step-body">
-        <div class="step-title">カテゴリを えらぶ</div>
-        <div class="step-text">「なまえ」「おはよう」「おしたく」など、上の青いタブで カテゴリを 切りかえられます。</div>
-      </div>
+    <div class="help-card">
+      <h3>📁 音声ファイルについて</h3>
+      <p>このHTMLと同じ場所に <code style="background:#F1F5F9;padding:1px 5px;border-radius:4px;font-family:monospace;">voice/</code> フォルダを置き、その中に各MP3ファイルを配置してください。</p>
+      <div class="hint">📌 必要なファイル名は「ことば一覧」画面で確認できます。ファイル名は完全一致が必要です。</div>
     </div>
 
-    <div class="help-step">
-      <div class="num">2</div>
-      <div class="step-body">
-        <div class="step-title">モードを えらぶ</div>
-        <div class="step-text"><strong style="color:#22c55e;">📋 ならべて再生</strong>：ことばを じゅんばんに ならべて あとで まとめて再生<br/><strong style="color:#fb923c;">⚡ すぐ鳴らす</strong>：タップしたら すぐ パパの声が なります</div>
-      </div>
+    <div class="help-card" style="background:#FEF3C7;border-color:#FDE68A;">
+      <h3>👨‍👧‍👧 おうちでのつかいかた例</h3>
+      <p style="color:#78350F;">朝、子どもが起きたらすぐ「朝ですよ → 顔を洗おうね → ごはん食べようね」とリストに並べて再生。パパが忙しい朝でも、いつもの声で順番にうながせます。</p>
     </div>
 
-    <div class="help-step">
-      <div class="num">3</div>
-      <div class="step-body">
-        <div class="step-title">ことばを タップ</div>
-        <div class="step-text">かわいい イラストの ボタンを タップすると、パパの こえが ながれます。</div>
-      </div>
-    </div>
-
-    <div class="help-step">
-      <div class="num">4</div>
-      <div class="step-body">
-        <div class="step-title">⭐ よく使うことば に 登録</div>
-        <div class="step-text">右上の ★マークを タップすると、「よく使うことば」タブに 入ります。お気に入りを 集めて 朝の おしたくが もっと スムーズに！</div>
-      </div>
-    </div>
-
-    <div class="help-step">
-      <div class="num">5</div>
-      <div class="step-body">
-        <div class="step-title">▶ まとめて再生</div>
-        <div class="step-text">下の 再生リストに ならんだ ことばを、まとめて じゅんばんに 再生します。「ゆいちゃん → 顔を洗おうね → ご飯を食べようね」のように 朝の流れを 作れます。</div>
-      </div>
-    </div>
-
-    <div class="help-step">
-      <div class="num">6</div>
-      <div class="step-body">
-        <div class="step-title">🕐 時計を タップ</div>
-        <div class="step-text">上の 大きな時計を タップすると「今は何時かな？」と パパの声が ながれます。時計を 読む 練習にも！</div>
-      </div>
-    </div>
-
-    <div class="help-step" style="background:#fff7ed;border-color:#fdba74;">
-      <div class="num" style="background:#ea580c;">💡</div>
-      <div class="step-body">
-        <div class="step-title">音声ファイルの 置き場所</div>
-        <div class="step-text" style="font-family:monospace;font-size:12px;">このHTMLと同じ場所に「voice」フォルダを作り、その中に39個のMP3ファイル（日本語ファイル名のまま）を 入れてください。</div>
-      </div>
-    </div>
-  </div>
-</section>
+  </section>
+</main>
 
 <!-- ============ BOTTOM NAV ============ -->
 <nav class="bottom-nav">
-  <button class="nav-btn active" data-page="home">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/></svg>
+  <button class="nav-btn active" data-target="home">
+    <span class="nav-icon-bg">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-4v-7H9v7H5a2 2 0 0 1-2-2v-9z"/>
+      </svg>
+    </span>
     <span>ホーム</span>
   </button>
-  <button class="nav-btn" data-page="list">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.2"/><circle cx="4" cy="12" r="1.2"/><circle cx="4" cy="18" r="1.2"/></svg>
+  <button class="nav-btn" data-target="list">
+    <span class="nav-icon-bg">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+        <circle cx="3.5" cy="6" r="1.3" fill="currentColor"/><circle cx="3.5" cy="12" r="1.3" fill="currentColor"/><circle cx="3.5" cy="18" r="1.3" fill="currentColor"/>
+      </svg>
+    </span>
     <span>ことば一覧</span>
   </button>
-  <button class="nav-btn" data-page="settings">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+  <button class="nav-btn" data-target="settings">
+    <span class="nav-icon-bg">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </span>
     <span>せってい</span>
   </button>
-  <button class="nav-btn" data-page="help">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+  <button class="nav-btn" data-target="help">
+    <span class="nav-icon-bg">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+    </span>
     <span>使い方</span>
   </button>
 </nav>
-
-<!-- toast -->
-<div id="toast" class="toast">登録しました</div>
 ```
 
   </div>
 
-  <!-- ===================== SCRIPT ===================== -->
+  <div class="toast" id="toast"></div>
 
   <script>
+    'use strict';
+
     /* =========================================================
-       1) ICONS (SVG)
-    ========================================================= */
-    const iconSvg = {
-      // people
-      yui:    `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="34" r="17" fill="#FFE0C2" stroke="#5B341F" stroke-width="2"/><path d="M14 32c2-13 9-22 18-22s16 9 18 22c-8-5-23-5-36 0Z" fill="#5B341F"/><path d="M16 26c-3-6-1-10 4-12M48 26c3-6 1-10-4-12" fill="#5B341F"/><circle cx="14" cy="22" r="5" fill="#5B341F"/><circle cx="50" cy="22" r="5" fill="#5B341F"/><circle cx="14" cy="22" r="2.5" fill="#F472B6"/><circle cx="50" cy="22" r="2.5" fill="#F472B6"/><circle cx="26" cy="34" r="2.5" fill="#111827"/><circle cx="38" cy="34" r="2.5" fill="#111827"/><path d="M26 43c4 3 8 3 12 0" stroke="#B45309" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="22" cy="40" r="3" fill="#FCA5A5"/><circle cx="42" cy="40" r="3" fill="#FCA5A5"/></svg>`,
-      mio:    `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="34" r="17" fill="#FFE0C2" stroke="#5B341F" stroke-width="2"/><path d="M14 32c2-13 9-22 18-22s16 9 18 22c-8-5-23-5-36 0Z" fill="#7C3F1F"/><path d="M10 30c-2 6 0 12 6 14M54 30c2 6 0 12-6 14" fill="#7C3F1F"/><circle cx="10" cy="33" r="6" fill="#7C3F1F"/><circle cx="54" cy="33" r="6" fill="#7C3F1F"/><circle cx="10" cy="32" r="2.5" fill="#A78BFA"/><circle cx="54" cy="32" r="2.5" fill="#A78BFA"/><circle cx="26" cy="34" r="2.5" fill="#111827"/><circle cx="38" cy="34" r="2.5" fill="#111827"/><path d="M26 43c4 3 8 3 12 0" stroke="#B45309" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="22" cy="40" r="3" fill="#FCA5A5"/><circle cx="42" cy="40" r="3" fill="#FCA5A5"/></svg>`,
-      twins:  `<svg viewBox="0 0 64 64" fill="none"><circle cx="21" cy="35" r="13" fill="#FFE0C2" stroke="#5B341F" stroke-width="2"/><circle cx="43" cy="35" r="13" fill="#FFE0C2" stroke="#5B341F" stroke-width="2"/><path d="M9 33c1-10 6-17 12-17s11 7 12 17c-6-4-18-4-24 0Z" fill="#5B341F"/><path d="M31 33c1-10 6-17 12-17s11 7 12 17c-6-4-18-4-24 0Z" fill="#7C3F1F"/><circle cx="17" cy="36" r="1.8" fill="#111827"/><circle cx="25" cy="36" r="1.8" fill="#111827"/><circle cx="39" cy="36" r="1.8" fill="#111827"/><circle cx="47" cy="36" r="1.8" fill="#111827"/><path d="M17 42c2 1.5 5 1.5 8 0M39 42c2 1.5 5 1.5 8 0" stroke="#B45309" stroke-linecap="round" stroke-width="2" fill="none"/></svg>`,
-      papa:   `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="30" r="16" fill="#FFE0C2" stroke="#4B5563" stroke-width="2"/><path d="M18 24c0-9 6-15 14-15s14 6 14 15c-5-3-23-3-28 0Z" fill="#1F2937"/><circle cx="26" cy="30" r="2.5" fill="#111827"/><circle cx="38" cy="30" r="2.5" fill="#111827"/><path d="M26 38c4 3 8 3 12 0" stroke="#B45309" stroke-linecap="round" stroke-width="2" fill="none"/><path d="M16 50h32v8H16z" fill="#3B82F6" stroke="#1E40af" stroke-width="2"/><path d="M24 50l8 6 8-6" stroke="#fff" stroke-width="2" fill="none"/></svg>`,
-
-      // morning
-      sun:     `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="14" fill="#FBBF24" stroke="#F59E0B" stroke-width="2"/><path d="M32 4v10M32 50v10M4 32h10M50 32h10M12 12l7 7M45 45l7 7M52 12l-7 7M19 45l-7 7" stroke="#F59E0B" stroke-width="4" stroke-linecap="round"/><circle cx="27" cy="30" r="2" fill="#7C2D12"/><circle cx="37" cy="30" r="2" fill="#7C2D12"/><path d="M26 38c4 3 8 3 12 0" stroke="#7C2D12" stroke-linecap="round" stroke-width="2" fill="none"/></svg>`,
-      morning: `<svg viewBox="0 0 64 64" fill="none"><path d="M4 44h56" stroke="#0EA5E9" stroke-width="3"/><circle cx="32" cy="44" r="16" fill="#FCD34D" stroke="#F59E0B" stroke-width="2"/><path d="M32 22v6M16 36l4 3M48 36l-4 3M10 44h6M48 44h6" stroke="#F59E0B" stroke-width="3" stroke-linecap="round"/><path d="M27 44c0 3 2 5 5 5s5-2 5-5" stroke="#7C2D12" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,
-      wake:    `<svg viewBox="0 0 64 64" fill="none"><rect x="8" y="36" width="48" height="22" rx="5" fill="#DBEAFE" stroke="#2563EB" stroke-width="2"/><path d="M12 36c0-8 5-14 12-14h16c7 0 12 6 12 14" fill="#FBCFE8" stroke="#DB2777" stroke-width="2"/><circle cx="24" cy="44" r="3" fill="#111827"/><circle cx="40" cy="44" r="3" fill="#111827"/><path d="M28 50c2 2 6 2 8 0" stroke="#7C2D12" stroke-linecap="round" stroke-width="2" fill="none"/></svg>`,
-      newday:  `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="38" r="14" fill="#FCD34D" stroke="#F59E0B" stroke-width="2"/><path d="M32 18v6M14 38h6M44 38h6M19 25l4 4M45 25l-4 4" stroke="#F59E0B" stroke-width="3" stroke-linecap="round"/><path d="M8 56c8-4 16 4 24 0s16 4 24 0" stroke="#22C55E" stroke-width="3" fill="none"/><path d="M10 60c8-3 16 3 22 0s14 3 22 0" stroke="#16A34A" stroke-width="2" fill="none"/></svg>`,
-
-      // action
-      face:    `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="17" fill="#FFE0C2" stroke="#5B341F" stroke-width="2"/><circle cx="26" cy="32" r="2" fill="#111827"/><circle cx="38" cy="32" r="2" fill="#111827"/><path d="M27 42c4 2 7 2 10 0" stroke="#B45309" stroke-linecap="round" stroke-width="2" fill="none"/><circle cx="14" cy="34" r="9" fill="#BAE6FD" opacity=".85"/><circle cx="50" cy="34" r="9" fill="#BAE6FD" opacity=".85"/><circle cx="10" cy="28" r="3" fill="#BAE6FD" opacity=".7"/><circle cx="54" cy="28" r="3" fill="#BAE6FD" opacity=".7"/></svg>`,
-      shirt:   `<svg viewBox="0 0 64 64" fill="none"><path d="M23 11h18l6 5 9 5-8 12-6-3v23H22V30l-6 3-8-12 9-5 6-5Z" fill="#DBEAFE" stroke="#2563EB" stroke-width="2"/><path d="M25 12c1 5 5 8 7 8s6-3 7-8" stroke="#2563EB" stroke-width="2" fill="none"/></svg>`,
-      gym:     `<svg viewBox="0 0 64 64" fill="none"><path d="M23 11h18l6 5 9 5-8 12-6-3v23H22V30l-6 3-8-12 9-5 6-5Z" fill="#FECACA" stroke="#DC2626" stroke-width="2"/><path d="M25 12c1 5 5 8 7 8s6-3 7-8" stroke="#DC2626" stroke-width="2" fill="none"/><circle cx="32" cy="42" r="6" fill="#fff" stroke="#DC2626" stroke-width="2"/><path d="M28 42h8M32 38v8" stroke="#DC2626" stroke-width="2"/></svg>`,
-      shoe:    `<svg viewBox="0 0 64 64" fill="none"><path d="M12 39c12 0 17-10 24-10 6 0 7 8 16 8 4 0 7 3 7 7v4H9v-5c0-2 1-4 3-4Z" fill="#BFDBFE" stroke="#2563EB" stroke-width="2"/><path d="M22 38h14M29 34l5 4M36 32l5 5" stroke="#2563EB" stroke-width="2" stroke-linecap="round"/></svg>`,
-      toilet:  `<svg viewBox="0 0 64 64" fill="none"><path d="M20 8h25v23H20z" fill="#F8FAFC" stroke="#2563EB" stroke-width="2"/><path d="M17 32h34v7c0 8-7 15-17 15S17 47 17 39v-7Z" fill="#DBEAFE" stroke="#2563EB" stroke-width="2"/><path d="M24 54h22" stroke="#2563EB" stroke-width="3" stroke-linecap="round"/></svg>`,
-      rice:    `<svg viewBox="0 0 64 64" fill="none"><path d="M13 31h38l-5 17a7 7 0 0 1-7 5H25a7 7 0 0 1-7-5l-5-17Z" fill="#E0F2FE" stroke="#2563EB" stroke-width="2"/><path d="M16 31c2-10 7-17 16-17s14 7 16 17" fill="#fff" stroke="#CBD5E1" stroke-width="2"/><path d="M22 42h20" stroke="#60A5FA" stroke-width="3" stroke-linecap="round"/><path d="M50 20l8 28" stroke="#92400E" stroke-width="4" stroke-linecap="round"/><path d="M57 20l-1 28" stroke="#92400E" stroke-width="4" stroke-linecap="round"/></svg>`,
-      car:     `<svg viewBox="0 0 64 64" fill="none"><path d="M11 31l6-12h30l6 12v17H11V31Z" fill="#BFDBFE" stroke="#2563EB" stroke-width="2"/><path d="M20 31h24l-4-8H24l-4 8Z" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/><circle cx="21" cy="49" r="5" fill="#1E3A8A"/><circle cx="43" cy="49" r="5" fill="#1E3A8A"/></svg>`,
-      seatbelt:`<svg viewBox="0 0 64 64" fill="none"><rect x="14" y="10" width="36" height="44" rx="6" fill="#DBEAFE" stroke="#2563EB" stroke-width="2"/><circle cx="32" cy="24" r="6" fill="#FFE0C2" stroke="#5B341F" stroke-width="2"/><path d="M18 36c2 8 8 14 14 14s12-6 14-14" fill="#FFE0C2" stroke="#5B341F" stroke-width="2"/><path d="M14 14l36 36M50 14l-32 32" stroke="#DC2626" stroke-width="4" stroke-linecap="round"/></svg>`,
-      depart:  `<svg viewBox="0 0 64 64" fill="none"><path d="M6 36L58 24l-12 8 6 12-10 2-6-8-12 6-12-2-6-6Z" fill="#FBBF24" stroke="#F59E0B" stroke-width="2"/><circle cx="48" cy="20" r="3" fill="#fff"/></svg>`,
-
-      // praise
-      star:    `<svg viewBox="0 0 64 64" fill="none"><path d="M32 6l7 16 17 2-13 11 4 17-15-9-15 9 4-17L8 24l17-2 7-16Z" fill="#FACC15" stroke="#F59E0B" stroke-width="2"/><circle cx="27" cy="30" r="2" fill="#7C2D12"/><circle cx="37" cy="30" r="2" fill="#7C2D12"/><path d="M26 38c4 3 8 3 12 0" stroke="#7C2D12" stroke-linecap="round" stroke-width="2" fill="none"/></svg>`,
-      clap:    `<svg viewBox="0 0 64 64" fill="none"><path d="M22 36V15a5 5 0 0 1 10 0v17" stroke="#D97706" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M32 33V13a5 5 0 0 1 10 0v23" stroke="#D97706" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M42 35V20a5 5 0 0 1 10 0v20c0 12-8 18-18 18-9 0-16-5-20-14l-4-9a5 5 0 0 1 9-4l3 5" fill="#FDE68A" stroke="#D97706" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-      crown:   `<svg viewBox="0 0 64 64" fill="none"><path d="M8 22l8 24h32l8-24-12 10-12-16-12 16Z" fill="#FACC15" stroke="#D97706" stroke-width="2"/><path d="M16 46h32" stroke="#D97706" stroke-width="3"/><circle cx="32" cy="22" r="3" fill="#EF4444"/><circle cx="14" cy="22" r="2" fill="#3B82F6"/><circle cx="50" cy="22" r="2" fill="#22C55E"/></svg>`,
-      thumb:   `<svg viewBox="0 0 64 64" fill="none"><path d="M18 28v25H10V28h8Z" fill="#FDBA74" stroke="#EA580C" stroke-width="2"/><path d="M18 28V18c0-5 4-10 8-8 3 1 4 8 0 16h12c8 0 12 4 10 12l-2 10c-1 4-4 5-7 5H18" fill="#FED7AA" stroke="#EA580C" stroke-width="2"/></svg>`,
-      bigsis:  `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="20" fill="#FCE7F3" stroke="#EC4899" stroke-width="2"/><circle cx="32" cy="32" r="14" fill="#FFE0C2" stroke="#5B341F" stroke-width="2"/><path d="M16 28c2-12 8-18 16-18s14 6 16 18" fill="#5B341F"/><circle cx="26" cy="32" r="2" fill="#111827"/><circle cx="38" cy="32" r="2" fill="#111827"/><path d="M27 40c3 2 7 2 10 0" stroke="#B45309" stroke-linecap="round" stroke-width="2" fill="none"/><text x="50" y="20" font-size="14" font-weight="bold" fill="#EC4899">★</text></svg>`,
-      smile:   `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="22" fill="#FACC15" stroke="#D97706" stroke-width="2"/><circle cx="24" cy="28" r="3" fill="#111827"/><circle cx="40" cy="28" r="3" fill="#111827"/><path d="M20 38c4 7 20 7 24 0" stroke="#7C2D12" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M14 22c2-3 6-3 8 0M42 22c2-3 6-3 8 0" stroke="#7C2D12" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`,
-      heartred:`<svg viewBox="0 0 64 64" fill="none"><path d="M32 54S10 41 10 24c0-8 6-14 14-14 5 0 8 2 10 6 2-4 5-6 10-6 8 0 14 6 14 14 0 17-22 30-22 30Z" fill="#FB7185" stroke="#E11D48" stroke-width="2"/><path d="M22 22c1-3 3-5 6-5" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`,
-
-      // safe
-      heart:   `<svg viewBox="0 0 64 64" fill="none"><path d="M32 54S10 41 10 24c0-8 6-14 14-14 5 0 8 2 10 6 2-4 5-6 10-6 8 0 14 6 14 14 0 17-22 30-22 30Z" fill="#86EFAC" stroke="#16A34A" stroke-width="2"/></svg>`,
-      turtle:  `<svg viewBox="0 0 64 64" fill="none"><ellipse cx="32" cy="40" rx="22" ry="14" fill="#86EFAC" stroke="#16A34A" stroke-width="2"/><path d="M20 38c3-4 9-4 12 0M32 38c3-4 9-4 12 0" stroke="#16A34A" stroke-width="2" fill="none"/><circle cx="48" cy="36" r="6" fill="#86EFAC" stroke="#16A34A" stroke-width="2"/><circle cx="50" cy="34" r="1.5" fill="#111827"/><path d="M10 44c-3 0-4 3-3 5M16 50c-2 2-2 5 0 6M48 50c2 2 2 5 0 6M54 44c3 0 4 3 3 5" stroke="#16A34A" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`,
-      one:     `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="22" fill="#A7F3D0" stroke="#10B981" stroke-width="2"/><text x="32" y="46" font-size="36" font-weight="bold" fill="#065F46" text-anchor="middle" font-family="Arial">1</text></svg>`,
-      handup:  `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="50" r="12" fill="#86EFAC" stroke="#16A34A" stroke-width="2"/><path d="M28 50V20a4 4 0 0 1 8 0v30" fill="#FED7AA" stroke="#EA580C" stroke-width="2"/><path d="M28 20c-3 0-5-2-5-4M36 20c3 0 5-2 5-4" stroke="#EA580C" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`,
-      check:   `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="22" fill="#A7F3D0" stroke="#10B981" stroke-width="2"/><path d="M20 32l8 8 16-16" stroke="#065F46" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`,
-
-      // time
-      clock:   `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="24" fill="#F5F3FF" stroke="#7C3AED" stroke-width="3"/><path d="M32 17v17l12 7" stroke="#7C3AED" stroke-width="4" stroke-linecap="round" fill="none"/><path d="M32 8V4M32 60v-4M8 32H4M60 32h-4" stroke="#7C3AED" stroke-width="3" stroke-linecap="round"/></svg>`,
-      longhand:`<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="24" fill="#F5F3FF" stroke="#7C3AED" stroke-width="3"/><path d="M32 32V8" stroke="#EF4444" stroke-width="5" stroke-linecap="round"/><path d="M32 32l10 5" stroke="#7C3AED" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="32" r="3" fill="#7C3AED"/></svg>`,
-      question:`<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="24" fill="#DDD6FE" stroke="#7C3AED" stroke-width="3"/><path d="M24 24c0-5 4-8 8-8s8 3 8 8c0 4-4 5-6 7-2 1-2 4-2 5" stroke="#4C1D95" stroke-width="4" stroke-linecap="round" fill="none"/><circle cx="32" cy="46" r="2.5" fill="#4C1D95"/></svg>`,
-      hourglass:`<svg viewBox="0 0 64 64" fill="none"><path d="M16 8h32M16 56h32" stroke="#7C3AED" stroke-width="3" stroke-linecap="round"/><path d="M18 8c0 12 14 16 14 24S18 44 18 56h28c0-12-14-16-14-24S46 20 46 8Z" fill="#DDD6FE" stroke="#7C3AED" stroke-width="2"/><path d="M22 12c0 6 10 14 10 20s-10 14-10 20" fill="#FCD34D"/></svg>`,
-
-      // mission
-      challenge:`<svg viewBox="0 0 64 64" fill="none"><path d="M8 12h48v16c0 8-6 14-14 14H22c-8 0-14-6-14-14V12Z" fill="#FED7AA" stroke="#EA580C" stroke-width="2"/><path d="M8 12V4h48v8M22 42v8h20v-8" stroke="#EA580C" stroke-width="2" fill="none"/><path d="M16 54h32v4H16z" fill="#EA580C"/><path d="M2 16c-2 4-2 10 6 12M62 16c2 4 2 10-6 12" stroke="#EA580C" stroke-width="2" fill="none"/></svg>`,
-      start:    `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="24" fill="#FB923C" stroke="#EA580C" stroke-width="3"/><path d="M24 18v28l22-14Z" fill="#fff"/></svg>`,
-      bigsischk:`<svg viewBox="0 0 64 64" fill="none"><rect x="10" y="10" width="44" height="44" rx="8" fill="#FFEDD5" stroke="#EA580C" stroke-width="2"/><path d="M18 18h28M18 26h28M18 34h22" stroke="#EA580C" stroke-width="2" stroke-linecap="round"/><circle cx="46" cy="42" r="10" fill="#22C55E" stroke="#16A34A" stroke-width="2"/><path d="M41 42l4 4 7-7" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"/></svg>`,
-      goal:     `<svg viewBox="0 0 64 64" fill="none"><path d="M14 56V8" stroke="#7C2D12" stroke-width="4" stroke-linecap="round"/><path d="M14 10h34l-6 8 6 8H14" fill="#FB923C" stroke="#EA580C" stroke-width="2"/><circle cx="40" cy="46" r="6" fill="#FCD34D" stroke="#D97706" stroke-width="2"/></svg>`,
-      fist:     `<svg viewBox="0 0 64 64" fill="none"><path d="M18 32V19a5 5 0 0 1 10 0v10M28 29V16a5 5 0 0 1 10 0v13M38 30V19a5 5 0 0 1 10 0v18c0 12-7 20-19 20-10 0-17-7-17-17v-8a5 5 0 0 1 10 0v5" fill="#FED7AA" stroke="#EA580C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+       ICON LIBRARY
+       ========================================================= */
+    const ICONS = {
+      yui: `<svg viewBox="0 0 64 64"><circle cx="32" cy="34" r="17" fill="#FFE0C2" stroke="#9D174D" stroke-width="2"/><path d="M14 30c2-13 9-22 18-22s16 9 18 22c-8-5-23-5-36 0Z" fill="#5B341F"/><path d="M14 31c-2 4-3 9-2 14M50 31c2 4 3 9 2 14" stroke="#5B341F" stroke-width="4" stroke-linecap="round" fill="none"/><path d="M12 30c-3 2-4 6-2 9M52 30c3 2 4 6 2 9" stroke="#5B341F" stroke-width="3" stroke-linecap="round" fill="none"/><circle cx="25" cy="33" r="2.5" fill="#111827"/><circle cx="39" cy="33" r="2.5" fill="#111827"/><circle cx="26" cy="32" r="0.8" fill="#FFF"/><circle cx="40" cy="32" r="0.8" fill="#FFF"/><path d="M26 42c4 3 8 3 12 0" stroke="#B45309" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="22" cy="40" r="3" fill="#FCA5A5" opacity=".85"/><circle cx="42" cy="40" r="3" fill="#FCA5A5" opacity=".85"/><path d="M16 16c-2-3-5-3-7-1" stroke="#EC4899" stroke-width="3" stroke-linecap="round" fill="none"/><circle cx="14" cy="14" r="3" fill="#EC4899"/></svg>`,
+      mio: `<svg viewBox="0 0 64 64"><circle cx="32" cy="34" r="17" fill="#FFE0C2" stroke="#9D174D" stroke-width="2"/><path d="M14 30c2-13 9-22 18-22s16 9 18 22c-8-5-23-5-36 0Z" fill="#5B341F"/><path d="M14 31c-2 4-3 9-2 14M50 31c2 4 3 9 2 14" stroke="#5B341F" stroke-width="4" stroke-linecap="round" fill="none"/><path d="M12 30c-3 2-4 6-2 9M52 30c3 2 4 6 2 9" stroke="#5B341F" stroke-width="3" stroke-linecap="round" fill="none"/><circle cx="25" cy="33" r="2.5" fill="#111827"/><circle cx="39" cy="33" r="2.5" fill="#111827"/><circle cx="26" cy="32" r="0.8" fill="#FFF"/><circle cx="40" cy="32" r="0.8" fill="#FFF"/><path d="M26 42c4 3 8 3 12 0" stroke="#B45309" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="22" cy="40" r="3" fill="#FCA5A5" opacity=".85"/><circle cx="42" cy="40" r="3" fill="#FCA5A5" opacity=".85"/><path d="M48 16c2-3 5-3 7-1" stroke="#EC4899" stroke-width="3" stroke-linecap="round" fill="none"/><circle cx="50" cy="14" r="3" fill="#EC4899"/></svg>`,
+      twins: `<svg viewBox="0 0 64 64"><circle cx="22" cy="34" r="13" fill="#FFE0C2" stroke="#9D174D" stroke-width="2"/><circle cx="44" cy="34" r="13" fill="#FFE0C2" stroke="#9D174D" stroke-width="2"/><path d="M10 32c1-9 6-16 12-16s11 7 12 16c-6-3-16-3-24 0Z" fill="#5B341F"/><path d="M32 32c1-9 6-16 12-16s11 7 12 16c-6-3-16-3-24 0Z" fill="#5B341F"/><circle cx="18" cy="34" r="2" fill="#111827"/><circle cx="26" cy="34" r="2" fill="#111827"/><circle cx="40" cy="34" r="2" fill="#111827"/><circle cx="48" cy="34" r="2" fill="#111827"/><path d="M18 41c2 2 6 2 8 0M40 41c2 2 6 2 8 0" stroke="#B45309" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="16" cy="39" r="2" fill="#FCA5A5"/><circle cx="28" cy="39" r="2" fill="#FCA5A5"/><circle cx="38" cy="39" r="2" fill="#FCA5A5"/><circle cx="50" cy="39" r="2" fill="#FCA5A5"/><circle cx="8" cy="18" r="2.5" fill="#EC4899"/><circle cx="56" cy="18" r="2.5" fill="#EC4899"/></svg>`,
+      papa: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="18" fill="#FFE0C2" stroke="#7C2D12" stroke-width="2"/><path d="M14 26c2-12 8-18 18-18s16 6 18 18c-3-3-6-4-8-4-2-2-6-4-10-4s-8 2-10 4c-2 0-5 1-8 4Z" fill="#1F2937"/><circle cx="25" cy="32" r="2" fill="#111827"/><circle cx="39" cy="32" r="2" fill="#111827"/><path d="M26 40c4 2 8 2 12 0" stroke="#7C2D12" stroke-width="2" stroke-linecap="round" fill="none"/><rect x="20" y="48" width="24" height="8" rx="2" fill="#1F2937"/><path d="M21 35c-3-1-5 1-5 4" stroke="#7C2D12" stroke-width="2" fill="none"/><path d="M43 35c3-1 5 1 5 4" stroke="#7C2D12" stroke-width="2" fill="none"/></svg>`,
+      wave: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="18" fill="#FBBF24" stroke="#F59E0B" stroke-width="2"/><circle cx="26" cy="30" r="2.5" fill="#7C2D12"/><circle cx="38" cy="30" r="2.5" fill="#7C2D12"/><path d="M22 38 Q32 46 42 38" stroke="#7C2D12" stroke-width="2.5" stroke-linecap="round" fill="none"/><path d="M8 28c2-3 4-4 6-3M56 28c-2-3-4-4-6-3" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M50 8l-2 4M56 14l-4 2M58 22l-4 1" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`,
+      wake: `<svg viewBox="0 0 64 64"><path d="M8 50h48v6H8z" fill="#92400E"/><rect x="12" y="32" width="40" height="20" rx="3" fill="#FBBF24" stroke="#92400E" stroke-width="2"/><rect x="14" y="26" width="36" height="8" rx="2" fill="#FCA5A5" stroke="#9D174D" stroke-width="2"/><path d="M22 30c4-4 12-4 16 0" stroke="#9D174D" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="20" cy="22" r="6" fill="#FFE0C2" stroke="#7C2D12" stroke-width="1.5"/><path d="M14 18c1-6 5-10 10-9" stroke="#5B341F" stroke-width="3" stroke-linecap="round" fill="none"/><circle cx="18" cy="22" r="1.2" fill="#111827"/><circle cx="22" cy="22" r="1.2" fill="#111827"/><circle cx="20" cy="26" r="1.5" fill="#FCA5A5"/></svg>`,
+      sun: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="14" fill="#FBBF24" stroke="#F59E0B" stroke-width="2"/><g stroke="#F59E0B" stroke-width="3" stroke-linecap="round"><line x1="32" y1="4" x2="32" y2="12"/><line x1="32" y1="52" x2="32" y2="60"/><line x1="4" y1="32" x2="12" y2="32"/><line x1="52" y1="32" x2="60" y2="32"/><line x1="12" y1="12" x2="18" y2="18"/><line x1="46" y1="46" x2="52" y2="52"/><line x1="52" y1="12" x2="46" y2="18"/><line x1="18" y1="46" x2="12" y2="52"/></g><circle cx="27" cy="30" r="2" fill="#7C2D12"/><circle cx="37" cy="30" r="2" fill="#7C2D12"/><path d="M26 38c4 3 8 3 12 0" stroke="#7C2D12" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`,
+      face: `<svg viewBox="0 0 64 64"><circle cx="32" cy="34" r="16" fill="#FFE0C2" stroke="#4B5563" stroke-width="2"/><path d="M20 24c7-8 18-8 25 0" stroke="#5B341F" stroke-width="4" stroke-linecap="round" fill="none"/><circle cx="26" cy="32" r="2" fill="#111827"/><circle cx="38" cy="32" r="2" fill="#111827"/><path d="M27 42c3 2 7 2 10 0" stroke="#B45309" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="14" cy="34" r="8" fill="#BAE6FD" opacity=".9" stroke="#38BDF8" stroke-width="1.5"/><circle cx="50" cy="34" r="8" fill="#BAE6FD" opacity=".9" stroke="#38BDF8" stroke-width="1.5"/><circle cx="13" cy="32" r="2" fill="#FFF"/><circle cx="49" cy="32" r="2" fill="#FFF"/><circle cx="10" cy="22" r="3" fill="#BAE6FD"/><circle cx="54" cy="22" r="3" fill="#BAE6FD"/><circle cx="8" cy="44" r="2.5" fill="#BAE6FD"/><circle cx="56" cy="44" r="2.5" fill="#BAE6FD"/></svg>`,
+      rice: `<svg viewBox="0 0 64 64"><path d="M10 30h44l-5 18a8 8 0 0 1-8 6H23a8 8 0 0 1-8-6L10 30Z" fill="#0EA5E9" stroke="#0C4A6E" stroke-width="2"/><path d="M14 30c2-12 8-18 18-18s16 6 18 18" fill="#FFF" stroke="#CBD5E1" stroke-width="2"/><circle cx="22" cy="24" r="1.5" fill="#E2E8F0"/><circle cx="32" cy="20" r="1.5" fill="#E2E8F0"/><circle cx="42" cy="24" r="1.5" fill="#E2E8F0"/><circle cx="28" cy="26" r="1.5" fill="#E2E8F0"/><circle cx="36" cy="22" r="1.5" fill="#E2E8F0"/><path d="M20 42h24" stroke="#38BDF8" stroke-width="2" stroke-linecap="round"/><path d="M50 14l8 30M56 14l-1 30" stroke="#92400E" stroke-width="3" stroke-linecap="round"/></svg>`,
+      toilet: `<svg viewBox="0 0 64 64"><path d="M20 6h26v22H20z" fill="#F8FAFC" stroke="#0C4A6E" stroke-width="2.5"/><path d="M17 28h32v6c0 9-7 16-16 16S17 43 17 34v-6Z" fill="#DBEAFE" stroke="#0C4A6E" stroke-width="2.5"/><ellipse cx="33" cy="32" rx="11" ry="6" fill="#FFF" stroke="#0C4A6E" stroke-width="1.5"/><path d="M24 50h18" stroke="#0C4A6E" stroke-width="3" stroke-linecap="round"/><rect x="40" y="10" width="4" height="6" rx="1" fill="#94A3B8"/></svg>`,
+      shirt: `<svg viewBox="0 0 64 64"><path d="M23 10h18l6 4 9 5-7 12-7-3v25H22V28l-7 3-7-12 9-5 6-4Z" fill="#DBEAFE" stroke="#0C4A6E" stroke-width="2.5" stroke-linejoin="round"/><path d="M25 11c1 5 5 8 7 8s6-3 7-8" stroke="#0C4A6E" stroke-width="2.5" fill="none"/><circle cx="32" cy="36" r="1.5" fill="#0C4A6E"/><circle cx="32" cy="44" r="1.5" fill="#0C4A6E"/></svg>`,
+      gym: `<svg viewBox="0 0 64 64"><path d="M22 10h20l5 4 8 5-6 13-7-3v25H22V29l-7 3-6-13 8-5 5-4Z" fill="#FECDD3" stroke="#9D174D" stroke-width="2.5" stroke-linejoin="round"/><path d="M24 11c1 5 5 8 8 8s7-3 8-8" stroke="#9D174D" stroke-width="2.5" fill="none"/><rect x="20" y="36" width="24" height="4" fill="#FFF" stroke="#9D174D" stroke-width="1.5"/><text x="32" y="48" text-anchor="middle" font-size="9" font-weight="900" fill="#9D174D">GYM</text></svg>`,
+      shoe: `<svg viewBox="0 0 64 64"><path d="M8 38c12 0 17-12 24-12 7 0 8 10 17 10 5 0 8 3 8 8v6H6v-7c0-3 1-5 2-5Z" fill="#BFDBFE" stroke="#0C4A6E" stroke-width="2.5" stroke-linejoin="round"/><path d="M22 38h12M28 32l5 4M34 28l5 6M14 50h44" stroke="#0C4A6E" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="20" cy="43" r="2" fill="#0C4A6E"/></svg>`,
+      car: `<svg viewBox="0 0 64 64"><path d="M10 32l5-12h34l5 12v15a2 2 0 0 1-2 2h-4v-4H16v4h-4a2 2 0 0 1-2-2V32Z" fill="#60A5FA" stroke="#0C4A6E" stroke-width="2.5" stroke-linejoin="round"/><path d="M18 32h28l-3-8H21l-3 8Z" fill="#DBEAFE" stroke="#0C4A6E" stroke-width="2"/><circle cx="20" cy="46" r="5" fill="#1F2937" stroke="#0F172A" stroke-width="2"/><circle cx="44" cy="46" r="5" fill="#1F2937" stroke="#0F172A" stroke-width="2"/><circle cx="20" cy="46" r="2" fill="#94A3B8"/><circle cx="44" cy="46" r="2" fill="#94A3B8"/><rect x="12" y="34" width="4" height="3" rx="1" fill="#FBBF24"/></svg>`,
+      belt: `<svg viewBox="0 0 64 64"><circle cx="32" cy="22" r="9" fill="#FFE0C2" stroke="#0C4A6E" stroke-width="2"/><path d="M22 32 L32 50 L42 32" stroke="#2563EB" stroke-width="5" stroke-linecap="round" fill="none"/><rect x="20" y="34" width="24" height="22" rx="3" fill="#DBEAFE" stroke="#0C4A6E" stroke-width="2"/><rect x="28" y="40" width="8" height="8" rx="1.5" fill="#FBBF24" stroke="#92400E" stroke-width="1.5"/><circle cx="32" cy="44" r="1" fill="#92400E"/></svg>`,
+      depart: `<svg viewBox="0 0 64 64"><path d="M8 32l5-12h34l5 12v15a2 2 0 0 1-2 2h-4v-4H14v4h-4a2 2 0 0 1-2-2V32Z" fill="#60A5FA" stroke="#0C4A6E" stroke-width="2.5"/><path d="M16 32h28l-3-8H19l-3 8Z" fill="#DBEAFE" stroke="#0C4A6E" stroke-width="2"/><circle cx="18" cy="46" r="5" fill="#1F2937"/><circle cx="42" cy="46" r="5" fill="#1F2937"/><path d="M48 22l8 0M52 18l5 4-5 4" stroke="#EF4444" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`,
+      star: `<svg viewBox="0 0 64 64"><path d="M32 6l7 16 17 2-13 11 4 17-15-9-15 9 4-17L8 24l17-2 7-16Z" fill="#FACC15" stroke="#92400E" stroke-width="2.5" stroke-linejoin="round"/><circle cx="27" cy="30" r="2" fill="#7C2D12"/><circle cx="37" cy="30" r="2" fill="#7C2D12"/><path d="M26 38c4 3 8 3 12 0" stroke="#7C2D12" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`,
+      clap: `<svg viewBox="0 0 64 64"><path d="M22 32V13a5 5 0 0 1 10 0v17" stroke="#92400E" stroke-width="4" stroke-linecap="round" fill="#FDE68A"/><path d="M32 30V11a5 5 0 0 1 10 0v21" stroke="#92400E" stroke-width="4" stroke-linecap="round" fill="#FDE68A"/><path d="M42 33V18a5 5 0 0 1 10 0v20c0 13-9 20-19 20-9 0-16-5-20-14l-4-9a5 5 0 0 1 9-4l4 6" fill="#FDE68A" stroke="#92400E" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M48 10l3-3M54 14l4-2M52 6l1-4" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+      thumb: `<svg viewBox="0 0 64 64"><path d="M20 28h8v26h-8a3 3 0 0 1-3-3V31a3 3 0 0 1 3-3Z" fill="#FDE68A" stroke="#92400E" stroke-width="2.5"/><path d="M28 28V14c0-3 2-6 5-6s5 3 5 6v10h11c3 0 5 3 4 6l-3 18c-1 4-4 6-7 6H28V28Z" fill="#FDE68A" stroke="#92400E" stroke-width="2.5" stroke-linejoin="round"/><path d="M34 16v6" stroke="#92400E" stroke-width="2" stroke-linecap="round"/></svg>`,
+      smile: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="22" fill="#FDE68A" stroke="#92400E" stroke-width="2.5"/><circle cx="24" cy="28" r="3" fill="#7C2D12"/><circle cx="40" cy="28" r="3" fill="#7C2D12"/><path d="M20 38c4 6 10 8 12 8s8-2 12-8" stroke="#7C2D12" stroke-width="3" stroke-linecap="round" fill="#FFF"/><path d="M22 42c4 4 8 5 10 5s6-1 10-5" fill="#EF4444"/></svg>`,
+      crown: `<svg viewBox="0 0 64 64"><path d="M8 22l8 14 8-18 8 18 8-18 8 18 8-14v22c0 3-2 5-5 5H13c-3 0-5-2-5-5V22Z" fill="#FACC15" stroke="#92400E" stroke-width="2.5" stroke-linejoin="round"/><circle cx="32" cy="36" r="3" fill="#EF4444" stroke="#92400E" stroke-width="1.5"/><circle cx="18" cy="38" r="2" fill="#3B82F6"/><circle cx="46" cy="38" r="2" fill="#10B981"/><circle cx="8" cy="20" r="2.5" fill="#FBBF24"/><circle cx="56" cy="20" r="2.5" fill="#FBBF24"/></svg>`,
+      heartface: `<svg viewBox="0 0 64 64"><path d="M32 56S6 40 6 22c0-8 6-14 14-14 5 0 9 3 12 7 3-4 7-7 12-7 8 0 14 6 14 14 0 18-26 34-26 34Z" fill="#FDE68A" stroke="#D97706" stroke-width="2.5" stroke-linejoin="round"/><circle cx="22" cy="22" r="2.5" fill="#7C2D12"/><circle cx="42" cy="22" r="2.5" fill="#7C2D12"/><path d="M22 30c4 3 8 3 12 0" stroke="#7C2D12" stroke-width="2.5" stroke-linecap="round" fill="none"/><circle cx="18" cy="28" r="2.5" fill="#FCA5A5" opacity=".8"/><circle cx="46" cy="28" r="2.5" fill="#FCA5A5" opacity=".8"/></svg>`,
+      trophy: `<svg viewBox="0 0 64 64"><path d="M20 8h24v18c0 7-5 12-12 12s-12-5-12-12V8Z" fill="#FACC15" stroke="#92400E" stroke-width="2.5"/><path d="M20 14H10v6c0 4 4 7 10 7M44 14h10v6c0 4-4 7-10 7" fill="#FDE68A" stroke="#92400E" stroke-width="2"/><rect x="28" y="38" width="8" height="10" fill="#FACC15" stroke="#92400E" stroke-width="2"/><rect x="20" y="48" width="24" height="6" rx="1" fill="#92400E"/><path d="M28 18l3 4 4-6" stroke="#92400E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`,
+      heart: `<svg viewBox="0 0 64 64"><path d="M32 54S8 40 8 22c0-8 6-14 14-14 5 0 8 3 10 6 2-3 5-6 10-6 8 0 14 6 14 14 0 18-24 32-24 32Z" fill="#86EFAC" stroke="#14532D" stroke-width="2.5" stroke-linejoin="round"/><path d="M22 26c4-3 8-3 10 0" stroke="#14532D" stroke-width="1.5" stroke-linecap="round" fill="none" opacity=".5"/></svg>`,
+      one: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="#86EFAC" stroke="#14532D" stroke-width="2.5"/><text x="32" y="44" text-anchor="middle" font-size="32" font-weight="900" fill="#14532D">1</text></svg>`,
+      calm: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="22" fill="#86EFAC" stroke="#14532D" stroke-width="2.5"/><path d="M20 26l8-4M44 26l-8-4" stroke="#14532D" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M22 40c4 4 8 4 10 4s6 0 10-4" stroke="#14532D" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M44 14c2 2 4 4 4 6M48 22c2 0 4 1 5 3" stroke="#14532D" stroke-width="2" stroke-linecap="round" fill="none" opacity=".5"/></svg>`,
+      ok: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="14" fill="#FFE0C2" stroke="#14532D" stroke-width="2"/><circle cx="32" cy="32" r="6" fill="#86EFAC"/><path d="M40 24v-8c0-3-3-5-6-3l-4 3M26 28h-8c-3 0-5 3-3 6l3 4" stroke="#14532D" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M38 38l4 6 4-4M48 30l4 4 4-6" stroke="#16A34A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`,
+      step: `<svg viewBox="0 0 64 64"><rect x="6" y="44" width="16" height="14" fill="#86EFAC" stroke="#14532D" stroke-width="2"/><rect x="22" y="34" width="16" height="24" fill="#86EFAC" stroke="#14532D" stroke-width="2"/><rect x="38" y="22" width="16" height="36" fill="#86EFAC" stroke="#14532D" stroke-width="2"/><circle cx="14" cy="38" r="3" fill="#14532D"/><path d="M10 38l4-4M14 34l4 4" stroke="#14532D" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M40 18l8-6 8 6-3 4-5-3-5 3z" fill="#16A34A" stroke="#14532D" stroke-width="2"/></svg>`,
+      clock: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="#F5F3FF" stroke="#4C1D95" stroke-width="3"/><circle cx="32" cy="32" r="3" fill="#7C3AED"/><path d="M32 16v16" stroke="#4C1D95" stroke-width="3.5" stroke-linecap="round"/><path d="M32 32l10 6" stroke="#7C3AED" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="10" r="1.5" fill="#4C1D95"/><circle cx="54" cy="32" r="1.5" fill="#4C1D95"/><circle cx="32" cy="54" r="1.5" fill="#4C1D95"/><circle cx="10" cy="32" r="1.5" fill="#4C1D95"/></svg>`,
+      longhand: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="#F5F3FF" stroke="#4C1D95" stroke-width="3"/><circle cx="32" cy="32" r="3" fill="#7C3AED"/><path d="M32 32V12" stroke="#EF4444" stroke-width="5" stroke-linecap="round"/><path d="M32 32l8 4" stroke="#4C1D95" stroke-width="3" stroke-linecap="round"/><path d="M28 8l4-2 4 2" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><text x="32" y="50" text-anchor="middle" font-size="9" font-weight="900" fill="#4C1D95">長い針</text></svg>`,
+      qclock: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="22" fill="#F5F3FF" stroke="#4C1D95" stroke-width="3"/><text x="32" y="42" text-anchor="middle" font-size="26" font-weight="900" fill="#7C3AED">?</text><circle cx="32" cy="32" r="2" fill="#4C1D95"/></svg>`,
+      fist: `<svg viewBox="0 0 64 64"><path d="M14 32V19a5 5 0 0 1 10 0v10M24 30V15a5 5 0 0 1 10 0v15M34 30V18a5 5 0 0 1 10 0v17M44 30V22a5 5 0 0 1 10 0v15c0 13-7 20-19 20-10 0-16-7-16-16v-8a5 5 0 0 1 10 0v4" fill="#FED7AA" stroke="#7C2D12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+      rocket: `<svg viewBox="0 0 64 64"><path d="M32 4c-6 4-12 12-12 24v16h24V28c0-12-6-20-12-24Z" fill="#FED7AA" stroke="#7C2D12" stroke-width="2.5" stroke-linejoin="round"/><circle cx="32" cy="24" r="5" fill="#BFDBFE" stroke="#0C4A6E" stroke-width="2"/><path d="M20 40l-8 8 4 0 4-4M44 40l8 8-4 0-4-4" fill="#F97316" stroke="#7C2D12" stroke-width="2" stroke-linejoin="round"/><path d="M28 50h8v6l-4 4-4-4z" fill="#EF4444" stroke="#7C2D12" stroke-width="2"/><circle cx="32" cy="60" r="2" fill="#FBBF24"/></svg>`,
+      flag: `<svg viewBox="0 0 64 64"><rect x="12" y="6" width="3" height="52" fill="#7C2D12"/><path d="M15 8h32l-6 8 6 8H15z" fill="#F97316" stroke="#7C2D12" stroke-width="2" stroke-linejoin="round"/><path d="M20 14h4M28 14h4M36 14h4" stroke="#FFF" stroke-width="1.5"/></svg>`,
+      check: `<svg viewBox="0 0 64 64"><rect x="8" y="8" width="48" height="48" rx="8" fill="#FED7AA" stroke="#7C2D12" stroke-width="2.5"/><path d="M16 32l12 12 20-22" stroke="#16A34A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`,
+      goal: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="22" fill="#FED7AA" stroke="#7C2D12" stroke-width="2.5"/><circle cx="32" cy="32" r="15" fill="#FFF" stroke="#7C2D12" stroke-width="2"/><circle cx="32" cy="32" r="8" fill="#EF4444" stroke="#7C2D12" stroke-width="2"/><circle cx="32" cy="32" r="3" fill="#FFF"/></svg>`,
+      target: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="22" fill="none" stroke="#F97316" stroke-width="4"/><circle cx="32" cy="32" r="14" fill="none" stroke="#F97316" stroke-width="4"/><circle cx="32" cy="32" r="6" fill="#EF4444" stroke="#7C2D12" stroke-width="2"/><path d="M50 14l6-2-2 6L50 14z" fill="#F97316" stroke="#7C2D12" stroke-width="1.5" stroke-linejoin="round"/><path d="M32 32L52 12" stroke="#7C2D12" stroke-width="2" stroke-linecap="round"/></svg>`,
+      sunshine: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="14" fill="#FBBF24" stroke="#F97316" stroke-width="2.5"/><g stroke="#F97316" stroke-width="3.5" stroke-linecap="round"><line x1="32" y1="4" x2="32" y2="12"/><line x1="32" y1="52" x2="32" y2="60"/><line x1="4" y1="32" x2="12" y2="32"/><line x1="52" y1="32" x2="60" y2="32"/><line x1="12" y1="12" x2="18" y2="18"/><line x1="46" y1="46" x2="52" y2="52"/><line x1="52" y1="12" x2="46" y2="18"/><line x1="18" y1="46" x2="12" y2="52"/></g><circle cx="27" cy="30" r="2.5" fill="#7C2D12"/><circle cx="37" cy="30" r="2.5" fill="#7C2D12"/><path d="M24 36c2 5 6 7 8 7s6-2 8-7" stroke="#7C2D12" stroke-width="2.5" stroke-linecap="round" fill="#EF4444"/></svg>`,
+      speaker: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M18 6a8 8 0 0 1 0 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`
     };
 
-    /* speaker SVG (white) */
-    const speakerSvg = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4 7 9H3v6h4l5 5V4z"/><path d="M16 9c1 1 1 5 0 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M19 6c3 3 3 9 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`;
-
     /* =========================================================
-       2) VOICE ITEMS (39 files, 7 categories)
-    ========================================================= */
+       VOICE ITEMS (MAPPED TO MP3 FILES IN voice/ FOLDER)
+       ========================================================= */
     const voiceItems = [
-      // ----- なまえ (4) -----
-      { id: "yui",       file: "ゆいちゃん",                  label: "ゆいちゃん",     category: "name",    icon: "yui",   color: "pink" },
-      { id: "mio",       file: "みおちゃん",                  label: "みおちゃん",     category: "name",    icon: "mio",   color: "pink" },
-      { id: "yuimio",    file: "ゆいちゃん_みおちゃん",        label: "ゆいちゃんと\nみおちゃん", category: "name",    icon: "twins", color: "pink" },
-      { id: "futari",    file: "ふたりとも",                  label: "ふたりとも",     category: "name",    icon: "twins", color: "pink" },
+      // ----- なまえ -----
+      { file: "ゆいちゃん.mp3",           label: "ゆいちゃん",          category: "name", icon: "yui",       color: "pink" },
+      { file: "みおちゃん.mp3",           label: "みおちゃん",          category: "name", icon: "mio",       color: "pink" },
+      { file: "ゆいちゃん_みおちゃん.mp3", label: "ゆいちゃんと\nみおちゃん", category: "name", icon: "twins",    color: "pink" },
+      { file: "ふたりとも.mp3",           label: "ふたりとも",          category: "name", icon: "twins",    color: "pink" },
+      { file: "おはよう.mp3",             label: "おはよう",            category: "name", icon: "wave",     color: "pink" },
+      { file: "パパですよ.mp3",           label: "パパですよ",          category: "name", icon: "papa",     color: "pink" },
 
-      // ----- おはよう (5) -----
-      { id: "ohayou",    file: "おはよう",                    label: "おはよう",       category: "greet",   icon: "sun",     color: "sky" },
-      { id: "morning",   file: "朝ですよ",                    label: "朝ですよ",       category: "greet",   icon: "morning", color: "sky" },
-      { id: "wake",      file: "起きようね",                  label: "起きようね",     category: "greet",   icon: "wake",    color: "sky" },
-      { id: "newday",    file: "今日も楽しい一日が始まるよ",   label: "今日も楽しい\n一日が始まるよ", category: "greet", icon: "newday", color: "sky" },
-      { id: "papadesu",  file: "パパですよ",                  label: "パパですよ",     category: "greet",   icon: "papa",    color: "sky" },
+      // ----- 行動 -----
+      { file: "起きようね.mp3",           label: "起きようね",          category: "action", icon: "wake",   color: "sky" },
+      { file: "朝ですよ.mp3",             label: "朝ですよ",            category: "action", icon: "sun",    color: "sky" },
+      { file: "顔を洗おうね.mp3",         label: "顔を洗おうね",        category: "action", icon: "face",   color: "sky" },
+      { file: "ご飯を食べようね.mp3",     label: "ごはん\n食べようね",  category: "action", icon: "rice",   color: "sky" },
+      { file: "トイレに行こうね.mp3",     label: "トイレに\n行こうね",  category: "action", icon: "toilet", color: "sky" },
+      { file: "お着替えしようね.mp3",     label: "お着替え\nしようね",  category: "action", icon: "shirt",  color: "sky" },
+      { file: "体操服を着ようね.mp3",     label: "体操服を\n着ようね",  category: "action", icon: "gym",    color: "sky" },
+      { file: "くつを履こうね.mp3",       label: "くつを\n履こうね",    category: "action", icon: "shoe",   color: "sky" },
+      { file: "車に乗ろうね.mp3",         label: "車に\n乗ろうね",      category: "action", icon: "car",    color: "sky" },
+      { file: "シートベルトしようね.mp3", label: "シートベルト\nしようね", category: "action", icon: "belt", color: "sky" },
+      { file: "もうすぐ出発だよ.mp3",     label: "もうすぐ\n出発だよ",  category: "action", icon: "depart", color: "sky" },
 
-      // ----- おしたく (9) -----
-      { id: "face",      file: "顔を洗おうね",                label: "顔を洗おうね",   category: "action",  icon: "face",     color: "azure" },
-      { id: "clothes",   file: "お着替えしようね",            label: "お着替え\nしようね", category: "action",  icon: "shirt",   color: "azure" },
-      { id: "gym",       file: "体操服を着ようね",            label: "体操服を\n着ようね", category: "action",  icon: "gym",     color: "azure" },
-      { id: "shoes",     file: "くつを履こうね",              label: "くつを履こうね", category: "action",  icon: "shoe",    color: "azure" },
-      { id: "toilet",    file: "トイレに行こうね",            label: "トイレに\n行こうね", category: "action",  icon: "toilet",  color: "azure" },
-      { id: "rice",      file: "ご飯を食べようね",            label: "ご飯を\n食べようね", category: "action",  icon: "rice",   color: "azure" },
-      { id: "car",       file: "車に乗ろうね",                label: "車に乗ろうね",   category: "action",  icon: "car",      color: "azure" },
-      { id: "seatbelt",  file: "シートベルトしようね",         label: "シートベルト\nしようね", category: "action", icon: "seatbelt", color: "azure" },
-      { id: "depart",    file: "もうすぐ出発だよ",             label: "もうすぐ\n出発だよ", category: "action",  icon: "depart",  color: "azure" },
+      // ----- ほめる -----
+      { file: "えらいね.mp3",             label: "えらいね",            category: "praise", icon: "star",     color: "yellow" },
+      { file: "すごいよ.mp3",             label: "すごいよ",            category: "praise", icon: "clap",     color: "yellow" },
+      { file: "よくできたね.mp3",         label: "よくできたね",        category: "praise", icon: "thumb",    color: "yellow" },
+      { file: "自分でできたね.mp3",       label: "自分で\nできたね",    category: "praise", icon: "smile",    color: "yellow" },
+      { file: "もうお姉さんだね.mp3",     label: "もうお姉さん\nだね",  category: "praise", icon: "crown",    color: "yellow" },
+      { file: "パパ嬉しいな.mp3",         label: "パパ\n嬉しいな",      category: "praise", icon: "heartface", color: "yellow" },
+      { file: "最高だよ.mp3",             label: "最高だよ",            category: "praise", icon: "trophy",   color: "yellow" },
 
-      // ----- ほめる (7) -----
-      { id: "erai",      file: "えらいね",                    label: "えらいね",       category: "praise",  icon: "star",   color: "yellow" },
-      { id: "sugoi",     file: "すごいよ",                    label: "すごいよ",       category: "praise",  icon: "clap",   color: "yellow" },
-      { id: "yoku",      file: "よくできたね",                label: "よくできたね",   category: "praise",  icon: "crown",  color: "yellow" },
-      { id: "jibun",     file: "自分でできたね",              label: "自分で\nできたね", category: "praise", icon: "thumb",  color: "yellow" },
-      { id: "oneesan",   file: "もうお姉さんだね",            label: "もうお姉さん\nだね", category: "praise", icon: "bigsis", color: "yellow" },
-      { id: "saikou",    file: "最高だよ",                    label: "最高だよ",       category: "praise",  icon: "smile",  color: "yellow" },
-      { id: "papaureshi",file: "パパ嬉しいな",                label: "パパ\n嬉しいな",  category: "praise",  icon: "heartred", color: "yellow" },
+      // ----- あんしん -----
+      { file: "ゆっくりで大丈夫だよ.mp3", label: "ゆっくりで\n大丈夫",  category: "safe", icon: "heart", color: "green" },
+      { file: "ひとつずつやろうね.mp3",   label: "ひとつずつ\nやろうね", category: "safe", icon: "one",   color: "green" },
+      { file: "あわてなくていいよ.mp3",   label: "あわてなくて\nいいよ", category: "safe", icon: "calm",  color: "green" },
+      { file: "大丈夫間に合うよ.mp3",     label: "大丈夫\n間に合うよ",  category: "safe", icon: "ok",    color: "green" },
+      { file: "できるとこからやろう.mp3", label: "できるとこ\nからやろう", category: "safe", icon: "step", color: "green" },
 
-      // ----- あんしん (5) -----
-      { id: "slow",      file: "ゆっくりで大丈夫だよ",        label: "ゆっくりで\n大丈夫だよ", category: "safe", icon: "turtle", color: "green" },
-      { id: "onebyone",  file: "ひとつずつやろうね",          label: "ひとつずつ\nやろうね", category: "safe",   icon: "one",    color: "green" },
-      { id: "awate",     file: "あわてなくていいよ",          label: "あわてなくて\nいいよ", category: "safe",   icon: "heart",  color: "green" },
-      { id: "dekiru",    file: "できるとこからやろう",        label: "できるとこ\nからやろう", category: "safe", icon: "handup", color: "green" },
-      { id: "maniau",    file: "大丈夫間に合うよ",            label: "大丈夫\n間に合うよ", category: "safe",   icon: "check",  color: "green" },
+      // ----- とけい -----
+      { file: "時計を見てみよう.mp3",     label: "時計を\n見てみよう",  category: "time", icon: "clock",    color: "purple" },
+      { file: "長い針を見てみよう.mp3",   label: "長い針を\n見てみよう", category: "time", icon: "longhand", color: "purple" },
+      { file: "今は何時かな.mp3",         label: "今は\n何時かな",      category: "time", icon: "qclock",   color: "purple" },
 
-      // ----- とけい (4) -----
-      { id: "tokei",     file: "時計を見てみよう",            label: "時計を\n見てみよう", category: "time",   icon: "clock",    color: "purple" },
-      { id: "longhand",  file: "長い針を見てみよう",          label: "長い針を\n見てみよう", category: "time",   icon: "longhand", color: "purple" },
-      { id: "nanji",     file: "今は何時かな",                label: "今は何時かな",   category: "time",   icon: "question", color: "purple" },
-      { id: "atosukoshi",file: "あと少しだよ",                label: "あと少しだよ",   category: "time",   icon: "hourglass",color: "purple" },
-
-      // ----- ミッション (5) -----
-      { id: "challenge", file: "おしたくチャレンジ",          label: "おしたく\nチャレンジ", category: "mission", icon: "challenge", color: "orange" },
-      { id: "start",     file: "ミッションスタート",          label: "ミッション\nスタート", category: "mission", icon: "start",   color: "orange" },
-      { id: "oneecheck", file: "お姉さんチェック",            label: "お姉さん\nチェック",  category: "mission", icon: "bigsischk", color: "orange" },
-      { id: "goalsoon",  file: "ゴールまであと少し",          label: "ゴールまで\nあと少し", category: "mission", icon: "goal",    color: "orange" },
-      { id: "ganbarou",  file: "がんばろう",                  label: "がんばろう",     category: "mission", icon: "fist",     color: "orange" }
+      // ----- おうえん -----
+      { file: "がんばろう.mp3",           label: "がんばろう",          category: "cheer", icon: "fist",     color: "orange" },
+      { file: "ミッションスタート.mp3",   label: "ミッション\nスタート", category: "cheer", icon: "rocket",  color: "orange" },
+      { file: "おしたくチャレンジ.mp3",   label: "おしたく\nチャレンジ", category: "cheer", icon: "flag",    color: "orange" },
+      { file: "お姉さんチェック.mp3",     label: "お姉さん\nチェック",  category: "cheer", icon: "check",   color: "orange" },
+      { file: "ゴールまであと少し.mp3",   label: "ゴールまで\nあと少し", category: "cheer", icon: "goal",    color: "orange" },
+      { file: "あと少しだよ.mp3",         label: "あと少しだよ",        category: "cheer", icon: "target",  color: "orange" },
+      { file: "今日も楽しい一日が始まるよ.mp3", label: "楽しい一日が\n始まるよ", category: "cheer", icon: "sunshine", color: "orange" }
     ];
 
-    /* category tabs */
-    const tabs = [
-      { id: "favorites", label: "よく使う",   emoji: "⭐", color: "yellow" },
-      { id: "name",      label: "なまえ",     emoji: "👧", color: "pink" },
-      { id: "greet",     label: "おはよう",   emoji: "☀️", color: "sky" },
-      { id: "action",    label: "おしたく",   emoji: "👕", color: "azure" },
-      { id: "praise",    label: "ほめる",     emoji: "⭐", color: "yellow" },
-      { id: "safe",      label: "あんしん",   emoji: "💚", color: "green" },
-      { id: "time",      label: "とけい",     emoji: "⏰", color: "purple" },
-      { id: "mission",   label: "ミッション", emoji: "🏆", color: "orange" }
-    ];
+    // Assign id from filename
+    voiceItems.forEach(item => { item.id = item.file.replace(/\.mp3$/i, ""); });
+
+    const categoryMeta = {
+      favorites: { label: "★", icon: "star",   color: "yellow", dot: "#F59E0B" },
+      name:      { label: "なまえ", icon: "yui",   color: "pink",   dot: "#EC4899" },
+      action:    { label: "行動",   icon: "shirt", color: "sky",    dot: "#2563EB" },
+      praise:    { label: "ほめる", icon: "star",  color: "yellow", dot: "#F59E0B" },
+      safe:      { label: "あんしん", icon: "heart", color: "green", dot: "#16A34A" },
+      time:      { label: "とけい", icon: "clock", color: "purple", dot: "#7C3AED" },
+      cheer:     { label: "おうえん", icon: "fist", color: "orange", dot: "#F97316" }
+    };
 
     /* =========================================================
-       3) STATE
-    ========================================================= */
-    const STORAGE_PREFIX = "oshitaku-v1-";
-    const lsGet = (k, d) => { try { const v = localStorage.getItem(STORAGE_PREFIX + k); return v === null ? d : JSON.parse(v); } catch(e){ return d; } };
-    const lsSet = (k, v) => { try { localStorage.setItem(STORAGE_PREFIX + k, JSON.stringify(v)); } catch(e){} };
+       AUDIO ENGINE
+       ========================================================= */
+    class AudioEngine {
+      constructor() {
+        this.audio = new Audio();
+        this.audio.preload = "auto";
+        this.durations = new Map();   // filename -> seconds
+        this.encoding = null;          // 'NFC' or 'NFD' - 起動時に判定
+        this.currentItem = null;
+        this.queue = [];
+        this.queueIndex = 0;
+        this.isPlayingQueue = false;
+        this.stopped = false;
+        this.onItemStart = null;
+        this.onItemEnd = null;
+        this.onQueueEnd = null;
 
-    let activeTab    = lsGet("active-tab", "name");
-    let activePage   = "home";
-    let mode         = "queue";
-    let queue        = [];
-    let favorites    = lsGet("favorites", []);
-    let settings     = lsGet("settings", { rate: 1.0, volume: 1.0, gap: 0.4 });
-    let audioDurations = {}; // file -> seconds
+        this.audio.addEventListener("ended", () => this._onAudioEnded(false));
+        this.audio.addEventListener("error", () => this._onAudioError());
+      }
 
-    let currentAudio = null;
-    let isPlaying    = false;
-    let currentPlayingQueueIndex = -1;
+      // 起動時に1回だけ呼ぶ。NFC/NFDのどちらが使えるかを判定する。
+      async detectEncoding(testFilename) {
+        if (this.encoding) return this.encoding;
 
-    /* =========================================================
-       4) DOM
-    ========================================================= */
-    const header        = document.getElementById("header");
-    const skyLeft       = document.getElementById("skyLeft");
-    const period        = document.getElementById("period");
-    const digitalTime   = document.getElementById("digitalTime");
-    const analogClock   = document.getElementById("analogClock");
-    const hourHand      = document.getElementById("hourHand");
-    const minuteHand    = document.getElementById("minuteHand");
-    const tabsEl        = document.getElementById("tabs");
-    const buttonGrid    = document.getElementById("buttonGrid");
-    const queueList     = document.getElementById("queueList");
-    const queueMeta     = document.getElementById("queueMeta");
-    const queueModeBtn  = document.getElementById("queueMode");
-    const instantModeBtn= document.getElementById("instantMode");
-    const playBtn       = document.getElementById("playBtn");
-    const stopBtn       = document.getElementById("stopBtn");
-    const clearBtn      = document.getElementById("clearBtn");
-    const shuffleBtn    = document.getElementById("shuffleBtn");
-    const clearSmall    = document.getElementById("clearSmall");
-    const toast         = document.getElementById("toast");
+        const tryUrl = (url) => new Promise((resolve) => {
+          const a = new Audio();
+          a.preload = "metadata";
+          let done = false;
+          const ok = () => { if (done) return; done = true; resolve(true); };
+          const ng = () => { if (done) return; done = true; resolve(false); };
+          a.addEventListener("loadedmetadata", ok, { once: true });
+          a.addEventListener("canplay", ok, { once: true });
+          a.addEventListener("error", ng, { once: true });
+          a.src = url;
+          setTimeout(() => { if (!done) { done = true; resolve(false); } }, 3500);
+        });
 
-    /* =========================================================
-       5) UTIL
-    ========================================================= */
-    const pad = n => String(n).padStart(2, "0");
-    const displayHour24To12 = h => { const v = h % 12; return v === 0 ? 12 : v; };
-    const audioUrl = file => `voice/${encodeURIComponent(file)}.mp3`;
+        const nfc = testFilename.normalize("NFC");
+        const nfd = testFilename.normalize("NFD");
+        const nfcUrl = "voice/" + encodeURIComponent(nfc);
 
-    function showToast(msg) {
-      toast.textContent = msg;
-      toast.classList.add("show");
-      clearTimeout(toast._t);
-      toast._t = setTimeout(() => toast.classList.remove("show"), 1500);
+        if (await tryUrl(nfcUrl)) {
+          this.encoding = "NFC";
+          console.info("Audio encoding detected: NFC");
+          return "NFC";
+        }
+        if (nfd !== nfc) {
+          const nfdUrl = "voice/" + encodeURIComponent(nfd);
+          if (await tryUrl(nfdUrl)) {
+            this.encoding = "NFD";
+            console.info("Audio encoding detected: NFD");
+            return "NFD";
+          }
+        }
+        this.encoding = "NFC"; // fallback
+        console.warn("Audio encoding detection failed, using NFC");
+        return "NFC";
+      }
+
+      fileUrl(filename) {
+        const form = this.encoding === "NFD" ? "NFD" : "NFC";
+        return "voice/" + encodeURIComponent(filename.normalize(form));
+      }
+
+      preloadDuration(filename) {
+        if (this.durations.has(filename)) return Promise.resolve(this.durations.get(filename));
+        const url = this.fileUrl(filename);
+        return new Promise((resolve) => {
+          const a = new Audio();
+          a.preload = "metadata";
+          let done = false;
+          const finish = (d) => {
+            if (done) return; done = true;
+            this.durations.set(filename, d);
+            resolve(d);
+          };
+          a.addEventListener("loadedmetadata", () => {
+            finish(isFinite(a.duration) && a.duration > 0 ? a.duration : 1.5);
+          }, { once: true });
+          a.addEventListener("error", () => finish(1.5), { once: true });
+          a.src = url;
+          setTimeout(() => finish(1.5), 5000);
+        });
+      }
+
+      async preloadAll(items) {
+        // 並列度を制限してプリロード(同時8件)
+        const concurrency = 8;
+        let idx = 0;
+        const workers = Array(concurrency).fill(0).map(async () => {
+          while (idx < items.length) {
+            const i = idx++;
+            await this.preloadDuration(items[i].file);
+          }
+        });
+        await Promise.all(workers);
+      }
+
+      getDuration(filename) {
+        return this.durations.get(filename) || 1.5;
+      }
+
+      _applySettings() {
+        this.audio.volume = settings.volume / 100;
+        this.audio.playbackRate = settings.rate / 100;
+      }
+
+      _setAndPlay(item) {
+        // 既存の再生を完全に停止
+        try {
+          this.audio.pause();
+          this.audio.currentTime = 0;
+        } catch (e) {}
+        this._applySettings();
+        this.currentItem = item;
+        const url = this.fileUrl(item.file);
+        this.audio.src = url;
+        try { this.audio.load(); } catch (e) {}
+        if (this.onItemStart) this.onItemStart(item);
+        const p = this.audio.play();
+        if (p && p.catch) {
+          p.catch(err => {
+            console.warn("Play failed for", item.file, err);
+            // キュー再生中なら次へ進む
+            if (this.isPlayingQueue) {
+              this._onAudioEnded(true);
+            } else {
+              showToast("⚠️ 「" + item.file + "」を再生できません。voice/フォルダをご確認ください");
+            }
+          });
+        }
+      }
+
+      playOne(item) {
+        this.stopped = false;
+        this.isPlayingQueue = false;
+        this._setAndPlay(item);
+      }
+
+      playQueue(queueItems) {
+        if (!queueItems || queueItems.length === 0) return;
+        this.queue = queueItems.slice();
+        this.queueIndex = 0;
+        this.isPlayingQueue = true;
+        this.stopped = false;
+        this._playNext();
+      }
+
+      _playNext() {
+        if (this.stopped || this.queueIndex >= this.queue.length) {
+          this.isPlayingQueue = false;
+          this.currentItem = null;
+          if (this.onQueueEnd) this.onQueueEnd();
+          return;
+        }
+        const item = this.queue[this.queueIndex];
+        this._setAndPlay(item);
+      }
+
+      _onAudioEnded(errored) {
+        const ended = this.currentItem;
+        if (this.onItemEnd && ended) this.onItemEnd(ended);
+        if (!this.isPlayingQueue || this.stopped) {
+          this.currentItem = null;
+          return;
+        }
+        this.queueIndex++;
+        const gap = errored ? 50 : settings.gap;
+        setTimeout(() => this._playNext(), gap);
+      }
+
+      _onAudioError() {
+        if (!this.currentItem) return;
+        console.warn("Audio error event for:", this.currentItem.file);
+        if (this.isPlayingQueue) {
+          this._onAudioEnded(true);
+        } else {
+          showToast("⚠️ 「" + this.currentItem.file + "」を再生できません");
+          this.currentItem = null;
+        }
+      }
+
+      stop() {
+        this.stopped = true;
+        this.isPlayingQueue = false;
+        try {
+          this.audio.pause();
+          this.audio.currentTime = 0;
+        } catch (e) {}
+        this.currentItem = null;
+        if (this.onQueueEnd) this.onQueueEnd();
+      }
+
+      isPlaying() {
+        return !this.audio.paused && !this.audio.ended;
+      }
     }
 
-    function getCategoryColor(cat) {
-      const t = tabs.find(t => t.id === cat);
-      return t ? t.color : "pink";
+    /* =========================================================
+       SETTINGS & STATE
+       ========================================================= */
+    const defaultSettings = {
+      volume: 100,
+      rate: 100,
+      gap: 350,
+      showFavorites: false,
+      instantMode: false
+    };
+    const settings = Object.assign({}, defaultSettings,
+      JSON.parse(localStorage.getItem("oshitaku-settings-v1") || "{}"));
+    function saveSettings() {
+      localStorage.setItem("oshitaku-settings-v1", JSON.stringify(settings));
     }
 
+    let activeTab = localStorage.getItem("oshitaku-active-tab-v1") || "name";
+    let favorites = JSON.parse(localStorage.getItem("oshitaku-favorites-v1") || "[]");
+    function saveFavorites() {
+      localStorage.setItem("oshitaku-favorites-v1", JSON.stringify(favorites));
+    }
+    function saveActiveTab() {
+      localStorage.setItem("oshitaku-active-tab-v1", activeTab);
+    }
+
+    let queue = [];
+
     /* =========================================================
-       6) CLOCK
-    ========================================================= */
+       DOM REFERENCES
+       ========================================================= */
+    const $ = (id) => document.getElementById(id);
+    const header        = $("header");
+    const digitalTime   = $("digitalTime");
+    const analogClock   = $("analogClock");
+    const hourHand      = $("hourHand");
+    const minuteHand    = $("minuteHand");
+    const tabsEl        = $("tabs");
+    const buttonGrid    = $("buttonGrid");
+    const queueListEl   = $("queueList");
+    const queueDuration = $("queueDuration");
+    const queueCount    = $("queueCount");
+    const playBtn       = $("playBtn");
+    const stopBtn       = $("stopBtn");
+    const clearBtn      = $("clearBtn");
+    const shuffleBtn    = $("shuffleBtn");
+    const clearAllBtn   = $("clearAllBtn");
+    const toastEl       = $("toast");
+
+    const audio = new AudioEngine();
+    audio.onItemStart = (item) => highlightCard(item, true);
+    audio.onItemEnd = (item) => highlightCard(item, false);
+    audio.onQueueEnd = () => { playBtn.classList.remove("playing"); };
+
+    /* =========================================================
+       CLOCK
+       ========================================================= */
+    function pad(n) { return String(n).padStart(2, "0"); }
+    function displayHour24To12(h) { const v = h % 12; return v === 0 ? 12 : v; }
+
     function setupClockFace() {
-      const rect = analogClock.getBoundingClientRect();
-      const size = rect.width || 160;
-      const cx = size / 2;
-      const cy = size / 2;
-      const r = size / 2 - 18;
+      const cx = 97;   // 中心(時計の半径)
+      const cy = 97;
+      const rNum = 82; // 数字の配置半径 - 外周近く
+      const rTick = 87;// 目盛り配置距離(時計中心からの距離)
       for (let i = 1; i <= 12; i++) {
         const el = document.createElement("div");
         el.className = "number";
         el.textContent = i;
         const angle = (i * 30 - 90) * Math.PI / 180;
-        el.style.left = `${cx + r * Math.cos(angle)}px`;
-        el.style.top  = `${cy + r * Math.sin(angle)}px`;
+        el.style.left = `${cx + rNum * Math.cos(angle)}px`;
+        el.style.top  = `${cy + rNum * Math.sin(angle)}px`;
         analogClock.appendChild(el);
       }
       for (let i = 0; i < 60; i++) {
         const tick = document.createElement("div");
         tick.className = i % 5 === 0 ? "tick major" : "tick";
-        tick.style.transform = `rotate(${i * 6}deg) translateY(-${size/2 - 4}px)`;
+        tick.style.transform = `rotate(${i * 6}deg) translateY(-${rTick}px)`;
         analogClock.appendChild(tick);
       }
     }
@@ -938,158 +1181,74 @@ h1 {
       const now = new Date();
       const h = now.getHours();
       const m = now.getMinutes();
-      return { h, m, displayHour: displayHour24To12(h), isMorning: h < 12 };
+      // 3段階:morning(5-10), afternoon(11-16), evening(17-4)
+      let mode = "afternoon";
+      if (h >= 5 && h < 11) mode = "morning";
+      else if (h >= 17 || h < 5) mode = "evening";
+      return { h, m, displayHour: displayHour24To12(h), mode };
     }
 
     function updateClock() {
-      const now = new Date();
-      const h = now.getHours();
-      const m = now.getMinutes();
-      const displayHour = displayHour24To12(h);
-      period.textContent = h < 12 ? "ごぜん" : "ごご";
+      const { h, m, displayHour, mode } = currentTimeParts();
       digitalTime.textContent = `${displayHour}:${pad(m)}`;
-
-      // sky theme
-      let phase;
-      if (h >= 5 && h < 11) phase = "morning";
-      else if (h >= 11 && h < 16) phase = "afternoon";
-      else if (h >= 16 && h < 19) phase = "evening";
-      else phase = "night";
-      header.classList.remove("morning","afternoon","evening","night");
-      header.classList.add(phase);
-      skyLeft.textContent = (phase === "night") ? "🌙" : (phase === "evening" ? "🌇" : (phase === "afternoon" ? "🌤" : "☀️"));
-
+      header.classList.remove("morning", "afternoon", "evening");
+      header.classList.add(mode);
       const hourAngle = (h % 12) * 30 + m * 0.5;
       const minuteAngle = m * 6;
       hourHand.style.transform   = `rotate(${hourAngle}deg)`;
       minuteHand.style.transform = `rotate(${minuteAngle}deg)`;
     }
 
-    /* =========================================================
-       7) AUDIO (preload & play)
-    ========================================================= */
-    function preloadDurations() {
-      // load metadata for each file to compute total queue duration
-      voiceItems.forEach(item => {
-        const a = new Audio(audioUrl(item.file));
-        a.preload = "metadata";
-        a.addEventListener("loadedmetadata", () => {
-          if (!isNaN(a.duration) && isFinite(a.duration)) {
-            audioDurations[item.file] = a.duration;
-            renderQueue(); // refresh meta if queue exists
-          }
-        });
-        a.addEventListener("error", () => {
-          audioDurations[item.file] = 2.0; // fallback
-        });
-      });
-    }
-
-    function stopCurrentAudio() {
-      if (currentAudio) {
-        try {
-          currentAudio.pause();
-          currentAudio.currentTime = 0;
-        } catch(e){}
-        currentAudio = null;
-      }
-      isPlaying = false;
-      currentPlayingQueueIndex = -1;
-      // remove visual playing states
-      document.querySelectorAll(".voice-card.playing").forEach(el => el.classList.remove("playing"));
-      renderQueue();
-    }
-
-    function playOne(item, opts = {}) {
-      return new Promise((resolve) => {
-        stopCurrentAudio();
-        const a = new Audio(audioUrl(item.file));
-        a.volume = settings.volume;
-        a.playbackRate = settings.rate;
-        currentAudio = a;
-        isPlaying = true;
-
-        // visual highlight
-        if (opts.cardEl) opts.cardEl.classList.add("playing");
-
-        const finish = () => {
-          if (opts.cardEl) opts.cardEl.classList.remove("playing");
-          if (currentAudio === a) {
-            currentAudio = null;
-            isPlaying = false;
-          }
-          resolve();
-        };
-
-        a.addEventListener("ended", finish);
-        a.addEventListener("error", () => {
-          showToast(`⚠️ 音声が見つかりません: ${item.file}`);
-          finish();
-        });
-
-        a.play().catch(err => {
-          // iOS may require user gesture; this should be inside one
-          showToast("再生に失敗しました");
-          finish();
-        });
-      });
-    }
-
-    async function playQueue() {
-      if (queue.length === 0) return;
-      stopCurrentAudio();
-      isPlaying = true;
-      for (let i = 0; i < queue.length; i++) {
-        if (!isPlaying) break;
-        currentPlayingQueueIndex = i;
-        renderQueue();
-        await playOne(queue[i]);
-        if (!isPlaying) break;
-        if (i < queue.length - 1 && settings.gap > 0) {
-          await new Promise(r => setTimeout(r, settings.gap * 1000));
-        }
-      }
-      currentPlayingQueueIndex = -1;
-      isPlaying = false;
-      renderQueue();
+    function speakCurrentTime() {
+      // Use the closest matching MP3 from the voice set
+      const item = voiceItems.find(v => v.file === "時計を見てみよう.mp3");
+      if (item) audio.playOne(item);
     }
 
     /* =========================================================
-       8) RENDER : tabs / buttons / queue / list / settings
-    ========================================================= */
+       CATEGORY TABS
+       ========================================================= */
     function renderTabs() {
       tabsEl.innerHTML = "";
-      tabs.forEach(tab => {
+      const order = ["name","action","praise","safe","time","cheer"];
+      const list = settings.showFavorites ? ["favorites", ...order] : order;
+      list.forEach(catId => {
+        const meta = categoryMeta[catId];
         const btn = document.createElement("button");
-        btn.className = `tab ${tab.color} ${activeTab === tab.id ? "active" : ""}`;
-        btn.innerHTML = `<span class="tab-emoji">${tab.emoji}</span>${tab.label}`;
+        btn.className = `tab${activeTab === catId ? " active" : ""}`;
+        btn.dataset.cat = catId;
+        btn.innerHTML = `
+          <span class="tab-icon">${ICONS[meta.icon]}</span>
+          <span>${meta.label}</span>
+        `;
         btn.addEventListener("click", () => {
-          activeTab = tab.id;
-          lsSet("active-tab", activeTab);
+          activeTab = catId;
+          saveActiveTab();
           renderTabs();
           renderButtons();
+          // Smooth scroll to top of grid
+          buttonGrid.scrollIntoView({ behavior: "smooth", block: "nearest" });
         });
         tabsEl.appendChild(btn);
       });
     }
 
+    /* =========================================================
+       BUTTON GRID
+       ========================================================= */
     function getVisibleItems() {
-      if (activeTab === "favorites") return voiceItems.filter(i => favorites.includes(i.id));
-      return voiceItems.filter(i => i.category === activeTab);
+      if (activeTab === "favorites") {
+        return voiceItems.filter(v => favorites.includes(v.id));
+      }
+      return voiceItems.filter(v => v.category === activeTab);
     }
 
     function toggleFavorite(id) {
-      if (favorites.includes(id)) {
-        favorites = favorites.filter(x => x !== id);
-        showToast("⭐ よく使うことばから はずしました");
-      } else {
-        favorites = [...favorites, id];
-        showToast("⭐ よく使うことばに 追加しました");
-      }
-      lsSet("favorites", favorites);
+      favorites = favorites.includes(id)
+        ? favorites.filter(x => x !== id)
+        : [...favorites, id];
+      saveFavorites();
       renderButtons();
-      renderList();
-      updateFavCount();
     }
 
     function renderButtons() {
@@ -1097,22 +1256,26 @@ h1 {
       const items = getVisibleItems();
       if (items.length === 0) {
         const empty = document.createElement("div");
-        empty.className = "empty";
-        empty.style.gridColumn = "1 / -1";
-        empty.innerHTML = "⭐ ボタンの ★マークを タップすると<br/>ここに よく使うことばが ならびます";
+        empty.style.cssText = "grid-column:1/-1;padding:32px 16px;text-align:center;color:#94A3B8;font-weight:800;";
+        empty.innerHTML = activeTab === "favorites"
+          ? "☆をタップして<br/>よく使うことばを登録しよう"
+          : "ことばがありません";
         buttonGrid.appendChild(empty);
         return;
       }
       items.forEach(item => {
         const btn = document.createElement("button");
         btn.className = `voice-card ${item.color}`;
+        btn.dataset.id = item.id;
         btn.innerHTML = `
-          <button class="favorite-toggle ${favorites.includes(item.id) ? "on" : ""}" aria-label="よく使うことば">★</button>
-          <div class="icon">${iconSvg[item.icon] || iconSvg.star}</div>
+          <div class="favorite-toggle ${favorites.includes(item.id) ? "on" : ""}" role="button" aria-label="お気に入り">★</div>
+          <div class="illust">${ICONS[item.icon] || ICONS.star}</div>
           <div class="label">${item.label}</div>
-          <div class="speaker">${speakerSvg}</div>
         `;
-        btn.addEventListener("click", () => addOrPlay(item, btn));
+        btn.addEventListener("click", (e) => {
+          if (e.target.closest(".favorite-toggle")) return;
+          addOrPlay(item);
+        });
         btn.querySelector(".favorite-toggle").addEventListener("click", (e) => {
           e.stopPropagation();
           toggleFavorite(item.id);
@@ -1121,224 +1284,287 @@ h1 {
       });
     }
 
-    function setMode(next) {
-      mode = next;
-      queueModeBtn.classList.toggle("active", mode === "queue");
-      instantModeBtn.classList.toggle("active", mode === "instant");
+    function highlightCard(item, on) {
+      if (!item) return;
+      document.querySelectorAll(`.voice-card[data-id="${CSS.escape(item.id)}"]`).forEach(el => {
+        el.classList.toggle("playing", on);
+      });
+      // Also highlight queue chip
+      document.querySelectorAll(`.chip[data-id="${CSS.escape(item.id)}"]`).forEach(el => {
+        el.style.background = on ? "#FCE7F3" : "#FFF";
+      });
     }
 
-    function addOrPlay(item, cardEl) {
-      if (mode === "instant") {
-        playOne(item, { cardEl });
-      } else {
-        queue.push(item);
-        renderQueue();
+    /* =========================================================
+       QUEUE
+       ========================================================= */
+    function addOrPlay(item) {
+      if (settings.instantMode) {
+        audio.playOne(item);
+        return;
       }
+      queue.push({...item, qid: Date.now() + Math.random()});
+      renderQueue();
+      // Haptic feedback (mobile)
+      if (navigator.vibrate) try { navigator.vibrate(10); } catch(e){}
     }
 
     function renderQueue() {
-      queueList.innerHTML = "";
-      if (queue.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "empty";
-        empty.textContent = "ことばを えらぶと ここに ならびます";
-        queueList.appendChild(empty);
-      } else {
-        queue.forEach((item, idx) => {
-          const row = document.createElement("div");
-          row.className = "queue-item" + (idx === currentPlayingQueueIndex ? " playing-now" : "");
-          row.innerHTML = `
-            <span class="qnum">${idx + 1}</span>
-            <span class="qlabel">${item.label.replace(/\n/g, " ")}</span>
-            <button class="qclose" aria-label="削除">×</button>
-          `;
-          row.querySelector(".qclose").addEventListener("click", (e) => {
-            e.stopPropagation();
-            queue.splice(idx, 1);
-            renderQueue();
-          });
-          queueList.appendChild(row);
+      queueListEl.innerHTML = "";
+      queue.forEach((item, index) => {
+        const chip = document.createElement("div");
+        chip.className = "chip";
+        chip.dataset.id = item.id;
+        const colorIdx = index % 6;
+        const cleanLabel = item.label.replace(/\n/g, "");
+        chip.innerHTML = `
+          <span class="num c${colorIdx}">${index + 1}</span>
+          <span class="label-x">${cleanLabel}</span>
+          <button class="rm" aria-label="削除">×</button>
+        `;
+        chip.querySelector(".rm").addEventListener("click", (e) => {
+          e.stopPropagation();
+          queue.splice(index, 1);
+          renderQueue();
         });
-      }
-      // total duration
-      let total = 0;
-      let allKnown = true;
-      queue.forEach(it => {
-        if (audioDurations[it.file]) total += audioDurations[it.file];
-        else { total += 2.0; allKnown = false; }
-      });
-      // add gap between
-      if (queue.length > 1) total += (queue.length - 1) * settings.gap;
-      const totalRounded = Math.max(0, Math.round(total));
-      queueMeta.innerHTML = `ぜんぶの長さ <strong>${allKnown ? "" : "約"}${totalRounded}秒</strong>（${queue.length}個）`;
-      playBtn.disabled = queue.length === 0 || isPlaying;
-    }
-
-    /* ----- list page ----- */
-    const listContainer = document.getElementById("listContainer");
-    const searchInput = document.getElementById("searchInput");
-
-    function renderList() {
-      const query = (searchInput.value || "").trim().toLowerCase();
-      listContainer.innerHTML = "";
-      tabs.filter(t => t.id !== "favorites").forEach(tab => {
-        const items = voiceItems.filter(i => i.category === tab.id)
-          .filter(i => !query || i.label.toLowerCase().includes(query) || i.file.toLowerCase().includes(query));
-        if (items.length === 0) return;
-        const group = document.createElement("div");
-        group.className = "list-group";
-        group.innerHTML = `<div class="list-group-head">${tab.emoji} ${tab.label} <span class="badge">${items.length}</span></div><div class="list-rows"></div>`;
-        const rows = group.querySelector(".list-rows");
-        items.forEach(item => {
-          const row = document.createElement("div");
-          row.className = "list-row";
-          row.innerHTML = `
-            <div class="row-icon ${item.color}">${iconSvg[item.icon] || iconSvg.star}</div>
-            <div class="row-text">${item.label.replace(/\n/g, " ")}</div>
-            <button class="row-fav ${favorites.includes(item.id) ? "on" : ""}" aria-label="お気に入り">★</button>
-            <button class="row-play" aria-label="再生">▶</button>
-          `;
-          row.querySelector(".row-play").addEventListener("click", (e) => {
-            e.stopPropagation();
-            playOne(item);
-          });
-          row.querySelector(".row-fav").addEventListener("click", (e) => {
-            e.stopPropagation();
-            toggleFavorite(item.id);
-          });
-          row.addEventListener("click", () => {
-            // add to queue from list page
-            queue.push(item);
-            renderQueue();
-            showToast(`📋 再生リストに追加：${item.label.replace(/\n/g, " ")}`);
-          });
-          rows.appendChild(row);
+        chip.addEventListener("click", () => {
+          // Tap chip to play just that one
+          audio.playOne(item);
         });
-        listContainer.appendChild(group);
+        queueListEl.appendChild(chip);
       });
-      if (listContainer.children.length === 0) {
-        const e = document.createElement("div");
-        e.className = "empty";
-        e.textContent = `「${searchInput.value}」に あう ことばが ありません`;
-        listContainer.appendChild(e);
-      }
+
+      // Calculate duration
+      const totalGapSec = Math.max(0, queue.length - 1) * (settings.gap / 1000);
+      const totalAudio  = queue.reduce((s, item) => s + audio.getDuration(item.file), 0);
+      const rate = settings.rate / 100;
+      const totalSec = Math.round(totalAudio / rate + totalGapSec);
+      queueDuration.textContent = formatDuration(totalSec);
+      queueCount.textContent = `（${queue.length}個）`;
+      playBtn.disabled = queue.length === 0;
+      shuffleBtn.disabled = queue.length < 2;
     }
 
-    /* ----- settings ----- */
-    const rateRange = document.getElementById("rateRange");
-    const rateVal   = document.getElementById("rateVal");
-    const volumeRange = document.getElementById("volumeRange");
-    const volumeVal   = document.getElementById("volumeVal");
-    const gapRange  = document.getElementById("gapRange");
-    const gapVal    = document.getElementById("gapVal");
-    const resetFav  = document.getElementById("resetFav");
-    const favCountEl= document.getElementById("favCount");
-
-    function renderSettings() {
-      rateRange.value   = settings.rate;
-      volumeRange.value = settings.volume;
-      gapRange.value    = settings.gap;
-      rateVal.textContent   = Number(settings.rate).toFixed(2);
-      volumeVal.textContent = Math.round(settings.volume * 100) + "%";
-      gapVal.textContent    = Number(settings.gap).toFixed(1) + "秒";
-      updateFavCount();
-    }
-    function updateFavCount() {
-      favCountEl.textContent = `登録数：${favorites.length}個`;
+    function formatDuration(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return `${m}:${pad(s)}`;
     }
 
-    rateRange.addEventListener("input", () => {
-      settings.rate = parseFloat(rateRange.value);
-      rateVal.textContent = settings.rate.toFixed(2);
-      lsSet("settings", settings);
-    });
-    volumeRange.addEventListener("input", () => {
-      settings.volume = parseFloat(volumeRange.value);
-      volumeVal.textContent = Math.round(settings.volume * 100) + "%";
-      lsSet("settings", settings);
-    });
-    gapRange.addEventListener("input", () => {
-      settings.gap = parseFloat(gapRange.value);
-      gapVal.textContent = settings.gap.toFixed(1) + "秒";
-      lsSet("settings", settings);
+    function playQueue() {
+      if (queue.length === 0) return;
+      playBtn.classList.add("playing");
+      audio.playQueue(queue);
+    }
+
+    function stopAll() {
+      audio.stop();
+      playBtn.classList.remove("playing");
+      document.querySelectorAll(".voice-card.playing").forEach(el => el.classList.remove("playing"));
+    }
+
+    function clearQueue() {
+      stopAll();
+      queue = [];
       renderQueue();
-    });
-    resetFav.addEventListener("click", () => {
-      if (favorites.length === 0) { showToast("登録されていません"); return; }
-      if (!confirm(`よく使うことばを ぜんぶ リセットしますか？\n（${favorites.length}個）`)) return;
-      favorites = [];
-      lsSet("favorites", favorites);
-      renderButtons();
-      renderList();
-      updateFavCount();
-      showToast("リセットしました");
-    });
-
-    /* =========================================================
-       9) PAGE SWITCH (bottom nav)
-    ========================================================= */
-    function setPage(id) {
-      activePage = id;
-      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-      document.getElementById("page-" + id).classList.add("active");
-      document.querySelectorAll(".nav-btn").forEach(b => {
-        b.classList.toggle("active", b.dataset.page === id);
-      });
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      if (id === "list") renderList();
-      if (id === "settings") renderSettings();
-      if (id === "home") renderButtons();
     }
 
-    document.querySelectorAll(".nav-btn").forEach(b => {
-      b.addEventListener("click", () => setPage(b.dataset.page));
-    });
-
-    /* =========================================================
-       10) EVENTS
-    ========================================================= */
-    header.addEventListener("click", () => {
-      // play "今は何時かな"
-      const item = voiceItems.find(i => i.id === "nanji");
-      if (item) playOne(item);
-    });
-
-    queueModeBtn.addEventListener("click", () => setMode("queue"));
-    instantModeBtn.addEventListener("click", () => setMode("instant"));
-    playBtn.addEventListener("click", playQueue);
-    stopBtn.addEventListener("click", stopCurrentAudio);
-    clearBtn.addEventListener("click", () => { queue = []; renderQueue(); });
-    clearSmall.addEventListener("click", () => { queue = []; renderQueue(); });
-    shuffleBtn.addEventListener("click", () => {
+    function shuffleQueue() {
+      if (queue.length < 2) return;
+      // Fisher-Yates シャッフル
       for (let i = queue.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [queue[i], queue[j]] = [queue[j], queue[i]];
       }
       renderQueue();
-    });
-    searchInput.addEventListener("input", renderList);
+      if (navigator.vibrate) try { navigator.vibrate(15); } catch(e){}
+    }
 
     /* =========================================================
-       11) INIT
-    ========================================================= */
+       LIST SCREEN
+       ========================================================= */
+    function renderListScreen() {
+      const root = $("listSection");
+      root.innerHTML = "";
+      const order = ["name","action","praise","safe","time","cheer"];
+      order.forEach(catId => {
+        const meta = categoryMeta[catId];
+        const items = voiceItems.filter(v => v.category === catId);
+        if (items.length === 0) return;
+        const sec = document.createElement("div");
+        sec.className = "list-cat";
+        sec.innerHTML = `
+          <div class="list-cat-header">
+            <span class="dot" style="background:${meta.dot};"></span>
+            ${meta.label}
+            <span style="font-size:13px;color:#94A3B8;font-weight:800;margin-left:auto;">${items.length}件</span>
+          </div>
+          <div class="list-cat-grid"></div>
+        `;
+        const grid = sec.querySelector(".list-cat-grid");
+        items.forEach(item => {
+          const it = document.createElement("button");
+          it.className = "list-item";
+          it.innerHTML = `
+            <span class="ic">${ICONS[item.icon] || ICONS.star}</span>
+            <span class="lbl">${item.label.replace(/\n/g,"")}</span>
+            <span class="play-mini" style="background:${meta.dot};">▶</span>
+          `;
+          it.addEventListener("click", () => audio.playOne(item));
+          grid.appendChild(it);
+        });
+        root.appendChild(sec);
+      });
+    }
+
+    /* =========================================================
+       SETTINGS SCREEN
+       ========================================================= */
+    function initSettingsScreen() {
+      const volumeSlider = $("volumeSlider");
+      const volumeValue  = $("volumeValue");
+      const rateSlider   = $("rateSlider");
+      const rateValue    = $("rateValue");
+      const gapSlider    = $("gapSlider");
+      const gapValue     = $("gapValue");
+      const favSwitch    = $("favSwitch");
+      const instantSwitch= $("instantSwitch");
+      const testAudioBtn = $("testAudioBtn");
+      const testResult   = $("testResult");
+      const voiceCountEl = $("voiceCount");
+
+      volumeSlider.value = settings.volume;
+      rateSlider.value   = settings.rate;
+      gapSlider.value    = settings.gap;
+      volumeValue.textContent = `${settings.volume}%`;
+      rateValue.textContent   = `${(settings.rate/100).toFixed(2)} 倍`;
+      gapValue.textContent    = `${(settings.gap/1000).toFixed(2)} 秒`;
+      favSwitch.classList.toggle("on", settings.showFavorites);
+      instantSwitch.classList.toggle("on", settings.instantMode);
+      voiceCountEl.textContent = voiceItems.length;
+
+      volumeSlider.addEventListener("input", (e) => {
+        settings.volume = +e.target.value;
+        volumeValue.textContent = `${settings.volume}%`;
+        saveSettings();
+      });
+      rateSlider.addEventListener("input", (e) => {
+        settings.rate = +e.target.value;
+        rateValue.textContent = `${(settings.rate/100).toFixed(2)} 倍`;
+        saveSettings();
+        renderQueue();
+      });
+      gapSlider.addEventListener("input", (e) => {
+        settings.gap = +e.target.value;
+        gapValue.textContent = `${(settings.gap/1000).toFixed(2)} 秒`;
+        saveSettings();
+        renderQueue();
+      });
+      favSwitch.addEventListener("click", () => {
+        settings.showFavorites = !settings.showFavorites;
+        favSwitch.classList.toggle("on", settings.showFavorites);
+        saveSettings();
+        renderTabs();
+      });
+      instantSwitch.addEventListener("click", () => {
+        settings.instantMode = !settings.instantMode;
+        instantSwitch.classList.toggle("on", settings.instantMode);
+        saveSettings();
+        showToast(settings.instantMode
+          ? "🎴 すぐ鳴らすモードON：タップで即再生"
+          : "📋 リスト追加モード：タップでリストへ");
+      });
+      testAudioBtn.addEventListener("click", async () => {
+        const testItem = voiceItems.find(v => v.id === "ゆいちゃん");
+        if (!testItem) {
+          testResult.textContent = "⚠️ テスト用音声が見つかりません";
+          testResult.style.color = "#EF4444";
+          return;
+        }
+        testResult.textContent = "▶ 再生中…";
+        testResult.style.color = "#0F172A";
+        const tmpAudio = new Audio(audio.fileUrl(testItem.file));
+        tmpAudio.volume = settings.volume / 100;
+        tmpAudio.playbackRate = settings.rate / 100;
+        tmpAudio.addEventListener("ended", () => {
+          testResult.textContent = "✅ 再生できました！voice/フォルダは正常です";
+          testResult.style.color = "#16A34A";
+        });
+        tmpAudio.addEventListener("error", () => {
+          testResult.innerHTML = `❌ <code style="background:#FEE2E2;padding:1px 4px;border-radius:4px;">voice/${testItem.file}</code> が見つかりません`;
+          testResult.style.color = "#EF4444";
+        });
+        try {
+          await tmpAudio.play();
+        } catch (err) {
+          testResult.textContent = `❌ 再生失敗: ${err.message}`;
+          testResult.style.color = "#EF4444";
+        }
+      });
+    }
+
+    /* =========================================================
+       NAVIGATION
+       ========================================================= */
+    function switchScreen(target) {
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      $(`screen-${target}`).classList.add("active");
+      document.querySelectorAll(".nav-btn").forEach(b => {
+        b.classList.toggle("active", b.dataset.target === target);
+      });
+      if (target === "list") renderListScreen();
+      window.scrollTo(0, 0);
+    }
+
+    document.querySelectorAll(".nav-btn").forEach(btn => {
+      btn.addEventListener("click", () => switchScreen(btn.dataset.target));
+    });
+
+    /* =========================================================
+       TOAST
+       ========================================================= */
+    let toastTimer = null;
+    function showToast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2200);
+    }
+
+    /* =========================================================
+       INIT
+       ========================================================= */
+    header.addEventListener("click", speakCurrentTime);
+    playBtn.addEventListener("click", playQueue);
+    stopBtn.addEventListener("click", stopAll);
+    clearBtn.addEventListener("click", clearQueue);
+    shuffleBtn.addEventListener("click", shuffleQueue);
+    clearAllBtn.addEventListener("click", clearQueue);
+
     setupClockFace();
     updateClock();
     setInterval(updateClock, 1000);
+
     renderTabs();
     renderButtons();
     renderQueue();
-    renderSettings();
-    preloadDurations();
+    initSettingsScreen();
 
-    // iOS audio unlock: prime on first touch anywhere
-    let primed = false;
-    document.addEventListener("touchstart", () => {
-      if (primed) return;
-      primed = true;
-      const a = new Audio();
-      a.muted = true;
-      a.play().catch(()=>{});
-    }, { once: true });
+    // Detect filename encoding (NFC/NFD), then preload all audio durations in background
+    audio.detectEncoding("ゆいちゃん.mp3").then(() => {
+      audio.preloadAll(voiceItems).then(() => {
+        renderQueue(); // Re-render queue to update duration display
+      });
+    });
+
+    // Prevent double-tap zoom on iOS
+    let lastTouchEnd = 0;
+    document.addEventListener("touchend", (e) => {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 300) e.preventDefault();
+      lastTouchEnd = now;
+    }, { passive: false });
+
   </script>
 
 </body>
