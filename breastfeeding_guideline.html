@@ -1,0 +1,268 @@
+<!DOCTYPE html><html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>論文解析ダッシュボード</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Source+Serif+4:wght@400;600;700&display=swap');
+:root{--bg:#0f1923;--card:#172a3a;--card2:#1e3448;--teal:#00d4aa;--gold:#f0c27a;--coral:#ff6b6b;--blue:#4ecdc4;--t1:#e8edf2;--t2:#8fa3b8;--t3:#5a7a96;--bdr:#2a4560;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--t1);line-height:1.8;font-size:15px;}
+.wrapper{display:flex;min-height:100vh;}
+.left-nav{width:260px;flex-shrink:0;background:linear-gradient(180deg,#0a1520,#132232);border-right:1px solid var(--bdr);}
+.left-nav-inner{position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;}
+.left-nav-inner::-webkit-scrollbar{width:4px;}
+.left-nav-inner::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px;}
+.nav-hd{padding:24px 20px 18px;border-bottom:1px solid var(--bdr);}
+.nav-hd .badge{display:inline-block;background:linear-gradient(135deg,var(--teal),var(--blue));color:var(--bg);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:4px;margin-bottom:10px;}
+.nav-hd h1{font-family:'Source Serif 4',serif;font-size:13px;font-weight:700;line-height:1.6;color:var(--t1);}
+.nav-links{flex:1;padding:14px 0;}
+.nav-links a{display:flex;align-items:center;gap:10px;padding:10px 20px;color:var(--t2);text-decoration:none;font-size:12.5px;font-weight:500;border-left:3px solid transparent;transition:all .2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--teal);background:rgba(0,212,170,.06);border-left-color:var(--teal);}
+.nav-links a .ic{width:22px;height:22px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1px solid var(--bdr);border-radius:5px;font-size:10px;font-weight:700;flex-shrink:0;}
+.nav-links a.active .ic{background:var(--teal);color:var(--bg);border-color:var(--teal);}
+.nav-ft{padding:14px 20px;border-top:1px solid var(--bdr);font-size:10px;color:var(--t3);line-height:1.7;}
+.main{flex:1;min-width:0;}
+.slide{padding:48px 44px 56px;border-bottom:1px solid var(--bdr);}
+.sl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);font-weight:700;margin-bottom:4px;}
+.sn{font-size:48px;font-weight:900;background:linear-gradient(135deg,var(--teal),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:4px;opacity:.3;}
+h2{font-family:'Source Serif 4',serif;font-size:24px;font-weight:700;margin-bottom:26px;color:var(--t1);padding-bottom:12px;border-bottom:3px solid;border-image:linear-gradient(90deg,var(--teal),var(--blue)) 1;display:inline-block;}
+h3{font-size:16px;font-weight:700;color:var(--gold);margin:22px 0 10px;}
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:22px;margin-bottom:16px;box-shadow:0 8px 32px rgba(0,0,0,.3);}
+.mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:18px;}
+.mi{background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:14px;}
+.mi .lb{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--t3);margin-bottom:3px;font-weight:700;}
+.mi .vl{font-size:13px;color:var(--t1);font-weight:500;}
+.ri{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(42,69,96,.4);}
+.ri:last-child{border-bottom:none;}
+.rn{flex-shrink:0;width:30px;height:30px;background:linear-gradient(135deg,var(--teal),var(--blue));color:var(--bg);font-weight:900;font-size:12px;display:flex;align-items:center;justify-content:center;border-radius:6px;}
+.rt{flex:1;font-size:13.5px;line-height:1.8;}
+.tw{overflow-x:auto;margin:12px 0;}
+.dt{width:100%;min-width:580px;border-collapse:collapse;font-size:12.5px;}
+.dt th{background:var(--card2);color:var(--teal);text-align:left;padding:9px 12px;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid var(--bdr);}
+.dt td{padding:7px 12px;border-bottom:1px solid rgba(42,69,96,.35);vertical-align:top;}
+.dt tr:hover td{background:rgba(0,212,170,.04);}
+.tg{display:inline-block;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;}
+.ts{background:rgba(0,212,170,.15);color:var(--teal);}
+.tc{background:rgba(240,194,122,.15);color:var(--gold);}
+.tx{background:rgba(255,107,107,.15);color:var(--coral);}
+.ai{padding:14px 18px;border-left:3px solid var(--gold);background:rgba(240,194,122,.04);border-radius:0 8px 8px 0;margin-bottom:11px;}
+.ai .at{font-weight:700;color:var(--gold);font-size:13.5px;margin-bottom:4px;}
+.ai p{font-size:13px;color:var(--t2);line-height:1.8;}
+.ge{background:var(--card);border:1px solid var(--bdr);border-radius:10px;margin-bottom:9px;overflow:hidden;}
+.ge summary{padding:11px 16px;cursor:pointer;font-weight:700;font-size:13.5px;color:var(--teal);list-style:none;display:flex;align-items:center;gap:8px;transition:background .2s;}
+.ge summary:hover{background:rgba(0,212,170,.05);}
+.ge summary::before{content:'▸';transition:transform .2s;font-size:10px;}
+.ge[open] summary::before{transform:rotate(90deg);}
+.ge .gb{padding:0 16px 12px;font-size:12.5px;color:var(--t2);line-height:1.8;border-top:1px solid var(--bdr);padding-top:10px;}
+.hb{background:linear-gradient(135deg,rgba(0,212,170,.08),rgba(78,205,196,.04));border:1px solid rgba(0,212,170,.2);border-radius:12px;padding:18px;margin:16px 0;}
+.hb .ht{font-weight:700;color:var(--teal);font-size:14px;margin-bottom:5px;}
+.tc2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:900px){.left-nav{display:none;}.slide{padding:32px 18px 40px;}.tc2{grid-template-columns:1fr;}.mg{grid-template-columns:1fr;}}
+p{margin-bottom:9px;}
+a{color:var(--blue);}
+</style>
+</head>
+<body>
+<div class="wrapper"><nav class="left-nav">
+<div class="left-nav-inner">
+<div class="nav-hd">
+<div class="badge">臨床ガイドライン</div>
+<h1>Guidelines for anaesthesia and sedation for patients who are breastfeeding</h1>
+</div>
+<div class="nav-links">
+<a href="#s1"><span class="ic">1</span>概要</a>
+<a href="#s2"><span class="ic">2</span>背景と目的</a>
+<a href="#s3"><span class="ic">3</span>方法</a>
+<a href="#s4"><span class="ic">4</span>推奨事項一覧</a>
+<a href="#s5"><span class="ic">5</span>薬剤情報</a>
+<a href="#s6"><span class="ic">6</span>特殊状況</a>
+<a href="#s7"><span class="ic">7</span>批判的吟味</a>
+<a href="#s8"><span class="ic">8</span>用語集</a>
+<a href="#s9"><span class="ic">9</span>結論</a>
+</div>
+<div class="nav-ft">Anaesthesia 2026; 81: 685–701<br>DOI: 10.1111/anae.70128<br>© 2026 Association of Anaesthetists</div>
+</div>
+</nav><div class="main"><section class="slide" id="s1">
+<div class="sl">Slide 01 / 09</div><div class="sn">01</div><h2>概要</h2>
+<div class="mg">
+<div class="mi"><div class="lb">論文種別</div><div class="vl" style="color:var(--teal);font-weight:700">臨床ガイドライン</div></div>
+<div class="mi"><div class="lb">発行機関</div><div class="vl">Association of Anaesthetists</div></div>
+<div class="mi"><div class="lb">雑誌</div><div class="vl">Anaesthesia 2026, 81, 685–701</div></div>
+<div class="mi"><div class="lb">Accepted</div><div class="vl">2 January 2026</div></div>
+<div class="mi"><div class="lb">DOI</div><div class="vl">10.1111/anae.70128</div></div>
+<div class="mi"><div class="lb">承認</div><div class="vl">RCoA / BADS</div></div>
+</div>
+<div class="card"><h3 style="margin-top:0">著者一覧</h3>
+<div class="tw"><table class="dt"><thead><tr><th>著者名</th><th>所属</th></tr></thead><tbody>
+<tr><td>Joellene Mitchell</td><td>Consultant, Dept of Anaesthesia, University Hospital Ayr（責任著者）</td></tr>
+<tr><td>Wendy Jones</td><td>Specialist Pharmacist in Breastfeeding / Honorary Research Fellow, LIFT, Univ of Swansea</td></tr>
+<tr><td>Samantha Morris</td><td>Deputy Clinical Supervisor, BfN Drugs in Breastmilk Service / Pharmacist, NHS Somerset ICB</td></tr>
+<tr><td>Merle Cohen</td><td>Consultant, Dept of Anaesthesia, King's College Hospital, London</td></tr>
+<tr><td>Fiona Breckenridge</td><td>Consultant, Dept of Anaesthesia, Queen Elizabeth University Hospital, Glasgow</td></tr>
+<tr><td>Julie Baruah-Young</td><td>Resident, South East Scotland School of Anaesthesia</td></tr>
+<tr><td>Gemma Fletcher</td><td>Consultant, Dept of Anaesthesia, Queen Elizabeth University Hospital, Glasgow</td></tr>
+<tr><td>Sarah Edwards</td><td>Scottish Programme Manager, The Breastfeeding Network</td></tr>
+<tr><td>Marianne White</td><td>Midwife and Infant Feeding Adviser, NHS Tayside, Dundee</td></tr>
+<tr><td>Matthew D. Wiles</td><td>Professor, Academic Anaesthesia, Sheffield / Editor-in-Chief, Anaesthesia</td></tr>
+</tbody></table></div></div>
+</section><section class="slide" id="s2">
+<div class="sl">Slide 02 / 09</div><div class="sn">02</div><h2>背景と目的</h2>
+<div class="card"><h3 style="margin-top:0">母乳育児の重要性</h3>
+<p>母乳育児は児と親双方の健康確保のための最も効果的な手段。栄養・免疫・情動・経済的利益。</p>
+<p>児のリスク低下：呼吸器感染症、下痢、NEC、中耳炎、糖尿病、喘息、心疾患、肥満、SIDS。親のリスク低下：乳がん、卵巣がん、2型糖尿病。</p>
+<p>普遍的母乳育児で年間823,000人の5歳未満児死亡・20,000人の乳がん死亡を予防可能。英国NHS年間£40M超の節約。</p></div>
+<div class="card"><h3 style="margin-top:0">策定の理由</h3>
+<p>従来アドバイスは不統一（24h以上中断・pumping and dumping）。BNF等は製造元推奨に沿い慎重。専門情報源は未アクセス。2020年前版以降に新薬導入→更新必要。</p></div>
+<div class="hb"><div class="ht">核心メッセージ</div><p style="margin-bottom:0">周術期の決定は予防原則ではなく薬物動態データに基づくべき。薬剤研究の欠如はリスクを意味しない。</p></div>
+<div class="card"><h3 style="margin-top:0">環境への影響</h3><p>粉ミルク水フットプリント≈4,700 L/kg。6ヶ月完全母乳育児で児1人あたり95–153 kg CO₂等価排出を節約。</p></div>
+</section><section class="slide" id="s3">
+<div class="sl">Slide 03 / 09</div><div class="sn">03</div><h2>方法</h2>
+<div class="tc2">
+<div class="card"><h3 style="margin-top:0">ワーキングパーティー</h3><p>多職種：麻酔科医、授乳専門薬剤師、助産師、乳児栄養アドバイザー、当事者経験者。</p></div>
+<div class="card"><h3 style="margin-top:0">文献検索</h3><p><strong>DB:</strong> PubMed<br><strong>検索語:</strong> anaesthesia, breastfeeding, breastmilk, surgery<br><strong>追加:</strong> LactMed, e-lactancia, UKDILAS, Hale's, WHO, BfN, medicinescomplete, NEADL</p></div>
+</div>
+<div class="card"><h3 style="margin-top:0">修正デルファイ法3ラウンド</h3>
+<p>① ロングリスト作成 → ② バーチャル円卓討論 → ③ 「include/exclude/revise」匿名評価（≥80%→採択、50–79%→修正、&lt;50%→除外）→ ④ RCoA・BADSで承認取得</p></div>
+</section><section class="slide" id="s4">
+<div class="sl">Slide 04 / 09</div><div class="sn">04</div><h2>推奨事項（全14項目）</h2>
+<div class="card">
+<div class="ri"><div class="rn">1</div><div class="rt">2歳未満の子を持つ患者に術前評価で授乳状況を確認。2歳超も考慮。</div></div>
+<div class="ri"><div class="rn">2</div><div class="rt">手術直前の授乳支援（直接授乳推奨）。術後覚醒後に再開支援。</div></div>
+<div class="ri"><div class="rn">3</div><div class="rt">麻酔薬・鎮静薬・鎮痛薬の母乳移行量はごく少量。ほぼ全薬剤で児への有害作用エビデンスなし。</div></div>
+<div class="ri"><div class="rn">4</div><div class="rt">「pumping and dumping」不要。「sleep and keep」推奨。</div></div>
+<div class="ri"><div class="rn">5</div><div class="rt">緊急手術・入院時は患者と児を一緒に。適切な支援提供。</div></div>
+<div class="ri"><div class="rn">6</div><div class="rt">麻酔科にBreastfeeding champion配置。同僚支援・教育担当。</div></div>
+<div class="ri"><div class="rn">7</div><div class="rt">UNICEF Baby Friendly Initiative参加推奨。</div></div>
+<div class="ri"><div class="rn">8</div><div class="rt">授乳に適した環境（個室等）提供。別成人の児ケア同席。</div></div>
+<div class="ri"><div class="rn">9</div><div class="rt">術後鎮痛はマルチモーダル・オピオイドスペアリング。</div></div>
+<div class="ri"><div class="rn">10</div><div class="rt">コデインはCYP2D6代謝多型リスクのため非推奨。</div></div>
+<div class="ri"><div class="rn">11</div><div class="rt">オピオイド必要時は最低量・最短期間。ジヒドロコデイン/モルヒネ推奨。</div></div>
+<div class="ri"><div class="rn">12</div><div class="rt">日帰り手術優先。授乳患者を手術リスト最初に。</div></div>
+<div class="ri"><div class="rn">13</div><div class="rt">化学療法中の授乳は禁忌。</div></div>
+<div class="ri"><div class="rn">14</div><div class="rt">患者情報リーフレット（薬剤適合性・授乳支援）を提供。</div></div>
+</div>
+</section><section class="slide" id="s5">
+<div class="sl">Slide 05 / 09</div><div class="sn">05</div><h2>薬剤別 母乳移行情報</h2>
+<div class="card"><h3 style="margin-top:0"><span class="tg ts">通常授乳可能</span></h3>
+<div class="tw"><table class="dt"><thead><tr><th>カテゴリー</th><th>薬剤</th><th>備考</th></tr></thead><tbody>
+<tr><td>静脈麻酔薬</td><td>Propofol</td><td>移行量0.025%。覚醒後すぐ授乳可。</td></tr>
+<tr><td></td><td>Ciprofol</td><td>t½ 2–4h。単回後5–10min効果。</td></tr>
+<tr><td></td><td>Thiopental</td><td>乳汁中ごく少量。待機不要。</td></tr>
+<tr><td></td><td>Etomidate</td><td>速やかに再分布。待機不要。</td></tr>
+<tr><td></td><td>Ketamine</td><td>RID≤0.95%。</td></tr>
+<tr><td>吸入麻酔薬</td><td>Sevoflurane, Isoflurane, Desflurane, Halothane, N₂O, Methoxyflurane</td><td>呼気排泄。短t½。</td></tr>
+<tr><td>鎮静薬</td><td>Midazolam</td><td>初回通過代謝大。単回後回復次第授乳可。</td></tr>
+<tr><td></td><td>Diazepam（単回）</td><td>活性代謝物t½長。単回は許容。</td></tr>
+<tr><td></td><td>Remimazolam</td><td>t½ 0.7h。覚醒後授乳可。</td></tr>
+<tr><td>α₂作動薬</td><td>Dexmedetomidine</td><td>t½ 2–3h、蛋白結合94%、RID 0.034。</td></tr>
+<tr><td></td><td>Clonidine</td><td>乳汁分泌最小限。</td></tr>
+<tr><td>非オピオイド鎮痛薬</td><td>Paracetamol</td><td>第一選択。</td></tr>
+<tr><td></td><td>NSAIDs全般</td><td>RID極低。※動脈管依存性心疾患児では避ける。</td></tr>
+<tr><td></td><td>Magnesium</td><td>乳汁レベル正常範囲。</td></tr>
+<tr><td></td><td>Nefopam</td><td>RID 2.6%。</td></tr>
+<tr><td>オピオイド</td><td>Morphine</td><td>強オピオイド第一選択。</td></tr>
+<tr><td></td><td>Dihydrocodeine</td><td>推奨弱オピオイド。CYP2D6影響少。</td></tr>
+<tr><td></td><td>Fentanyl/Alfentanil</td><td>単回IV後最小限。短期使用可。</td></tr>
+<tr><td></td><td>Sufentanil</td><td>t½ 2.7h、蛋白結合91%。</td></tr>
+<tr><td></td><td>Remifentanil</td><td>context-sensitive t½&lt;10min。</td></tr>
+<tr><td>局所麻酔薬</td><td>全て</td><td>中断不要。</td></tr>
+<tr><td>筋弛緩薬</td><td>Suxamethonium, Rocuronium, Vecuronium, Atracurium</td><td>乳汁中有意量なし。</td></tr>
+<tr><td>拮抗薬</td><td>Neostigmine, Sugammadex</td><td>適合。Sugammadex→ホルモン避妊薬注意。</td></tr>
+<tr><td>制吐薬</td><td>Ondansetron, Granisetron, Cyclizine, Prochlorperazine, Dexamethasone, Droperidol</td><td>短期使用適合。</td></tr>
+<tr><td></td><td>Metoclopramide, Domperidone</td><td>ガラクタゴーグ作用。最近中止者では避ける。</td></tr>
+<tr><td>心血管薬</td><td>Atropine, Glycopyrronium, Ephedrine, Phenylephrine</td><td>適合。</td></tr>
+<tr><td>抗菌薬</td><td>短期コース</td><td>有害作用エビデンスなし。</td></tr>
+<tr><td>その他</td><td>Dantrolene</td><td>RID 7.9%。IV中止2日後安全。</td></tr>
+<tr><td></td><td>Intralipid</td><td>リスク低い。</td></tr>
+</tbody></table></div></div>
+<div class="tc2">
+<div class="card"><h3 style="margin-top:0"><span class="tg tc">注意して使用</span></h3>
+<p><strong>Tramadol:</strong> RID&lt;3%。USFDA警告。児傾眠観察。</p>
+<p><strong>Oxycodone:</strong> &gt;30mg/日で鎮静リスク増。反復避ける。</p>
+<p><strong>Codeine:</strong> CYP2D6超高速代謝者で重篤リスク。非推奨。</p>
+<p><strong>Pethidine:</strong> 活性代謝物t½最大30h。使用すべきでない。</p>
+<p><strong>Hydromorphone:</strong> 新生児呼吸抑制報告。注意使用。</p></div>
+<div class="card"><h3 style="margin-top:0"><span class="tg tx">禁忌</span></h3>
+<p><strong>Aspirin（鎮痛量）:</strong> Reye症候群。低用量抗血小板は可。</p>
+<p><strong>化学療法薬:</strong> 最終投与から≥14日。Trastuzumab/Tamoxifen不可。</p></div>
+</div>
+</section><section class="slide" id="s6">
+<div class="sl">Slide 06 / 09</div><div class="sn">06</div><h2>特殊状況</h2>
+<div class="tc2">
+<div class="card"><h3 style="margin-top:0">術前・周術期</h3>
+<p>電子問診票に授乳質問。日帰り手術優先。Champion配置。Sip Til Send。授乳中断リスク：うっ滞・乳腺炎・哺乳瓶拒否・NEC。「sleep and keep」。TIVA＋EEG。区域麻酔推奨。パラセタモール＋NSAIDs。NOAH非推奨。</p></div>
+<div class="card"><h3 style="margin-top:0">緊急・ICU</h3>
+<p>患者と児を一緒に。搾乳器・安全保管。ICS推奨に沿い授乳支援。ノルアドレナリン/アドレナリン→児影響少。ヒドロコルチゾン→乳汁正常成分。アミオダロン単回→&lt;小児用量1%。PPI全て適合。鎮静下→親族搾乳。</p></div>
+</div>
+<div class="card"><h3 style="margin-top:0">がん手術</h3>
+<p>化学療法前は授乳可。化学療法中禁忌（≥14日間隔）。Trastuzumab/Tamoxifen不可。制吐薬にOndansetron推奨。ミルクドナー：入院中搾乳分は廃棄可能性。</p></div>
+</section><section class="slide" id="s7">
+<div class="sl">Slide 07 / 09</div><div class="sn">07</div><h2>批判的吟味</h2>
+<div class="ai"><div class="at">1. 策定プロセスの透明性</div><p>修正デルファイ法3ラウンド（≥80%合意）は妥当。各ラウンド投票結果の詳細は未報告。</p></div>
+<div class="ai"><div class="at">2. エビデンスの質</div><p>症例報告・小規模後方視的研究が主。GRADEは未使用。多くの薬剤で少数患者PKデータに依存。</p></div>
+<div class="ai"><div class="at">3. 文献検索の包括性</div><p>PubMedのみ。EMBASE/CINAHL/Cochrane未検索。「targeted review」として意図的限定だが見落としリスクあり。</p></div>
+<div class="ai"><div class="at">4. チーム構成と利益相反</div><p>多職種視点確保。外部資金・競合利益なし。WJ=授乳著書著者、MW=Anaesthesia EiC。</p></div>
+<div class="ai"><div class="at">5. 推奨強度の評価</div><p>GRADE等未使用→推奨強さとエビデンス質が未区別。</p></div>
+<div class="ai"><div class="at">6. PK外挿の限界</div><p>一般的PK特性からの理論的推論が多い。乳汁中濃度の直接測定データ不足。</p></div>
+<div class="ai"><div class="at">7. コデインのエビデンス</div><p>2006年Koren報告→信頼性疑義・関連論文撤回。FDA/EMA/MHRA勧告に沿い非推奨維持。</p></div>
+<div class="ai"><div class="at">8. 患者集団の代表性</div><p>英国中心。他医療制度への適用には調整要。CYP2D6民族間差の詳述は限定的。</p></div>
+<div class="ai"><div class="at">9. 包括的言語</div><p>「people」「patients」でトランスジェンダー配慮。「breastfeeding」用語は維持。</p></div>
+<div class="ai"><div class="at">10. 更新可能性</div><p>出版時点でのみ有効。オンライン情報源との併用推奨。前版から約6年での更新。</p></div>
+</section><section class="slide" id="s8">
+<div class="sl">Slide 08 / 09</div><div class="sn">08</div><h2>用語集</h2>
+<details class="ge"><summary>修正デルファイ法</summary><div class="gb">専門家が匿名で複数ラウンドのフィードバックでコンセンサス形成。3ラウンド、80%以上合意で採択。</div></details>
+<details class="ge"><summary>薬物動態（PK）</summary><div class="gb">薬物の吸収・分布・代謝・排泄の研究。母乳移行予測に半減期・蛋白結合率・脂溶性・経口BA等が重要。</div></details>
+<details class="ge"><summary>相対的児用量（RID）</summary><div class="gb">母親の体重あたり用量に対する母乳経由児摂取量の割合。RID&lt;10%は一般に許容。</div></details>
+<details class="ge"><summary>経口バイオアベイラビリティ</summary><div class="gb">経口薬物が全身循環に到達する割合。低値→母乳経由の児影響少。</div></details>
+<details class="ge"><summary>蛋白結合率</summary><div class="gb">血漿中で薬物が蛋白質に結合する割合。高値→遊離型少→母乳移行少。</div></details>
+<details class="ge"><summary>半減期</summary><div class="gb">薬物血中濃度が半減する時間。5半減期≈97%除去。</div></details>
+<details class="ge"><summary>初回通過代謝</summary><div class="gb">経口薬物が全身循環前に肝臓で代謝される現象。大きい→経口BA低→児影響少。</div></details>
+<details class="ge"><summary>CYP2D6遺伝的多型</summary><div class="gb">薬物代謝酵素の遺伝的変異。超高速代謝者では活性代謝物過剰生成。コデイン・トラマドール代謝に影響大。民族間頻度差あり。</div></details>
+<details class="ge"><summary>Pumping and Dumping</summary><div class="gb">薬剤投与後の搾乳廃棄。現エビデンスでは大部分の麻酔薬で不要。</div></details>
+<details class="ge"><summary>Sleep and Keep</summary><div class="gb">麻酔後に搾乳廃棄せず通常通り母乳を保管・使用。本GLの推奨標準。</div></details>
+<details class="ge"><summary>マルチモーダル鎮痛</summary><div class="gb">異なる機序の複数鎮痛法を組合せ。オピオイド量を低減。</div></details>
+<details class="ge"><summary>オピオイドスペアリング</summary><div class="gb">非オピオイド鎮痛法を最大活用しオピオイド最小化。授乳中は児の鎮静・呼吸抑制リスク低減に重要。</div></details>
+<details class="ge"><summary>TIVA（全静脈麻酔）</summary><div class="gb">プロポフォール等の静脈薬のみで維持。PONV低減に有益。</div></details>
+<details class="ge"><summary>処理脳波モニタリング</summary><div class="gb">BIS等で麻酔深度を脳波から評価。TIVAと併用し適切深度維持。</div></details>
+<details class="ge"><summary>PONV（術後悪心嘔吐）</summary><div class="gb">授乳再開を妨げるため予防的制吐薬が重要。</div></details>
+<details class="ge"><summary>壊死性腸炎（NEC）</summary><div class="gb">早産児の重篤な腸管壊死。母乳育児でリスク低下。人工乳代替でもリスク上昇。</div></details>
+<details class="ge"><summary>ガラクタゴーグ</summary><div class="gb">乳汁分泌促進薬（メトクロプラミド・ドンペリドン）。最近授乳中止者では意図しない再増加リスク。</div></details>
+<details class="ge"><summary>Reye症候群</summary><div class="gb">アスピリン投与後の小児の急性脳症・肝脂肪変性。授乳中アスピリン鎮痛量禁忌の根拠。</div></details>
+<details class="ge"><summary>動脈管依存性心疾患</summary><div class="gb">動脈管開存が生命維持に必要な先天性心疾患。NSAIDsは動脈管閉鎖促進→該当児の母は避ける。</div></details>
+<details class="ge"><summary>PPOU</summary><div class="gb">持続的術後オピオイド使用。退院鎮痛は7日以内限定。</div></details>
+<details class="ge"><summary>GRADE</summary><div class="gb">エビデンスの質と推奨強度を体系的評価するFW。本GLでは未使用。</div></details>
+<details class="ge"><summary>Baby Friendly Initiative</summary><div class="gb">WHO/UNICEFの母乳育児支援プログラム。</div></details>
+<details class="ge"><summary>LactMed</summary><div class="gb">米国NIHの薬剤・授乳DB。母乳移行性・児への影響情報を収載。</div></details>
+<details class="ge"><summary>Sip Til Sendプロトコル</summary><div class="gb">手術室搬送まで透明水分摂取を許可。脱水防止・乳汁産生維持に有益。</div></details>
+<details class="ge"><summary>NOAHプロトコル</summary><div class="gb">日帰り手術後エスコートなし帰宅許可。授乳患者には非推奨。</div></details>
+</section><section class="slide" id="s9">
+<div class="sl">Slide 09 / 09</div><div class="sn">09</div><h2>結論</h2>
+<div class="hb"><div class="ht">核心的結論</div><p style="margin-bottom:0">麻酔薬・鎮静薬・鎮痛薬の母乳移行量はごく微量。ほぼ全ての周術期薬剤で児への有害作用エビデンスなし。「pumping and dumping」不要。「sleep and keep」が新標準。</p></div>
+<div class="tc2">
+<div class="card"><h3 style="margin-top:0">臨床応用</h3>
+<p>・PKデータに基づく意思決定</p><p>・術前に授乳確認・継続支援</p><p>・マルチモーダル・オピオイドスペアリング鎮痛</p><p>・オピオイド必要時：モルヒネ/ジヒドロコデイン</p><p>・コデイン非推奨、Aspirin鎮痛量・化学療法薬禁忌</p><p>・日帰り手術優先、Champion配置</p></div>
+<div class="card"><h3 style="margin-top:0">限界と今後</h3>
+<p>・症例報告・小規模研究が主</p><p>・GRADE未使用</p><p>・乳汁中濃度の直接測定データ不足</p><p>・PubMedのみの検索</p><p>・出版時点でのみ有効→LactMed等と併用</p><p>・大規模前向き研究が今後必要</p></div>
+</div>
+<div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(0,212,170,.06),rgba(78,205,196,.03));">
+<p style="margin-bottom:3px;color:var(--t3);font-size:10px;text-transform:uppercase;letter-spacing:2px;">参照リソース</p>
+<p style="font-size:12px;color:var(--t2);margin-bottom:0;">LactMed · UKDILAS · e-lactancia · Hale's 2025–2026 · BfN · NICE NG247 · WHO/UNICEF BFI</p></div>
+</section></div></div>
+<script>
+(function(){
+var ss=document.querySelectorAll('.slide');
+var ll=document.querySelectorAll('.nav-links a');
+var ob=new IntersectionObserver(function(es){
+es.forEach(function(e){
+if(e.isIntersecting){
+ll.forEach(function(l){l.classList.remove('active');});
+var id=e.target.getAttribute('id');
+var a=document.querySelector('.nav-links a[href="#'+id+'"]');
+if(a)a.classList.add('active');
+}});},{rootMargin:'-20% 0px -70% 0px'});
+ss.forEach(function(s){ob.observe(s);});
+})();
+</script></body>
+</html>
